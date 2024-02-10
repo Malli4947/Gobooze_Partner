@@ -1,0 +1,77 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/GraphikBlack.otf",
+      "sha1": "e8dd7234ea8845ed01c95c5043905a41f2665e49"
+    },
+    {
+      "path": "assets/fonts/GraphikBlackItalic.otf",
+      "sha1": "4334040ed7ddcd50e1452cd7ecab65ee2a7e31a7"
+    },
+    {
+      "path": "assets/fonts/GraphikBold.otf",
+      "sha1": "641b95867ceac946733395b533d9ce0e02c1f131"
+    },
+    {
+      "path": "assets/fonts/GraphikBoldItalic.otf",
+      "sha1": "2a253f132d0b0f02c6dce922cc435593514d83c4"
+    },
+    {
+      "path": "assets/fonts/GraphikExtralight.otf",
+      "sha1": "66565e286149faa05cc38f9ca1a94f77faf65b72"
+    },
+    {
+      "path": "assets/fonts/GraphikExtralightItalic.otf",
+      "sha1": "b2ee5255ca624535f25f6262c8ebaa96ce509e66"
+    },
+    {
+      "path": "assets/fonts/GraphikLight.otf",
+      "sha1": "27b59a9d8a109feb1c08a4f57e2bffde012dd319"
+    },
+    {
+      "path": "assets/fonts/GraphikLightItalic.otf",
+      "sha1": "a8cebd3f72eb23b7714142b196eddd85eafc6844"
+    },
+    {
+      "path": "assets/fonts/GraphikMedium.otf",
+      "sha1": "1d0e0a6bb4f76a9f55fd18f607e24fca4a2b569a"
+    },
+    {
+      "path": "assets/fonts/GraphikMediumItalic.otf",
+      "sha1": "1ad3f30e66fb404f9893e29fbc4adbd6662b6c90"
+    },
+    {
+      "path": "assets/fonts/GraphikRegular.otf",
+      "sha1": "27e4354c63c53eb441e6cd0946194d986b617c1e"
+    },
+    {
+      "path": "assets/fonts/GraphikRegularItalic.otf",
+      "sha1": "46172ad467431d4000f7b5410d38359f80cb480d"
+    },
+    {
+      "path": "assets/fonts/GraphikSemibold.otf",
+      "sha1": "9db2ce9dd478e6930acd1ce461ab5b6ff594e484"
+    },
+    {
+      "path": "assets/fonts/GraphikSemiboldItalic.otf",
+      "sha1": "83e9052f55f4e51afa4505e8defc7d47d305fe2c"
+    },
+    {
+      "path": "assets/fonts/GraphikSuper.otf",
+      "sha1": "41a7a55b8c1314587cb9fc3269b563dd404b75a1"
+    },
+    {
+      "path": "assets/fonts/GraphikSuperItalic.otf",
+      "sha1": "5926940f583641ec17989c6a1b84c921b8e39bc8"
+    },
+    {
+      "path": "assets/fonts/GraphikThin.otf",
+      "sha1": "8fcb3c05c03c8237be1e88d80439fd803c6baf66"
+    },
+    {
+      "path": "assets/fonts/GraphikThinItalic.otf",
+      "sha1": "55d62f34314d133d0dd4f53169a4324e0b3cd701"
+    }
+  ]
+}

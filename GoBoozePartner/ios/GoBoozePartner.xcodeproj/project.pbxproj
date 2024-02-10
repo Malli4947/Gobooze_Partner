@@ -12,8 +12,26 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		22E4DBAE68134713ABA49E99 /* GraphikThin.otf in Resources */ = {isa = PBXBuildFile; fileRef = CFCC3FC79D4048BDADD99E7F /* GraphikThin.otf */; };
+		2310C781C5B94B57B4E7169F /* GraphikExtralightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6AA54B126F114EE3937B8FB5 /* GraphikExtralightItalic.otf */; };
+		286F6B6CF0EB4E3188049B7F /* GraphikRegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5ABABE649FE84A9086D6CA40 /* GraphikRegularItalic.otf */; };
+		2B1719FCA82B479A8FA19983 /* GraphikBoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3EEA88511AF84676AFA23237 /* GraphikBoldItalic.otf */; };
+		3F26FEBC61D54FDCA4E243FB /* GraphikThinItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = FFFFF4C0576E4953AE13AB36 /* GraphikThinItalic.otf */; };
+		5A7BB4CB2B9D45949CA56853 /* GraphikSuper.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1249C3B46A274317A5992073 /* GraphikSuper.otf */; };
+		6A0689DD818F4BB39DA1780A /* GraphikBlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = AF6D390317A24F4595C9A813 /* GraphikBlackItalic.otf */; };
+		74D2EC68F3E24F12A18DB924 /* GraphikLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = D33E22B78A5A41F8B9986465 /* GraphikLight.otf */; };
 		7699B88040F8A987B510C191 /* libPods-GoBoozePartner-GoBoozePartnerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-GoBoozePartner-GoBoozePartnerTests.a */; };
+		7986342EEABD4F15B2FB9D46 /* GraphikMediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF04AECDD4B14C00B10C63D0 /* GraphikMediumItalic.otf */; };
+		7BF6242165884320B45F125F /* GraphikMedium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 34EFC33D5D2C43A080029870 /* GraphikMedium.otf */; };
+		7E0CED87FC7949648C356BE6 /* GraphikRegular.otf in Resources */ = {isa = PBXBuildFile; fileRef = B02FE8FF4D4740CFAE262061 /* GraphikRegular.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8D3BD64C3E3E4770B6F12DCD /* GraphikExtralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 75B2224C5B264EF8B4610D6C /* GraphikExtralight.otf */; };
+		A6A7D198366048C694C2687A /* GraphikBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 00D574FA631E46B4B4774124 /* GraphikBold.otf */; };
+		C2515823AE5A4CD3A790A5BC /* GraphikSemibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 167D4443ADFD4E01ABE9DF0E /* GraphikSemibold.otf */; };
+		CDF1639257954B05855A546A /* GraphikBlack.otf in Resources */ = {isa = PBXBuildFile; fileRef = 74BDCFD39E9E41CDB34F2030 /* GraphikBlack.otf */; };
+		E47A893C8A7C402094055FCD /* GraphikLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 02F5E490A30246638A1C460B /* GraphikLightItalic.otf */; };
+		E60748F2B1694D91BCFC115F /* GraphikSuperItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 378DD8878FE249D4B07EF6FA /* GraphikSuperItalic.otf */; };
+		E8D6A81473C64E6C812F6BE4 /* GraphikSemiboldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 63B34C5263A14436B4C1504E /* GraphikSemiboldItalic.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,23 +45,41 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00D574FA631E46B4B4774124 /* GraphikBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBold.otf; path = ../assets/fonts/GraphikBold.otf; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* GoBoozePartnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoBoozePartnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* GoBoozePartnerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoBoozePartnerTests.m; sourceTree = "<group>"; };
+		02F5E490A30246638A1C460B /* GraphikLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikLightItalic.otf; path = ../assets/fonts/GraphikLightItalic.otf; sourceTree = "<group>"; };
+		1249C3B46A274317A5992073 /* GraphikSuper.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSuper.otf; path = ../assets/fonts/GraphikSuper.otf; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* GoBoozePartner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoBoozePartner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = GoBoozePartner/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = GoBoozePartner/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = GoBoozePartner/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = GoBoozePartner/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = GoBoozePartner/main.m; sourceTree = "<group>"; };
+		167D4443ADFD4E01ABE9DF0E /* GraphikSemibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSemibold.otf; path = ../assets/fonts/GraphikSemibold.otf; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-GoBoozePartner-GoBoozePartnerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GoBoozePartner-GoBoozePartnerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		34EFC33D5D2C43A080029870 /* GraphikMedium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikMedium.otf; path = ../assets/fonts/GraphikMedium.otf; sourceTree = "<group>"; };
+		378DD8878FE249D4B07EF6FA /* GraphikSuperItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSuperItalic.otf; path = ../assets/fonts/GraphikSuperItalic.otf; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-GoBoozePartner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner.debug.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner/Pods-GoBoozePartner.debug.xcconfig"; sourceTree = "<group>"; };
+		3EEA88511AF84676AFA23237 /* GraphikBoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBoldItalic.otf; path = ../assets/fonts/GraphikBoldItalic.otf; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-GoBoozePartner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner.release.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner/Pods-GoBoozePartner.release.xcconfig"; sourceTree = "<group>"; };
+		5ABABE649FE84A9086D6CA40 /* GraphikRegularItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikRegularItalic.otf; path = ../assets/fonts/GraphikRegularItalic.otf; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-GoBoozePartner-GoBoozePartnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner-GoBoozePartnerTests.debug.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner-GoBoozePartnerTests/Pods-GoBoozePartner-GoBoozePartnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-GoBoozePartner.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GoBoozePartner.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		63B34C5263A14436B4C1504E /* GraphikSemiboldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSemiboldItalic.otf; path = ../assets/fonts/GraphikSemiboldItalic.otf; sourceTree = "<group>"; };
+		6AA54B126F114EE3937B8FB5 /* GraphikExtralightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikExtralightItalic.otf; path = ../assets/fonts/GraphikExtralightItalic.otf; sourceTree = "<group>"; };
+		74BDCFD39E9E41CDB34F2030 /* GraphikBlack.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBlack.otf; path = ../assets/fonts/GraphikBlack.otf; sourceTree = "<group>"; };
+		75B2224C5B264EF8B4610D6C /* GraphikExtralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikExtralight.otf; path = ../assets/fonts/GraphikExtralight.otf; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = GoBoozePartner/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner-GoBoozePartnerTests/Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; sourceTree = "<group>"; };
+		AF6D390317A24F4595C9A813 /* GraphikBlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBlackItalic.otf; path = ../assets/fonts/GraphikBlackItalic.otf; sourceTree = "<group>"; };
+		B02FE8FF4D4740CFAE262061 /* GraphikRegular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikRegular.otf; path = ../assets/fonts/GraphikRegular.otf; sourceTree = "<group>"; };
+		BF04AECDD4B14C00B10C63D0 /* GraphikMediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikMediumItalic.otf; path = ../assets/fonts/GraphikMediumItalic.otf; sourceTree = "<group>"; };
+		CFCC3FC79D4048BDADD99E7F /* GraphikThin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikThin.otf; path = ../assets/fonts/GraphikThin.otf; sourceTree = "<group>"; };
+		D33E22B78A5A41F8B9986465 /* GraphikLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikLight.otf; path = ../assets/fonts/GraphikLight.otf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FFFFF4C0576E4953AE13AB36 /* GraphikThinItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikThinItalic.otf; path = ../assets/fonts/GraphikThinItalic.otf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +158,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				E181F8D83603423C9E683954 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -146,6 +183,32 @@
 				89C6BE57DB24E9ADA2F236DE /* Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		E181F8D83603423C9E683954 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				74BDCFD39E9E41CDB34F2030 /* GraphikBlack.otf */,
+				AF6D390317A24F4595C9A813 /* GraphikBlackItalic.otf */,
+				00D574FA631E46B4B4774124 /* GraphikBold.otf */,
+				3EEA88511AF84676AFA23237 /* GraphikBoldItalic.otf */,
+				75B2224C5B264EF8B4610D6C /* GraphikExtralight.otf */,
+				6AA54B126F114EE3937B8FB5 /* GraphikExtralightItalic.otf */,
+				D33E22B78A5A41F8B9986465 /* GraphikLight.otf */,
+				02F5E490A30246638A1C460B /* GraphikLightItalic.otf */,
+				34EFC33D5D2C43A080029870 /* GraphikMedium.otf */,
+				BF04AECDD4B14C00B10C63D0 /* GraphikMediumItalic.otf */,
+				B02FE8FF4D4740CFAE262061 /* GraphikRegular.otf */,
+				5ABABE649FE84A9086D6CA40 /* GraphikRegularItalic.otf */,
+				167D4443ADFD4E01ABE9DF0E /* GraphikSemibold.otf */,
+				63B34C5263A14436B4C1504E /* GraphikSemiboldItalic.otf */,
+				1249C3B46A274317A5992073 /* GraphikSuper.otf */,
+				378DD8878FE249D4B07EF6FA /* GraphikSuperItalic.otf */,
+				CFCC3FC79D4048BDADD99E7F /* GraphikThin.otf */,
+				FFFFF4C0576E4953AE13AB36 /* GraphikThinItalic.otf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -244,6 +307,24 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				CDF1639257954B05855A546A /* GraphikBlack.otf in Resources */,
+				6A0689DD818F4BB39DA1780A /* GraphikBlackItalic.otf in Resources */,
+				A6A7D198366048C694C2687A /* GraphikBold.otf in Resources */,
+				2B1719FCA82B479A8FA19983 /* GraphikBoldItalic.otf in Resources */,
+				8D3BD64C3E3E4770B6F12DCD /* GraphikExtralight.otf in Resources */,
+				2310C781C5B94B57B4E7169F /* GraphikExtralightItalic.otf in Resources */,
+				74D2EC68F3E24F12A18DB924 /* GraphikLight.otf in Resources */,
+				E47A893C8A7C402094055FCD /* GraphikLightItalic.otf in Resources */,
+				7BF6242165884320B45F125F /* GraphikMedium.otf in Resources */,
+				7986342EEABD4F15B2FB9D46 /* GraphikMediumItalic.otf in Resources */,
+				7E0CED87FC7949648C356BE6 /* GraphikRegular.otf in Resources */,
+				286F6B6CF0EB4E3188049B7F /* GraphikRegularItalic.otf in Resources */,
+				C2515823AE5A4CD3A790A5BC /* GraphikSemibold.otf in Resources */,
+				E8D6A81473C64E6C812F6BE4 /* GraphikSemiboldItalic.otf in Resources */,
+				5A7BB4CB2B9D45949CA56853 /* GraphikSuper.otf in Resources */,
+				E60748F2B1694D91BCFC115F /* GraphikSuperItalic.otf in Resources */,
+				22E4DBAE68134713ABA49E99 /* GraphikThin.otf in Resources */,
+				3F26FEBC61D54FDCA4E243FB /* GraphikThinItalic.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -600,11 +681,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 			};
@@ -674,11 +751,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
