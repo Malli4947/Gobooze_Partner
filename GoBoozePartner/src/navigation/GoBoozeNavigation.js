@@ -5,6 +5,8 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
+import OTPVerificationScreen from '../screens/OTPVerificationScreen';
+import PersonalDetailsScreen from '../screens/PersonalDetailsScreen';
 
 const AuthNav = createNativeStackNavigator();
 const SplashNav = createNativeStackNavigator();
@@ -20,6 +22,8 @@ export const GBSplashNavigator = () => {
 export const GBAuthNavigator = () => {
   return (
     <AuthNav.Navigator screenOptions={{headerShown: false}}>
+      <AuthNav.Screen name="PresonalDetail" component={PersonalDetailsScreen} />
+      <AuthNav.Screen name="OTP" component={OTPVerificationScreen} />
       <AuthNav.Screen name="Onboarding" component={OnboardingScreen} />
       <AuthNav.Screen name="Login" component={LoginScreen} />
     </AuthNav.Navigator>

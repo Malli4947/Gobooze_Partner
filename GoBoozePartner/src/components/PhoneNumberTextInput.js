@@ -10,28 +10,33 @@ import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT} from '../constants/Constant';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import {useColorScheme} from './ColorSchemeContext';
+import Error from '../assets/Error.svg';
 
 const PhoneNumberTextInput = props => {
   const [onTextinputFocus, setOnTextinputFocus] = useState(false);
   const colorScheme = useColorScheme();
 
-  const {value, onChangePhoneNumText} = props;
+  const {value, onChangePhoneNumText, showError} = props;
+
   const darkTheme = colorScheme === 'dark' && {color: COLORS.dark_primary_text};
   const blueStaticText = onTextinputFocus && {color: COLORS.primary_skyblue};
-  const blueUnderline = onTextinputFocus && {backgroundColor: COLORS.primary_skyblue};
+  const blueUnderline = onTextinputFocus && {
+    backgroundColor: COLORS.primary_skyblue,
+  };
+  const errorBgStyle = showError && {backgroundColor: COLORS.red_error};
+  const errorTextStyle = showError && {color: COLORS.red_error};
 
   return (
     <View style={[styles.container, darkTheme]}>
-      <Text style={[styles.phoneStaticText, darkTheme, blueStaticText]}>Phone Number</Text>
+      <Text style={[styles.phoneStaticText, darkTheme, blueStaticText]}>
+        Phone Number
+      </Text>
       <View style={[styles.textinputContainer]}>
         <Text style={[styles.countryCodeText, darkTheme]}>{`+61  AU`}</Text>
         <View style={styles.seperator}></View>
         <TextInput
           keyboardType="number-pad"
-          style={[
-            styles.input,
-            darkTheme
-          ]}
+          style={[styles.input, darkTheme, errorTextStyle]}
           maxLength={10}
           defaultValue={value}
           onChangeText={onChangePhoneNumText}
@@ -44,8 +49,20 @@ const PhoneNumberTextInput = props => {
               : COLORS.light_disabled_text
           }
         />
+        {showError && (
+          <View style={{paddingRight: 5}}>
+            <Error />
+          </View>
+        )}
       </View>
-      <View style={[styles.underline, blueUnderline]}></View>
+      <View style={[styles.underline, blueUnderline, errorBgStyle]}></View>
+      {showError && (
+        <View style={[styles.errorCon, {}]}>
+          <Text style={styles.errorText}>
+            Please enter valid contact number
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -81,7 +98,7 @@ const styles = StyleSheet.create({
     marginHorizontal: rWidth(15),
   },
   input: {
-    fontFamily: GRAPHIK_FONT.REGULAR,
+    fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rHeight(24),
     height: rHeight(40),
     flex: 1,
@@ -90,7 +107,15 @@ const styles = StyleSheet.create({
   underline: {
     height: 2,
     width: '100%',
-    backgroundColor: '#00000030',
+    backgroundColor: 'lightgrey',
     marginTop: 8,
+  },
+  errorCon: {
+    marginTop: rHeight(8),
+  },
+  errorText: {
+    color: COLORS.red_error,
+    fontFamily: GRAPHIK_FONT.REGULAR,
+    fontSize: rWidth(13),
   },
 });

@@ -1,23 +1,9 @@
-import {
-  View,
-  Text,
-  Pressable,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Keyboard,
-} from 'react-native';
+import {View, Text, StyleSheet, Keyboard} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import CustomStatusBar from '../components/CustomStatusBar';
-import RightArrow_1 from '../assets/light_theme_svgs/rightArrow.svg';
-import RightArrow_2 from '../assets/dark_theme_svgs/rightArrow.svg';
-import Flag from '../assets/Flag.svg';
 import {useNavigation} from '@react-navigation/native';
-import Error from '../assets/Error.svg';
 import {rHeight, rWidth} from '../constants/PixelSize';
-import Remove_1 from '../assets/CloseCircle.svg';
-import Remove_2 from '../assets/dark_theme_svgs/CloseCircle.svg';
 // import {useSelector, useDispatch} from 'react-redux';
 import {increment, decrement} from '../../redux/features/CounterSilce';
 // import {login} from '../../redux/features/AuthSlice';
@@ -39,23 +25,15 @@ const LoginScreen = props => {
   // const {userData, isLoading} = useSelector(state => state.auth);
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      e => {
-        console.log('keyboardDidShow');
-        setKeyboardVisible(true);
-      },
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false);
-      },
-    );
-
+    const showListener = Keyboard.addListener('keyboardDidShow', e => {
+      setKeyboardVisible(true);
+    });
+    const hideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
     return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
+      hideListener.remove();
+      showListener.remove();
     };
   }, []);
 
@@ -121,17 +99,9 @@ const LoginScreen = props => {
       <PhoneNumberTextInput
         onChangePhoneNumText={onChangePhoneNumText}
         value={mobileNumber}
+        showError={false}
       />
       {/* </View> */}
-
-      {errorMessage && (
-        <View style={[styles.errorCon, {}]}>
-          <Error />
-          <Text style={styles.errorText}>
-            Please enter valid contact number
-          </Text>
-        </View>
-      )}
 
       <View
         style={[
@@ -202,18 +172,6 @@ const styles = StyleSheet.create({
   },
   otp_Text_2: {
     color: COLORS.dark_disabled_text,
-  },
-  errorCon: {
-    marginLeft: rWidth(16),
-    marginTop: rHeight(8),
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  errorText: {
-    color: '#E02D3C',
-    fontFamily: GRAPHIK_FONT.REGULAR,
-    fontSize: rWidth(12),
-    marginLeft: rWidth(5),
   },
   remove: {
     right: rWidth(25),

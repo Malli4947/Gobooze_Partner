@@ -1,6 +1,3 @@
-export const IMAGES = {
-//   ALGOIMPEL: require('../assets/algoimpel.png'),
-};
 
 export const GRAPHIK_FONT = {
   BOLD: 'Graphik-Bold',

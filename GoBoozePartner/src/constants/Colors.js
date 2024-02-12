@@ -2,6 +2,7 @@ const COLORS = {
   //--LIGHT_THEME_COLORS
   light_theme_background: '#F8F9FC',
   light_primary_text: '#1D2433',
+  light_primary_opacity: '#1D2433A6',
   light_secondary_text: 'rgba(29, 36, 51, 0.80)',
   light_disabled_text: 'rgba(29, 36, 51, 0.65)',
   light_disabled_background: '#E1E6EF',
@@ -20,6 +21,8 @@ const COLORS = {
   primary_pink: '#D3178A',
   white: '#ffff',
   primary_skyblue: '#007AFF',
+  red_error: '#E02D3C',
+  ligth_grey: '#E1E6EF'
 };
 
 export default COLORS;
