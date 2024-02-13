@@ -1,7 +1,5 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import Logo_2 from '../assets/dark_theme_svgs/IntroLogo.svg';
-import Logo_1 from '../assets/light_theme_svgs/IntroLogo.svg';
+import {View, Text, StyleSheet, Image} from 'react-native';
+import React, {useState} from 'react';
 import FastImage from 'react-native-fast-image';
 import {TouchableOpacity} from 'react-native';
 import Mobile_1 from '../assets/light_theme_svgs/Mobile.svg';
@@ -10,52 +8,46 @@ import {useColorScheme} from '../components/ColorSchemeContext';
 import CustomStatusBar from '../components/CustomStatusBar';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import COLORS from '../constants/Colors';
-import {GRAPHIK_FONT} from '../constants/Constant';
+import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 
 const OnboardingScreen = props => {
   const colorScheme = useColorScheme();
   const [iosResponse, setIosResponse] = useState();
+  const isDarkTheme = colorScheme === 'dark'
 
   return (
     <View
       style={[
-        colorScheme == 'dark' ? styles.dark_container : styles.light_container,
+        styles.light_container,
+        isDarkTheme && styles.dark_container,
       ]}>
       <CustomStatusBar />
       <View style={styles.logo}>
-        {colorScheme == 'dark' ? <Logo_2 /> : <Logo_1 />}
+        <Image
+          source={IMAGES.GO_BOOZE}
+          resizeMode="contain"
+          style={[styles.goBoozeImg]}
+        />
       </View>
-      {colorScheme == 'dark' ? (
-        <FastImage
-          source={require('../assets/dak_theme_pngs/IntroImage.png')}
-          resizeMode="contain"
-          style={styles.image}
-        />
-      ) : (
-        <FastImage
-          source={require('../assets/light_theme_pngs/IntroImage.png')}
-          resizeMode="contain"
-          style={styles.image}
-        />
-      )}
-
+      <FastImage
+        source={isDarkTheme ? IMAGES.INTRO_DARK : IMAGES.INTRO_LIGHT}
+        resizeMode="cover"
+        style={[styles.image, isDarkTheme && {tintColor: COLORS.dark_con}]}
+      />
       <View style={styles.bottomContainer}>
         <View style={styles.con_1}>
           <Text
-            style={[styles.ltext_1, colorScheme == 'dark' && styles.dtext_1]}>
+            style={[styles.ltext_1, isDarkTheme && styles.dtext_1]}>
             WELCOME TO THE WORLD OF WINE
           </Text>
 
           <Text
-            style={[styles.ltext_2, colorScheme == 'dark' && styles.dtext_2]}>
+            style={[styles.ltext_2, isDarkTheme && styles.dtext_2]}>
             {`Here you pick up a\ndrink that fits all your\ncriteria`}
           </Text>
 
           <Text
-            style={[
-              styles.ltext_3,
-              colorScheme == 'dark' && styles.dtext_3,
-            ]}>
+            style={[styles.ltext_3, isDarkTheme && styles.dtext_3]}>
             {`Find low prices near you. We collect wine, beer and spirit prices from across the globe and put them on your mobile.`}
           </Text>
         </View>
@@ -63,10 +55,10 @@ const OnboardingScreen = props => {
         <View style={styles.con_2}>
           <TouchableOpacity
             onPress={() => {
-                props.navigation.navigate('Login');
+              props.navigation.navigate('Login');
             }}
             style={styles.number_button}>
-            {colorScheme == 'dark' ? <Mobile_2 /> : <Mobile_1 />}
+            {isDarkTheme ? <Mobile_2 /> : <Mobile_1 />}
             <Text style={styles.number_button_text}>
               Sign in via mobile number
             </Text>
@@ -100,10 +92,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: rHeight(26),
   },
+  goBoozeImg: {
+    height: rWidth(70),
+  },
   image: {
-    height: '35%',
-    width: '100%',
-    marginTop: rHeight(26),
+    height: '40%',
+    marginTop: -30,
   },
   bottomContainer: {
     position: 'absolute',
@@ -111,7 +105,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: rWidth(10),
     justifyContent: 'center',
-    // backgroundColor: 'yellow'
   },
   con_1: {
     marginTop: rHeight(26),
@@ -141,7 +134,7 @@ const styles = StyleSheet.create({
     fontSize: rWidth(14),
     marginTop: rHeight(15),
     marginRight: 10,
-    lineHeight: 21
+    lineHeight: 21,
   },
   dtext_3: {
     color: COLORS.dark_secondary_text,

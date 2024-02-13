@@ -1,26 +1,22 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT} from '../constants/Constant';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import {useColorScheme} from './ColorSchemeContext';
-import Error from '../assets/Error.svg';
 
 const ProfileInputTextView = props => {
   const [onTextinputFocus, setOnTextinputFocus] = useState(false);
   const colorScheme = useColorScheme();
-
-  const {value, onChangePhoneNumText, heading, placeholder, isMobileInput} =
-    props;
+  const isDarkTheme = colorScheme === 'dark';
+  const darkBorder = isDarkTheme && {
+    borderColor: COLORS.dark_disabled_background,
+  };
+  const {value, onChangeText, heading, placeholder, isMobileInput} = props;
 
   const darkTheme = colorScheme === 'dark' && {color: COLORS.dark_primary_text};
-  const blueBorderOnEditing = onTextinputFocus && styles.textinputContainerEditing;
+  const blueBorderOnEditing =
+    onTextinputFocus && styles.textinputContainerEditing;
 
   return (
     <View style={[styles.container, darkTheme]}>
@@ -31,16 +27,17 @@ const ProfileInputTextView = props => {
       </Text>
 
       {/* Text Input */}
-      <View style={[styles.textinputContainer, blueBorderOnEditing]}>
+      <View
+        style={[styles.textinputContainer, darkBorder, blueBorderOnEditing]}>
         {isMobileInput && (
           <Text style={[styles.countryCodeText, darkTheme]}>{`+61`}</Text>
         )}
         <TextInput
           keyboardType={isMobileInput ? 'number-pad' : 'email-address'}
           style={[styles.input, darkTheme]}
-          maxLength={10}
+          maxLength={isMobileInput ? 10 : 255}
           defaultValue={value}
-          onChangeText={onChangePhoneNumText}
+          onChangeText={onChangeText}
           onFocus={() => setOnTextinputFocus(true)}
           onSubmitEditing={() => setOnTextinputFocus(false)}
           onBlur={() => setOnTextinputFocus(false)}
@@ -66,10 +63,10 @@ const styles = StyleSheet.create({
   },
   phoneStaticText: {
     fontFamily: GRAPHIK_FONT.MEDIUM,
-    fontSize: rHeight(17),
+    fontSize: rHeight(15),
     color: '#1D2433',
     marginBottom: rHeight(8),
-    marginLeft: 3
+    marginLeft: 3,
   },
   textinputContainer: {
     flexDirection: 'row',
@@ -87,13 +84,12 @@ const styles = StyleSheet.create({
   countryCodeText: {
     fontFamily: GRAPHIK_FONT.REGULAR,
     color: COLORS.light_primary_text,
-    fontSize: rHeight(17),
+    fontSize: rHeight(15),
     marginRight: rWidth(12),
   },
   input: {
     fontFamily: GRAPHIK_FONT.REGULAR,
-    fontSize: rHeight(17),
-    // height: rHeight(50),
+    fontSize: rHeight(15),
     flex: 1,
     color: COLORS.light_primary_text,
   },

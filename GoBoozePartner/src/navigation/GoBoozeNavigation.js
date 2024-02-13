@@ -22,10 +22,10 @@ export const GBSplashNavigator = () => {
 export const GBAuthNavigator = () => {
   return (
     <AuthNav.Navigator screenOptions={{headerShown: false}}>
-      <AuthNav.Screen name="PresonalDetail" component={PersonalDetailsScreen} />
-      <AuthNav.Screen name="OTP" component={OTPVerificationScreen} />
       <AuthNav.Screen name="Onboarding" component={OnboardingScreen} />
       <AuthNav.Screen name="Login" component={LoginScreen} />
+      <AuthNav.Screen name="OTP" component={OTPVerificationScreen} />
+      <AuthNav.Screen name="PresonalDetail" component={PersonalDetailsScreen} />
     </AuthNav.Navigator>
   );
 };
@@ -37,7 +37,7 @@ export const AppNavigator = props => {
   useEffect(() => {
     setTimeout(() => {
       setShowSplash(false);
-    }, 500);
+    }, 1000);
   }, []);
 
   return (

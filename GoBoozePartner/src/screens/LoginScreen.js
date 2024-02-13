@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Keyboard} from 'react-native';
+import {View, Text, StyleSheet, Keyboard, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import CustomStatusBar from '../components/CustomStatusBar';
@@ -8,7 +8,7 @@ import {rHeight, rWidth} from '../constants/PixelSize';
 import {increment, decrement} from '../../redux/features/CounterSilce';
 // import {login} from '../../redux/features/AuthSlice';
 import COLORS from '../constants/Colors';
-import {GRAPHIK_FONT} from '../constants/Constant';
+import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import CustomButton from '../components/CustomButton';
 import PhoneNumberTextInput from '../components/PhoneNumberTextInput';
 import CustomTopNavBar from '../components/CustomTopNavBar';
@@ -38,6 +38,7 @@ const LoginScreen = props => {
   }, []);
 
   const handleContinuePress = () => {
+    props.navigation.navigate('OTP', {mobileNumber: mobileNumber});
     return;
     const regex = /^(?!1234567890$|0123456789$|0987654321$)[0-9]+$/;
     const cleanedPhoneNumber = mobileNumber.replace(/[-.,\s]/g, '');
@@ -70,15 +71,22 @@ const LoginScreen = props => {
   return (
     <View
       style={[
-        {flex: 1},
-        colorScheme == 'dark'
-          ? {backgroundColor: COLORS.dark_theme_background}
-          : {backgroundColor: COLORS.light_theme_background},
+        styles.conatiner,
+        colorScheme == 'dark' && {
+          backgroundColor: COLORS.dark_theme_background,
+        },
       ]}>
       <CustomStatusBar />
       <CustomTopNavBar onPress={() => props.navigation.goBack()} />
 
       <View style={styles.con_2}>
+        <View style={styles.logo}>
+          <Image
+            source={IMAGES.GO_BOOZE}
+            resizeMode="contain"
+            style={[styles.goBoozeImg]}
+          />
+        </View>
         <Text
           style={[
             styles.number_Text_1,
@@ -141,8 +149,19 @@ const LoginScreen = props => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
+  conatiner: {
+    flex: 1,
+    backgroundColor: COLORS.light_theme_background,
+  },
+  logo: {
+    alignSelf: 'center',
+    marginBottom: rHeight(30),
+  },
+  goBoozeImg: {
+    height: rWidth(70),
+  },
   con_2: {
-    marginTop: rHeight(42),
+    marginTop: rHeight(30),
     justifyContent: 'center',
     alignItems: 'center',
   },

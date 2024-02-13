@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT} from '../constants/Constant';
 import {rHeight, rWidth} from '../constants/PixelSize';
@@ -13,12 +7,13 @@ import {useColorScheme} from './ColorSchemeContext';
 import Error from '../assets/Error.svg';
 
 const PhoneNumberTextInput = props => {
-  const [onTextinputFocus, setOnTextinputFocus] = useState(false);
-  const colorScheme = useColorScheme();
-
   const {value, onChangePhoneNumText, showError} = props;
 
-  const darkTheme = colorScheme === 'dark' && {color: COLORS.dark_primary_text};
+  const [onTextinputFocus, setOnTextinputFocus] = useState(false);
+  const colorScheme = useColorScheme();
+  // --
+  const isDarkTheme = colorScheme === 'dark';
+  const darkThemeText = isDarkTheme && {color: COLORS.dark_primary_text};
   const blueStaticText = onTextinputFocus && {color: COLORS.primary_skyblue};
   const blueUnderline = onTextinputFocus && {
     backgroundColor: COLORS.primary_skyblue,
@@ -27,16 +22,16 @@ const PhoneNumberTextInput = props => {
   const errorTextStyle = showError && {color: COLORS.red_error};
 
   return (
-    <View style={[styles.container, darkTheme]}>
-      <Text style={[styles.phoneStaticText, darkTheme, blueStaticText]}>
+    <View style={[styles.container, darkThemeText]}>
+      <Text style={[styles.phoneStaticText, darkThemeText, blueStaticText]}>
         Phone Number
       </Text>
       <View style={[styles.textinputContainer]}>
-        <Text style={[styles.countryCodeText, darkTheme]}>{`+61  AU`}</Text>
+        <Text style={[styles.countryCodeText, darkThemeText]}>{`+61  AU`}</Text>
         <View style={styles.seperator}></View>
         <TextInput
           keyboardType="number-pad"
-          style={[styles.input, darkTheme, errorTextStyle]}
+          style={[styles.input, darkThemeText, errorTextStyle]}
           maxLength={10}
           defaultValue={value}
           onChangeText={onChangePhoneNumText}

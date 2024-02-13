@@ -1,10 +1,9 @@
-import {View, ImageBackground, StyleSheet, Text} from 'react-native';
+import {View, ImageBackground, StyleSheet, Image} from 'react-native';
 import React from 'react';
-import Logo from '../assets/Logo.svg';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
-import { rHeight } from '../constants/PixelSize';
-import { GRAPHIK_FONT } from '../constants/Constant';
+import {rHeight, rWidth} from '../constants/PixelSize';
+import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 
 const SplashScreen = props => {
   const colorScheme = useColorScheme();
@@ -20,8 +19,11 @@ const SplashScreen = props => {
       ]}>
       <ImageBackground source={imagePath} style={styles.background}>
         <View style={styles.logoContainer}>
-          <Logo />
-          <Text style={styles.partnerText}>Partner</Text>
+          <Image
+            source={IMAGES.GO_BOOZE}
+            resizeMode="contain"
+            style={[{height: rWidth(130)}]}
+          />
         </View>
       </ImageBackground>
     </View>
@@ -44,14 +46,14 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     marginBottom: 100,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   partnerText: {
     marginTop: rHeight(20),
     fontFamily: GRAPHIK_FONT.SEMIBOLD,
     fontSize: rHeight(22),
-    color: COLORS.primary_pink
-  }
+    color: COLORS.primary_pink,
+  },
 });
 
 export default SplashScreen;

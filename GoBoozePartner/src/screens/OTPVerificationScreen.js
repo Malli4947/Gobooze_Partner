@@ -9,6 +9,7 @@ import {
   TouchableNativeFeedback,
   ScrollView,
   Keyboard,
+  Image,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -18,7 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
 import COLORS from '../constants/Colors';
 import CustomTopNavBar from '../components/CustomTopNavBar';
-import {GRAPHIK_FONT} from '../constants/Constant';
+import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import LocationPermissionModal from '../components/LocationPermissionModal';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import OTPTextView from '../components/OTPTextView';
@@ -33,6 +34,8 @@ const OTPVerificationScreen = props => {
   // --
   const [hasPermission, setHasPermission] = useState(false);
   const [loading, setLoading] = useState(true);
+  //-
+  const isDarkTheme = colorScheme === 'dark';
 
   const formatMobileNumber = number => {
     return number.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
@@ -48,6 +51,7 @@ const OTPVerificationScreen = props => {
     if (inputOtp.length != 5) {
       setShowOtpErrorMessage(true);
     } else {
+      props.navigation.navigate('PresonalDetail')
       await AsyncStorage.setItem('OTPVerified', JSON.stringify('true'));
       getOneTimeLocation();
     }
@@ -128,10 +132,9 @@ const OTPVerificationScreen = props => {
       contentContainerStyle={{flexGrow: 1}}
       keyboardShouldPersistTaps={'handled'}
       style={[
-        {flex: 1},
-        colorScheme == 'dark'
-          ? {backgroundColor: COLORS.dark_theme_background}
-          : {backgroundColor: COLORS.light_theme_background},
+        isDarkTheme && {
+          backgroundColor: COLORS.dark_theme_background,
+        },
       ]}>
       <CustomStatusBar
         backgroundColor={
@@ -155,19 +158,20 @@ const OTPVerificationScreen = props => {
       />
 
       <View style={styles.con_2}>
+        <View style={styles.logo}>
+          <Image
+            source={IMAGES.GO_BOOZE}
+            resizeMode="contain"
+            style={[styles.goBoozeImg]}
+          />
+        </View>
         <Text
-          style={[
-            styles.number_Text_1,
-            colorScheme === 'dark' && styles.number_Text_2,
-          ]}>
+          style={[styles.number_Text_1, isDarkTheme && styles.number_Text_2]}>
           Verification Code
         </Text>
         <View>
           <Text
-            style={[
-              styles.number_hint_1,
-              colorScheme === 'dark' && styles.number_hint_2,
-            ]}>
+            style={[styles.number_hint_1, isDarkTheme && styles.number_hint_2]}>
             {`Please enter the code we have sent to your phone\nnumber +61 ${formattedNumber}`}
           </Text>
           <Text
@@ -185,14 +189,14 @@ const OTPVerificationScreen = props => {
             containerStyle={{marginTop: rHeight(40)}}
             inputCount={5}
             textInputStyle={
-              colorScheme === 'dark'
-                ? {backgroundColor: 'transparent', color: '#FFF'}
-                : {}
+              isDarkTheme ? {backgroundColor: 'transparent', color: '#FFF'} : {}
             }
             tintColor={
               showOtpErrorMessage ? COLORS.red_error : COLORS.primary_pink
             }
-            offTintColor={showOtpErrorMessage ? COLORS.red_error : COLORS.ligth_grey}
+            offTintColor={
+              showOtpErrorMessage ? COLORS.red_error : COLORS.ligth_grey
+            }
           />
         </View>
       </View>
@@ -205,10 +209,7 @@ const OTPVerificationScreen = props => {
         ]}>
         <Pressable style={styles.con_1}>
           <Text
-            style={[
-              styles.resend_otp_1,
-              colorScheme === 'dark' && styles.resend_otp_2,
-            ]}>
+            style={[styles.resend_otp_1, isDarkTheme && styles.resend_otp_2]}>
             Resend code in 0:59
           </Text>
         </Pressable>
@@ -218,14 +219,13 @@ const OTPVerificationScreen = props => {
           handleClick={handleContinuePress}
           buttonStyle={[
             {
-              backgroundColor:
-                colorScheme === 'dark'
-                  ? buttonDisabled
-                    ? COLORS.dark_disabled_background
-                    : COLORS.primary_pink
-                  : buttonDisabled
-                  ? COLORS.light_disabled_background
-                  : COLORS.primary_pink,
+              backgroundColor: isDarkTheme
+                ? buttonDisabled
+                  ? COLORS.dark_disabled_background
+                  : COLORS.primary_pink
+                : buttonDisabled
+                ? COLORS.light_disabled_background
+                : COLORS.primary_pink,
             },
           ]}
         />
@@ -237,6 +237,10 @@ const OTPVerificationScreen = props => {
 export default OTPVerificationScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.light_theme_background,
+  },
   edit_number: {
     color: COLORS.primary_pink,
     textAlign: 'center',
@@ -249,6 +253,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: rHeight(42),
+  },
+  logo: {
+    alignSelf: 'center',
+    marginBottom: rHeight(30),
+  },
+  goBoozeImg: {
+    height: rWidth(70),
   },
   text_input: {
     width: rWidth(52),
@@ -283,7 +294,7 @@ const styles = StyleSheet.create({
     bottom: rHeight(100),
   },
   con_2: {
-    marginTop: rHeight(42),
+    marginTop: rHeight(30),
     justifyContent: 'center',
     alignItems: 'center',
   },
