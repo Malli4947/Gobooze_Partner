@@ -19,35 +19,13 @@ const COLORS = {
 
   //--
   primary_pink: '#D3178A',
+  pink_light: '#F33FAE',
   white: '#ffff',
   primary_skyblue: '#007AFF',
   red_error: '#E02D3C',
-  ligth_grey: '#E1E6EF'
+  ligth_grey: '#E1E6EF',
+  blue: '#0162DD',
+  blue_dark: '#267EEE'
 };
 
 export default COLORS;
-
-// WHITE: '#FFF',
-//   WHITE_DARKMODE: 'rgba(255, 255, 255, 0.60)',
-//   WHITE_TEXT: 'rgba(255, 255, 255, 0.75)',
-//   BLACK: '#101D2D',
-//   BLACK_DARKMODE: '#23272F',
-//   BLACK_BORDER: '#3F444D',
-//   BLACK_TEXT: '#1D2433',
-//   TEXT_GRAY: 'rgba(29, 36, 51, 0.65)',
-//   SKY_BLUE: '#007AFF',
-//   BUTTON_COLOR: '#D3178A',
-//   PINK_COLOR: '#FDF1F9',
-//   BORDER_COLOR: '#DEDDE7',
-//   GREY_SHADE: '#E1E6EF',
-//   BACK_GROUND: '#f8fbf8',
-//   TEXT_COLOR: '#101D2D',
-//   GREEN: '#08875D',
-//   GREEN_SHADE: '#10891010',
-//   PLACEHOLDER_COLOR: '#94A3B3',
-//   Red: '#E44956',
-//   GREY: 'rgba(29, 36, 51, 0.80)',
-//   // --kalyan
-//   Dark_BackGround: '#23272F',
-//   Primary_Text_Color: '#1D2433',
-//   DargkBorder_color: '#3F444D',

@@ -7,6 +7,9 @@ import LoginScreen from '../screens/LoginScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import OTPVerificationScreen from '../screens/OTPVerificationScreen';
 import PersonalDetailsScreen from '../screens/PersonalDetailsScreen';
+import HomeScreen from '../screens/HomeScreen';
+import ReachPickupScreen from '../screens/ReachPickupScreen';
+import PickOrderScreen from '../screens/PickOrderScreen';
 
 const AuthNav = createNativeStackNavigator();
 const SplashNav = createNativeStackNavigator();
@@ -30,6 +33,16 @@ export const GBAuthNavigator = () => {
   );
 };
 
+export const GBHomeNavigator = () => {
+  return (
+    <AuthNav.Navigator screenOptions={{headerShown: false}}>
+      <AuthNav.Screen name="OrderPick" component={PickOrderScreen} />
+      <AuthNav.Screen name="Home" component={HomeScreen} />
+      <AuthNav.Screen name="ReachPickup" component={ReachPickupScreen} />
+    </AuthNav.Navigator>
+  );
+};
+
 const Stack = createNativeStackNavigator();
 export const AppNavigator = props => {
   const [showSplash, setShowSplash] = useState(true);
@@ -47,7 +60,7 @@ export const AppNavigator = props => {
           <Stack.Screen name="Splash" component={GBSplashNavigator} />
         )}
         {showSplash === false && (
-          <Stack.Screen name="Auth" component={GBAuthNavigator} />
+          <Stack.Screen name="Auth" component={GBHomeNavigator} />
         )}
       </Stack.Navigator>
     </NavigationContainer>

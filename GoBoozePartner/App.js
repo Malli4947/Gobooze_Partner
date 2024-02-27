@@ -2,7 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {LogBox} from 'react-native';
 // import SplashScreen from 'react-native-splash-screen';
 import {ColorSchemeProvider} from './src/components/ColorSchemeContext';
-import AppNavigator, { GBSplashNavigator } from './src/navigation/GoBoozeNavigation';
+import AppNavigator, {
+  GBSplashNavigator,
+} from './src/navigation/GoBoozeNavigation';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 LogBox.ignoreAllLogs();
 
@@ -17,7 +20,10 @@ function App() {
 
   return (
     <ColorSchemeProvider>
-    <AppNavigator />
+      <GestureHandlerRootView style={{flex: 1}}>
+        <AppNavigator />
+      </GestureHandlerRootView>
+
       {/* {showSplash && <GBSplashNavigator />}
       {showSplash === false && <AppNavigator />} */}
     </ColorSchemeProvider>
