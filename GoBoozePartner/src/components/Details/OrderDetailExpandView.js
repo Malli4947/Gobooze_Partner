@@ -7,36 +7,51 @@ import {useColorScheme} from '../ColorSchemeContext';
 
 const OrderDetailExpandView = ({orderDetails}) => {
   const colorScheme = useColorScheme();
+  const isDarkTheme = colorScheme === 'dark';
+  const darkTextStyle = isDarkTheme && {color: '#FFFFFFBF'};
 
-  const orderItem = ({item}) => {
+  const orderItem = ({item, index}) => {
     return (
-      <View>
+      <View style={{overflow: 'hidden'}}>
         <View style={styles.orderItemCon}>
           <Text
-            style={{
-              fontFamily: GRAPHIK_FONT.REGULAR,
-            }}>{`${item.quantity}X`}</Text>
+            style={[
+              styles.quantity,
+              darkTextStyle,
+            ]}>{`${item.quantity}X`}</Text>
           <Image
             style={styles.whiskeyImg}
             resizeMode="contain"
             source={IMAGES.DUMMY_WHISKEY}
           />
           <View style={{alignSelf: 'flex-start'}}>
-            <Text style={[styles.nameTxt]}>{item.name}</Text>
-            <Text numberOfLines={2} style={[styles.descriptionTxt]}>
+            <Text style={[styles.nameTxt, darkTextStyle]}>{item.name}</Text>
+            <Text
+              numberOfLines={2}
+              style={[styles.descriptionTxt, darkTextStyle]}>
               {item.description}
             </Text>
           </View>
         </View>
-        <View style={styles.seperator} />
+        <View
+          style={[
+            styles.seperator,
+            isDarkTheme && {backgroundColor: COLORS.dark_disabled_background},
+            index == orderDetails.length-1 && {backgroundColor: 'clear'}
+          ]}
+        />
       </View>
     );
   };
 
   return (
     <View style={{}}>
-      <View style={styles.itemTextContainer}>
-        <Text style={styles.itemText}>ITEMS</Text>
+      <View
+        style={[
+          styles.itemTextContainer,
+          isDarkTheme && {backgroundColor: COLORS.dark_disabled_background},
+        ]}>
+        <Text style={[styles.itemText, darkTextStyle]}>ITEMS</Text>
       </View>
       <View style={{width: '100%'}}>
         <FlatList data={orderDetails} renderItem={orderItem} />
@@ -75,7 +90,7 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.REGULAR,
     fontSize: rHeight(12),
     color: '#1D2433CC',
-    paddingTop: 5
+    paddingTop: 5,
   },
   descriptionTxt: {
     fontFamily: GRAPHIK_FONT.SEMIBOLD,
@@ -83,12 +98,17 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     width: '90%',
     color: COLORS.light_primary_text,
-    paddingTop: 5
+    paddingTop: 5,
   },
   seperator: {
     width: '100%',
-    height: 2,
+    height: 1,
     backgroundColor: COLORS.ligth_grey,
     marginTop: rHeight(20),
+  },
+  quantity: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rHeight(15),
+    color: '#1D2433CC',
   },
 });

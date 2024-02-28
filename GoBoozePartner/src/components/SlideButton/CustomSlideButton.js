@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   container: {
     borderTopWidth: 2,
     borderTopColor: COLORS.ligth_grey,
-    paddingTop: rHeight(20),
+    paddingTop: rHeight(10),
     marginBottom: rHeight(15),
     paddingVertical: rHeight(10),
     paddingHorizontal: rWidth(20),

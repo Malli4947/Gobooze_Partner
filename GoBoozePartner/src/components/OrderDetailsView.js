@@ -55,7 +55,7 @@ const OrderDetailsView = ({
       </View>
       {id == 1 && expandCustomerDetail && (
         <View style={styles.expandedView}>
-          <View style={styles.seperator} />
+          <View style={[styles.seperator, isDarkTheme && {backgroundColor: COLORS.dark_disabled_background}]} />
           <CustomerDetailView
             name={customerDetail.name}
             mobileNumber={customerDetail.mobileNum}
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   seperator: {
     width: '100%',
-    height: 2,
+    height: 1,
     backgroundColor: COLORS.ligth_grey,
     marginBottom: rHeight(5),
   },

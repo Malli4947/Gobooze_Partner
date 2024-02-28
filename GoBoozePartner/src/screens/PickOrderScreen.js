@@ -66,18 +66,32 @@ const PickOrderScreen = props => {
             styles.timerConatiner,
             isDarkTheme && {backgroundColor: COLORS.dark_theme_background},
           ]}>
-          <Image
-            tintColor={isDarkTheme && COLORS.blue_dark}
-            style={styles.timerImg}
-            source={IMAGES.TIMER}
-          />
-          <Text
+          <View
             style={[
-              styles.timerText,
-              isDarkTheme && {color: COLORS.blue_dark},
+              styles.timerContainer,
+              isDarkTheme && {backgroundColor: COLORS.blue_dark},
             ]}>
-            {isOrderReady ? 'Pick Order Now' : `Order is ready in ${4} mins`}
-          </Text>
+            <Text style={[styles.timerText, {color: '#FFF'}]}>2:59</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Image
+              tintColor={isDarkTheme && COLORS.blue_dark}
+              style={styles.timerImg}
+              source={IMAGES.TIMER}
+            />
+            <Text
+              style={[
+                styles.timerText,
+                isDarkTheme && {color: COLORS.blue_dark},
+              ]}>
+              {isOrderReady ? 'Pick Order Now' : `Order is ready in ${4} mins`}
+            </Text>
+          </View>
         </View>
         <View style={[styles.seperator, darkSep]} />
         <Text style={[styles.orderidStaticText, darkTextStyle]}>ORDER ID</Text>
@@ -100,7 +114,9 @@ const PickOrderScreen = props => {
                     image={IMAGES.BOX}
                     title={'Order Details'}
                     orderDetails={orders}
-                    onPress={() => setExpandOrderDetailView(!expandOrderDetailView)}
+                    onPress={() =>
+                      setExpandOrderDetailView(!expandOrderDetailView)
+                    }
                   />
                 );
               } else if (index == 1) {
@@ -115,7 +131,9 @@ const PickOrderScreen = props => {
                       mobileNum: '8866157629',
                       orderId: '4286690449',
                     }}
-                    onPress={() => setExpandCustomerDetailView(!expandCustomerDetailView)}
+                    onPress={() =>
+                      setExpandCustomerDetailView(!expandCustomerDetailView)
+                    }
                   />
                 );
               } else {
@@ -136,7 +154,11 @@ const PickOrderScreen = props => {
       </ScrollView>
 
       {/* ------------- Bottom slide button ----------- */}
-      <View style={styles.slideBtnContainer}>
+      <View
+        style={[
+          styles.slideBtnContainer,
+          isDarkTheme && {backgroundColor: COLORS.dark_con},
+        ]}>
         <CustomSlideButton
           title="Reached Pickup Location"
           confirmedText="Reached"
@@ -188,7 +210,7 @@ const styles = StyleSheet.create({
   },
   timerConatiner: {
     backgroundColor: '#F0F6FF',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: rWidth(20),
@@ -199,11 +221,11 @@ const styles = StyleSheet.create({
   timerImg: {
     width: rWidth(20),
     height: rHeight(20),
+    marginRight: rWidth(8),
   },
   timerText: {
     fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rHeight(16),
-    paddingLeft: rWidth(8),
     color: COLORS.blue,
   },
   orderNumText: {
@@ -215,10 +237,14 @@ const styles = StyleSheet.create({
     marginBottom: rHeight(10),
   },
   slideBtnContainer: {
-    // position: 'absolute',
-    // bottom: 0,
     width: '100%',
     backgroundColor: '#FFF',
+  },
+  timerContainer: {
+    backgroundColor: COLORS.blue,
+    paddingVertical: rHeight(5),
+    paddingHorizontal: rWidth(8),
+    borderRadius: 13,
   },
 });
 
