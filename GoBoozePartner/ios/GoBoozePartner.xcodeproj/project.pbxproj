@@ -45,41 +45,41 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00D574FA631E46B4B4774124 /* GraphikBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBold.otf; path = ../assets/fonts/GraphikBold.otf; sourceTree = "<group>"; };
+		00D574FA631E46B4B4774124 /* GraphikBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBold.otf; path = ../assets/fonts/GraphikBold.otf; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* GoBoozePartnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoBoozePartnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* GoBoozePartnerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoBoozePartnerTests.m; sourceTree = "<group>"; };
-		02F5E490A30246638A1C460B /* GraphikLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikLightItalic.otf; path = ../assets/fonts/GraphikLightItalic.otf; sourceTree = "<group>"; };
-		1249C3B46A274317A5992073 /* GraphikSuper.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSuper.otf; path = ../assets/fonts/GraphikSuper.otf; sourceTree = "<group>"; };
+		02F5E490A30246638A1C460B /* GraphikLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikLightItalic.otf; path = ../assets/fonts/GraphikLightItalic.otf; sourceTree = "<group>"; };
+		1249C3B46A274317A5992073 /* GraphikSuper.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSuper.otf; path = ../assets/fonts/GraphikSuper.otf; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* GoBoozePartner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoBoozePartner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = GoBoozePartner/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = GoBoozePartner/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = GoBoozePartner/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = GoBoozePartner/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = GoBoozePartner/main.m; sourceTree = "<group>"; };
-		167D4443ADFD4E01ABE9DF0E /* GraphikSemibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSemibold.otf; path = ../assets/fonts/GraphikSemibold.otf; sourceTree = "<group>"; };
+		167D4443ADFD4E01ABE9DF0E /* GraphikSemibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSemibold.otf; path = ../assets/fonts/GraphikSemibold.otf; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-GoBoozePartner-GoBoozePartnerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GoBoozePartner-GoBoozePartnerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		34EFC33D5D2C43A080029870 /* GraphikMedium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikMedium.otf; path = ../assets/fonts/GraphikMedium.otf; sourceTree = "<group>"; };
-		378DD8878FE249D4B07EF6FA /* GraphikSuperItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSuperItalic.otf; path = ../assets/fonts/GraphikSuperItalic.otf; sourceTree = "<group>"; };
+		34EFC33D5D2C43A080029870 /* GraphikMedium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikMedium.otf; path = ../assets/fonts/GraphikMedium.otf; sourceTree = "<group>"; };
+		378DD8878FE249D4B07EF6FA /* GraphikSuperItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSuperItalic.otf; path = ../assets/fonts/GraphikSuperItalic.otf; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-GoBoozePartner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner.debug.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner/Pods-GoBoozePartner.debug.xcconfig"; sourceTree = "<group>"; };
-		3EEA88511AF84676AFA23237 /* GraphikBoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBoldItalic.otf; path = ../assets/fonts/GraphikBoldItalic.otf; sourceTree = "<group>"; };
+		3EEA88511AF84676AFA23237 /* GraphikBoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBoldItalic.otf; path = ../assets/fonts/GraphikBoldItalic.otf; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-GoBoozePartner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner.release.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner/Pods-GoBoozePartner.release.xcconfig"; sourceTree = "<group>"; };
-		5ABABE649FE84A9086D6CA40 /* GraphikRegularItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikRegularItalic.otf; path = ../assets/fonts/GraphikRegularItalic.otf; sourceTree = "<group>"; };
+		5ABABE649FE84A9086D6CA40 /* GraphikRegularItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikRegularItalic.otf; path = ../assets/fonts/GraphikRegularItalic.otf; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-GoBoozePartner-GoBoozePartnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner-GoBoozePartnerTests.debug.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner-GoBoozePartnerTests/Pods-GoBoozePartner-GoBoozePartnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-GoBoozePartner.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GoBoozePartner.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		63B34C5263A14436B4C1504E /* GraphikSemiboldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSemiboldItalic.otf; path = ../assets/fonts/GraphikSemiboldItalic.otf; sourceTree = "<group>"; };
-		6AA54B126F114EE3937B8FB5 /* GraphikExtralightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikExtralightItalic.otf; path = ../assets/fonts/GraphikExtralightItalic.otf; sourceTree = "<group>"; };
-		74BDCFD39E9E41CDB34F2030 /* GraphikBlack.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBlack.otf; path = ../assets/fonts/GraphikBlack.otf; sourceTree = "<group>"; };
-		75B2224C5B264EF8B4610D6C /* GraphikExtralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikExtralight.otf; path = ../assets/fonts/GraphikExtralight.otf; sourceTree = "<group>"; };
+		63B34C5263A14436B4C1504E /* GraphikSemiboldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSemiboldItalic.otf; path = ../assets/fonts/GraphikSemiboldItalic.otf; sourceTree = "<group>"; };
+		6AA54B126F114EE3937B8FB5 /* GraphikExtralightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikExtralightItalic.otf; path = ../assets/fonts/GraphikExtralightItalic.otf; sourceTree = "<group>"; };
+		74BDCFD39E9E41CDB34F2030 /* GraphikBlack.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBlack.otf; path = ../assets/fonts/GraphikBlack.otf; sourceTree = "<group>"; };
+		75B2224C5B264EF8B4610D6C /* GraphikExtralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikExtralight.otf; path = ../assets/fonts/GraphikExtralight.otf; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = GoBoozePartner/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner-GoBoozePartnerTests/Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; sourceTree = "<group>"; };
-		AF6D390317A24F4595C9A813 /* GraphikBlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBlackItalic.otf; path = ../assets/fonts/GraphikBlackItalic.otf; sourceTree = "<group>"; };
-		B02FE8FF4D4740CFAE262061 /* GraphikRegular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikRegular.otf; path = ../assets/fonts/GraphikRegular.otf; sourceTree = "<group>"; };
-		BF04AECDD4B14C00B10C63D0 /* GraphikMediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikMediumItalic.otf; path = ../assets/fonts/GraphikMediumItalic.otf; sourceTree = "<group>"; };
-		CFCC3FC79D4048BDADD99E7F /* GraphikThin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikThin.otf; path = ../assets/fonts/GraphikThin.otf; sourceTree = "<group>"; };
-		D33E22B78A5A41F8B9986465 /* GraphikLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikLight.otf; path = ../assets/fonts/GraphikLight.otf; sourceTree = "<group>"; };
+		AF6D390317A24F4595C9A813 /* GraphikBlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBlackItalic.otf; path = ../assets/fonts/GraphikBlackItalic.otf; sourceTree = "<group>"; };
+		B02FE8FF4D4740CFAE262061 /* GraphikRegular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikRegular.otf; path = ../assets/fonts/GraphikRegular.otf; sourceTree = "<group>"; };
+		BF04AECDD4B14C00B10C63D0 /* GraphikMediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikMediumItalic.otf; path = ../assets/fonts/GraphikMediumItalic.otf; sourceTree = "<group>"; };
+		CFCC3FC79D4048BDADD99E7F /* GraphikThin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikThin.otf; path = ../assets/fonts/GraphikThin.otf; sourceTree = "<group>"; };
+		D33E22B78A5A41F8B9986465 /* GraphikLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikLight.otf; path = ../assets/fonts/GraphikLight.otf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		FFFFF4C0576E4953AE13AB36 /* GraphikThinItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikThinItalic.otf; path = ../assets/fonts/GraphikThinItalic.otf; sourceTree = "<group>"; };
+		FFFFF4C0576E4953AE13AB36 /* GraphikThinItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikThinItalic.otf; path = ../assets/fonts/GraphikThinItalic.otf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,7 +208,6 @@
 				FFFFF4C0576E4953AE13AB36 /* GraphikThinItalic.otf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -566,7 +565,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = YSKJ36B8N8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = GoBoozePartner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -579,8 +581,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gobooze.user.ios;
 				PRODUCT_NAME = GoBoozePartner;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = GoBoozeUserDev;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -593,7 +597,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = YSKJ36B8N8;
 				INFOPLIST_FILE = GoBoozePartner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -605,8 +613,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gobooze.user.ios;
 				PRODUCT_NAME = GoBoozePartner;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = GoBoozeUser_Dist;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

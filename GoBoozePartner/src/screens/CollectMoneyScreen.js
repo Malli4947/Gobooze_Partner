@@ -5,6 +5,7 @@ import {
   Text,
   ScrollView,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -16,7 +17,10 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import OrderDetailsView from '../components/OrderDetailsView';
 import PickOrderNowAlert from './PickOrderNowAlert';
+import {CONST_STYLES} from '../constants/ConstStyles';
+import {BlurView} from '@react-native-community/blur';
 
+// const detailsData = [{id: 0, title: 'Order Details'}]
 const orders = [
   {
     id: 0,
@@ -34,10 +38,9 @@ const orders = [
   },
 ];
 
-// const detailsData = [{id: 0, title: 'Order Details'}]
-
-const PickOrderScreen = props => {
+const CollectMoneyScreen = props => {
   const [isOrderReady, setIsOrderReady] = useState(false);
+  const [showQR, setShowQR] = useState(true);
   const [expandOrderDetailView, setExpandOrderDetailView] = useState(false);
   const [expandCustomerDetailView, setExpandCustomerDetailView] =
     useState(false);
@@ -55,52 +58,65 @@ const PickOrderScreen = props => {
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <PickOrderNowAlert modalVisible={false} />
       <View style={{marginTop: insets.top}}>
-        <NavBarWithBackButton title={'Pickup Order'} />
+        <NavBarWithBackButton title={'Reach Drop'} />
         <View style={[styles.seperator, darkSep]} />
       </View>
 
       {/* ---------------- BOTTOM CONTAINER ---------------- */}
       <ScrollView>
-        <View
-          style={[
-            styles.timerConatiner,
-            isDarkTheme && {backgroundColor: COLORS.dark_theme_background},
-          ]}>
-          <View
-            style={[
-              styles.timerContainer,
-              isDarkTheme && {backgroundColor: COLORS.blue_dark},
-            ]}>
-            <Text style={[styles.timerText, {color: '#FFF'}]}>2:59</Text>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
+        <View style={[styles.upiContainer, CONST_STYLES.shadow]}>
+          <View style={styles.topCon}>
             <Image
-              tintColor={isDarkTheme && COLORS.blue_dark}
-              style={styles.timerImg}
-              source={IMAGES.TIMER}
+              style={styles.headerUpiImg}
+              source={
+                isDarkTheme ? IMAGES.UPI_FRAME_DARK : IMAGES.UPI_FRAME_LIGHT
+              }
             />
-            <Text
-              style={[
-                styles.timerText,
-                isDarkTheme && {color: COLORS.blue_dark},
-              ]}>
-              {isOrderReady ? 'Pick Order Now' : `Order is ready in ${4} mins`}
-            </Text>
+            <View style={{marginLeft: 10}}>
+              <Text
+                style={
+                  styles.collectCashText
+                }>{`Collect $${89.59} via UPI`}</Text>
+              <Text style={styles.cashDescText}>
+                Payment goes directly to GoBooze
+              </Text>
+            </View>
+          </View>
+          <View style={styles.bottomUpiCon}>
+            <View style={{alignItems: 'center', margin: 10}}>
+              <Image style={styles.upiImg} source={IMAGES.DUMMY_UPI} />
+              <View style={styles.disclaimerCon}>
+                <Image
+                  resizeMode="contain"
+                  style={{width: 20}}
+                  source={IMAGES.DISCLAIMER}
+                />
+                <Text style={styles.upiDisclaimer}>
+                  100% secure payment to GoBooze
+                </Text>
+              </View>
+            </View>
+            {showQR && (
+              <BlurView
+                style={styles.blurView}
+                blurType={'light'}
+                blurAmount={3}>
+                <TouchableOpacity
+                  style={styles.seeQrImgCon}
+                  onPress={() => setShowQR(!showQR)}>
+                  <Image
+                    resizeMode="contain"
+                    style={styles.seeQrImg}
+                    source={
+                      isDarkTheme ? IMAGES.SEE_QR_DARK : IMAGES.SEE_QR_LIGHT
+                    }
+                  />
+                </TouchableOpacity>
+              </BlurView>
+            )}
           </View>
         </View>
-        <View style={[styles.seperator, darkSep]} />
-        <Text style={[styles.orderidStaticText, darkTextStyle]}>ORDER ID</Text>
-        <Text style={[styles.orderNumText, darkTextStyle]}>
-          {orderNumber.slice(0, orderNumber.length - 4)}
-          <Text style={{fontFamily: GRAPHIK_FONT.SEMIBOLD}}>
-            {orderNumber.slice(-4)}
-          </Text>
-        </Text>
+
         <View style={{paddingBottom: 20}}>
           <FlatList
             scrollEnabled={false}
@@ -123,10 +139,10 @@ const PickOrderScreen = props => {
               } else if (index == 1) {
                 return (
                   <OrderDetailsView
-                    id={1}
+                    id={3}
                     expandCustomerDetail={expandCustomerDetailView}
                     image={IMAGES.CUSTOMER}
-                    title={'Customer Details'}
+                    title={'Rahul Singh'}
                     customerDetail={{
                       name: 'Rahul Singh',
                       mobileNum: '8866157629',
@@ -140,12 +156,14 @@ const PickOrderScreen = props => {
               } else {
                 return (
                   <OrderDetailsView
-                    id={2}
-                    image={IMAGES.SHOP}
-                    title={'Store Details'}
-                    onPress={() => {
-                      console.log('-----2-----');
-                    }}
+                    id={0}
+                    expandOrderDetail={expandOrderDetailView}
+                    image={IMAGES.BOX}
+                    title={'Order Details'}
+                    orderDetails={orders}
+                    onPress={() =>
+                      setExpandOrderDetailView(!expandOrderDetailView)
+                    }
                   />
                 );
               }
@@ -201,52 +219,74 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: rHeight(15),
   },
-  orderidStaticText: {
-    fontFamily: GRAPHIK_FONT.MEDIUM,
-    fontSize: rHeight(13),
-    marginTop: rHeight(20),
-    marginBottom: rHeight(15),
-    alignSelf: 'center',
-    color: '#1D2433A6',
-  },
-  timerConatiner: {
-    backgroundColor: '#F0F6FF',
-    justifyContent: 'space-evenly',
-    flexDirection: 'row',
-    alignItems: 'center',
+  upiContainer: {
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: COLORS.ligth_grey,
     marginHorizontal: rWidth(20),
-    paddingVertical: rHeight(14),
-    borderRadius: rHeight(10),
+    marginTop: rHeight(15),
+    backgroundColor: '#FFF',
+  },
+  topCon: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginHorizontal: rWidth(15),
     marginTop: rHeight(15),
   },
-  timerImg: {
-    width: rWidth(20),
-    height: rHeight(20),
-    marginRight: rWidth(8),
+  headerUpiImg: {
+    width: rWidth(50),
+    height: rHeight(50),
   },
-  timerText: {
+  collectCashText: {
     fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rHeight(16),
-    color: COLORS.blue,
-  },
-  orderNumText: {
-    fontFamily: GRAPHIK_FONT.REGULAR,
-    fontSize: rHeight(36),
-    paddingLeft: 5,
     color: COLORS.light_primary_text,
-    alignSelf: 'center',
-    marginBottom: rHeight(10),
+  },
+  cashDescText: {
+    fontFamily: GRAPHIK_FONT.REGULAR,
+    fontSize: rHeight(13),
+    color: '#1D2433CC',
+    paddingTop: 5,
+  },
+  bottomUpiCon: {
+    marginVertical: rHeight(15),
+    marginHorizontal: rWidth(15),
+  },
+  upiImg: {
+    width: rWidth(150),
+    height: rHeight(150),
+  },
+  upiDisclaimer: {
+    fontFamily: GRAPHIK_FONT.REGULAR,
+    fontSize: rHeight(12),
+  },
+  disclaimerCon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  seeQrImgCon: {
+    position: 'absolute',
+    bottom: 55,
+    width: '60%',
+    height: '30%',
+  },
+  seeQrImg: {
+    width: '100%',
+    height: '100%',
+  },
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
   },
   slideBtnContainer: {
     width: '100%',
     backgroundColor: '#FFF',
   },
-  timerContainer: {
-    backgroundColor: COLORS.blue,
-    paddingVertical: rHeight(5),
-    paddingHorizontal: rWidth(8),
-    borderRadius: 13,
-  },
 });
 
-export default PickOrderScreen;
+export default CollectMoneyScreen;

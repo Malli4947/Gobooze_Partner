@@ -40,5 +40,12 @@ export const IMAGES = {
   PICK_ORDER_LIGHT: require('../assets/other_pngs/pick_order_light.png'),
   PICK_ORDER_DARK: require('../assets/other_pngs/pick_order_dark.png'),
   DUMMY_WHISKEY: require('../assets/other_pngs/dummy_whiskey.png'),
+  UPI_FRAME_DARK: require('../assets/other_pngs/upi_frame_dark.png'),
+  UPI_FRAME_LIGHT: require('../assets/other_pngs/upi_frame_light.png'),
+  SEE_QR_DARK: require('../assets/other_pngs/see_qr_dark.png'),
+  SEE_QR_LIGHT: require('../assets/other_pngs/see_qr_light.png'),
+  DUMMY_UPI: require('../assets/other_pngs/upi_dummy.png'),
+  DISCLAIMER: require('../assets/other_pngs/disclaimer.png'),
+  LOCATION: require('../assets/other_pngs/location.png'),
 
 }

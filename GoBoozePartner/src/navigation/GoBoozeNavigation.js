@@ -10,6 +10,7 @@ import PersonalDetailsScreen from '../screens/PersonalDetailsScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ReachPickupScreen from '../screens/ReachPickupScreen';
 import PickOrderScreen from '../screens/PickOrderScreen';
+import CollectMoneyScreen from '../screens/CollectMoneyScreen';
 
 const AuthNav = createNativeStackNavigator();
 const SplashNav = createNativeStackNavigator();
@@ -36,9 +37,10 @@ export const GBAuthNavigator = () => {
 export const GBHomeNavigator = () => {
   return (
     <AuthNav.Navigator screenOptions={{headerShown: false}}>
+      <AuthNav.Screen name="CollectMoney" component={CollectMoneyScreen} />
+      <AuthNav.Screen name="ReachPickup" component={ReachPickupScreen} />
       <AuthNav.Screen name="OrderPick" component={PickOrderScreen} />
       <AuthNav.Screen name="Home" component={HomeScreen} />
-      <AuthNav.Screen name="ReachPickup" component={ReachPickupScreen} />
     </AuthNav.Navigator>
   );
 };

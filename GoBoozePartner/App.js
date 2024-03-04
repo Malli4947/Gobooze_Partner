@@ -2,10 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {LogBox} from 'react-native';
 // import SplashScreen from 'react-native-splash-screen';
 import {ColorSchemeProvider} from './src/components/ColorSchemeContext';
-import AppNavigator, {
-  GBSplashNavigator,
-} from './src/navigation/GoBoozeNavigation';
+import AppNavigator from './src/navigation/GoBoozeNavigation';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {enableLatestRenderer} from 'react-native-maps';
 
 LogBox.ignoreAllLogs();
 
@@ -13,6 +12,7 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
+    enableLatestRenderer();
     setTimeout(() => {
       setShowSplash(false);
     }, 3000);

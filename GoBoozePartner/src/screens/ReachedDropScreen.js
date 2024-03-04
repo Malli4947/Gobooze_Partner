@@ -10,9 +10,8 @@ import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import {CONST_STYLES} from '../constants/ConstStyles';
 import DetailsView from '../components/DetailsView';
 import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
-import CallButton from '../components/CallButton';
 
-const ReachPickupScreen = props => {
+const ReachedDropScreen = props => {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
@@ -89,7 +88,27 @@ const ReachPickupScreen = props => {
                 </View>
               </View>
             </View>
-            <CallButton onPress={() => {}} />
+            <View
+              style={[
+                styles.addressBottomView,
+                isDarkTheme && styles.addressBottomViewDark,
+              ]}>
+              <View style={styles.callContainer}>
+                <Image
+                  tintColor={isDarkTheme && COLORS.pink_light}
+                  resizeMode="contain"
+                  style={styles.callImg}
+                  source={IMAGES.CALL}
+                />
+                <Text
+                  style={[
+                    styles.callText,
+                    isDarkTheme && {color: COLORS.pink_light},
+                  ]}>
+                  Call
+                </Text>
+              </View>
+            </View>
           </View>
         </View>
 
@@ -185,6 +204,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: rHeight(15),
   },
+  addressBottomView: {
+    backgroundColor: '#FDF1F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopWidth: 2,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderTopColor: COLORS.ligth_grey,
+  },
+  addressBottomViewDark: {
+    backgroundColor: COLORS.dark_theme_background,
+    borderTopColor: COLORS.dark_disabled_background,
+  },
   logoImgView: {
     width: rHeight(70),
     height: rHeight(70),
@@ -223,6 +255,22 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#FFF',
   },
+  callContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  callImg: {
+    width: rWidth(22),
+    height: rHeight(22),
+  },
+  callText: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rHeight(16),
+    paddingVertical: 15,
+    paddingLeft: 5,
+    color: COLORS.primary_pink,
+  },
   slideButtonContainer: {
     borderTopWidth: 2,
     borderTopColor: COLORS.ligth_grey,
@@ -233,4 +281,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReachPickupScreen;
+export default ReachedDropScreen;

@@ -5,6 +5,7 @@ import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import {CONST_STYLES} from '../constants/ConstStyles';
 import {rHeight, rWidth} from '../constants/PixelSize';
+import CallButton from './CallButton';
 import {useColorScheme} from './ColorSchemeContext';
 import CustomerDetailView from './Details/CustomerDetailView';
 import OrderDetailExpandView from './Details/OrderDetailExpandView';
@@ -17,7 +18,7 @@ const OrderDetailsView = ({
   customerDetail,
   expandCustomerDetail,
   expandOrderDetail,
-  onPress
+  onPress,
 }) => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
@@ -49,13 +50,22 @@ const OrderDetailsView = ({
           <Image
             tintColor={isDarkTheme && COLORS.dark_primary_text}
             style={styles.img}
-            source={expandCustomerDetail || expandOrderDetail ? IMAGES.EXPAND : IMAGES.COLLAPSE}
+            source={
+              expandCustomerDetail || expandOrderDetail
+                ? IMAGES.EXPAND
+                : IMAGES.COLLAPSE
+            }
           />
         </TouchableOpacity>
       </View>
       {id == 1 && expandCustomerDetail && (
         <View style={styles.expandedView}>
-          <View style={[styles.seperator, isDarkTheme && {backgroundColor: COLORS.dark_disabled_background}]} />
+          <View
+            style={[
+              styles.seperator,
+              isDarkTheme && {backgroundColor: COLORS.dark_disabled_background},
+            ]}
+          />
           <CustomerDetailView
             name={customerDetail.name}
             mobileNumber={customerDetail.mobileNum}
@@ -67,6 +77,28 @@ const OrderDetailsView = ({
       {id == 0 && expandOrderDetail && (
         <View>
           <OrderDetailExpandView orderDetails={orderDetails} />
+        </View>
+      )}
+
+      {id == 3 && expandCustomerDetail && (
+        <View>
+          <View
+            style={[
+              styles.seperator,
+              isDarkTheme && {backgroundColor: COLORS.dark_disabled_background},
+            ]}
+          />
+          <View style={{marginTop: 10}}>
+            <View
+              style={styles.userExpandCon}>
+              <Image style={styles.img} source={IMAGES.LOCATION} />
+              <Text style={styles.addressText}>Address:</Text>
+              <Text style={[styles.addressText, {width: '75%'}]}>
+                1243 O'keefe Crest, Isaacstad, New South Wales 2364, Australia
+              </Text>
+            </View>
+            <CallButton />
+          </View>
         </View>
       )}
     </View>
@@ -83,7 +115,7 @@ const styles = StyleSheet.create({
   detailsContainer: {
     marginTop: rHeight(25),
     borderWidth: 1,
-    borderRadius: 16,
+    borderRadius: 20,
     borderColor: COLORS.ligth_grey,
     marginHorizontal: rWidth(20),
     backgroundColor: '#FFF',
@@ -109,8 +141,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    width: rWidth(25),
-    height: rHeight(25),
+    width: rWidth(20),
+    height: rHeight(20),
   },
   text: {
     fontFamily: GRAPHIK_FONT.MEDIUM,
@@ -119,7 +151,7 @@ const styles = StyleSheet.create({
   },
   expandedView: {
     paddingBottom: rHeight(15),
-    paddingHorizontal: rWidth(20)
+    paddingHorizontal: rWidth(20),
   },
   seperator: {
     width: '100%',
@@ -127,4 +159,18 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.ligth_grey,
     marginBottom: rHeight(5),
   },
+  addressText: {
+    fontFamily: GRAPHIK_FONT.REGULAR,
+    fontSize: rHeight(16),
+    paddingLeft: 6,
+    lineHeight: 22,
+  },
+  userExpandCon: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: rHeight(15),
+    marginHorizontal: rWidth(10),
+  }
+
 });
