@@ -45,7 +45,18 @@ export const IMAGES = {
   SEE_QR_DARK: require('../assets/other_pngs/see_qr_dark.png'),
   SEE_QR_LIGHT: require('../assets/other_pngs/see_qr_light.png'),
   DUMMY_UPI: require('../assets/other_pngs/upi_dummy.png'),
+  DUMMY_UPI_DARK: require('../assets/other_pngs/upi_dark.png'),
   DISCLAIMER: require('../assets/other_pngs/disclaimer.png'),
   LOCATION: require('../assets/other_pngs/location.png'),
+  CHECKED_DARK: require('../assets/other_pngs/checked_dark.png'),
+  CHECKED_LIGHT: require('../assets/other_pngs/checked_light.png'),
+  UNCHECKED_LIGHT: require('../assets/other_pngs/unchecked_light.png'),
+  UNCHECKED_DARK: require('../assets/other_pngs/unchecked_dark.png'),
+  COLLECTCASH_DARK: require('../assets/other_pngs/collect_cash_dark.png'),
+  COLLECTCASH_LIGHT: require('../assets/other_pngs/collect_cash_light.png'),
+  PAID_LIGHT: require('../assets/other_pngs/paid_light.png'),
+  PAID_DARK: require('../assets/other_pngs/paid_dark.png'),
+  BIN_DARK: require('../assets/other_pngs/bin_dark.png'),
+  BIN_LIGHT: require('../assets/other_pngs/bin_light.png'),
 
 }
