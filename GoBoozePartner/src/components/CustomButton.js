@@ -1,9 +1,8 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import COLORS from '../constants/Colors';
-import { GRAPHIK_FONT } from '../constants/Constant';
-import { rHeight, rWidth } from '../constants/PixelSize';
-
+import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
+import {rHeight, rWidth} from '../constants/PixelSize';
 
 const CustomButton = props => {
   const {
@@ -13,6 +12,7 @@ const CustomButton = props => {
     textStyle,
     disabled = false,
     showView = true,
+    image
   } = props;
 
   return (
@@ -21,6 +21,7 @@ const CustomButton = props => {
         disabled={disabled}
         style={[styles.buttonView, buttonStyle]}
         onPress={handleClick}>
+        {image && <Image style={styles.img} source={image} />}
         <Text style={[styles.buttonText, textStyle]}>{buttonText}</Text>
       </TouchableOpacity>
     </View>
@@ -32,11 +33,12 @@ export default CustomButton;
 const styles = StyleSheet.create({
   buttonView: {
     width: '100%',
+    flexDirection: 'row',
     height: rHeight(54),
     backgroundColor: COLORS.primary_pink,
-    borderRadius: rHeight(99),
+    borderRadius: rHeight(30),
     justifyContent: 'center',
-    alignContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: rHeight(20),
@@ -47,6 +49,11 @@ const styles = StyleSheet.create({
   btnView: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: rHeight(20)
+    marginTop: rHeight(20),
+  },
+  img: {
+    width: 22,
+    height: 22,
+    marginRight: 10,
   },
 });

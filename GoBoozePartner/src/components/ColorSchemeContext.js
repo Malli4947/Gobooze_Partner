@@ -30,6 +30,6 @@ export const useColorScheme = () => {
   if (!context) {
     throw new Error('useColorScheme must be used within a ColorSchemeProvider');
   }
-  return 'light'
+  // return 'dark'
   return context.colorScheme;
 };

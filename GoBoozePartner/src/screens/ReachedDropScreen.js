@@ -12,6 +12,8 @@ import PickOrderNowAlert from './PickOrderNowAlert';
 import CollectCashView from '../components/CollectCashView';
 import LeaveOrderAtDoorView from '../components/LeaveOrderAtDoorView';
 import UPIView from '../components/UPIView';
+import AddPhotoAlert from '../components/AddPhotoAlert';
+import CannotLeaveOrderAlert from '../components/CannotLeaveOrderAlert';
 
 const orders = [
   {
@@ -53,6 +55,8 @@ const ReachedDropScreen = props => {
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <PickOrderNowAlert modalVisible={false} />
+      <AddPhotoAlert modalVisible={false} />
+      <CannotLeaveOrderAlert modalVisible={true} />
       <View style={{marginTop: insets.top}}>
         <NavBarWithBackButton title={'Reach Drop'} />
         <View style={[styles.seperator, darkSep]} />
@@ -118,8 +122,8 @@ const ReachedDropScreen = props => {
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
         <CustomSlideButton
-          title="Reached Pickup Location"
-          confirmedText="Reached"
+          title="Order Delivered"
+          confirmedText="Order Delivered"
           disabled={isOrderReady}
           imgColor={isOrderReady == false ? slideBtnColor : undefined}
           titleStyle={isOrderReady == false ? slideBtnColor : undefined}

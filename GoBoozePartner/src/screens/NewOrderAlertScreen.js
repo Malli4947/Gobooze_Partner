@@ -18,7 +18,6 @@ const NewOrderAlertScreen = props => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const {modalVisible, dismissModal, onReachedToEnd} = props;
-  const [toggle, setToggle] = React.useState(false);
   const darkTextColor = isDarkTheme && {color: '#FFF'};
   const darkSeperator = isDarkTheme && {
     borderColor: COLORS.dark_disabled_background,

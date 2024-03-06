@@ -3,7 +3,7 @@ import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import COLORS from '../constants/Colors';
 import {useColorScheme} from './ColorSchemeContext';
 import {IMAGES} from '../constants/Constant';
-import { rHeight, rWidth } from '../constants/PixelSize';
+import {rHeight, rWidth} from '../constants/PixelSize';
 
 const ModalCancelButton = ({onPress}) => {
   const colorScheme = useColorScheme();
@@ -13,7 +13,10 @@ const ModalCancelButton = ({onPress}) => {
     <TouchableOpacity
       style={[
         styles.cancelButtonContainer,
-        isDarkTheme && {backgroundColor: COLORS.dark_disabled_background},
+        isDarkTheme && {
+          backgroundColor: COLORS.dark_disabled_background,
+          borderColor: '#FFFFFF33',
+        },
       ]}
       onPress={onPress}>
       <Image
@@ -37,7 +40,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     marginBottom: 20,
-    borderRadius: 99,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: 'clear',
     backgroundColor: 'black',
   },
   cancelButton: {

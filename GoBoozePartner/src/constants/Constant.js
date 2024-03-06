@@ -58,5 +58,10 @@ export const IMAGES = {
   PAID_DARK: require('../assets/other_pngs/paid_dark.png'),
   BIN_DARK: require('../assets/other_pngs/bin_dark.png'),
   BIN_LIGHT: require('../assets/other_pngs/bin_light.png'),
+  CAMERA_OUTLINED: require('../assets/other_pngs/camera_outlined.png'),
+  RIGHT_PHOTO_LIGHT: require('../assets/other_pngs/right_photo.png'),
+  WRONG_PHOTO_LIGHT: require('../assets/other_pngs/wrong_photo.png'),
+  RIGHT_PHOTO_DARK: require('../assets/other_pngs/right_photo_dark.png'),
+  WRONG_PHOTO_DARK: require('../assets/other_pngs/wrong_photo_dark.png'),
 
 }

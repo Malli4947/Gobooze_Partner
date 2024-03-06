@@ -89,11 +89,10 @@ const OrderDetailsView = ({
             ]}
           />
           <View style={{marginTop: 10}}>
-            <View
-              style={styles.userExpandCon}>
-              <Image style={styles.img} source={IMAGES.LOCATION} />
-              <Text style={styles.addressText}>Address:</Text>
-              <Text style={[styles.addressText, {width: '75%'}]}>
+            <View style={styles.userExpandCon}>
+              <Image tintColor={isDarkTheme && COLORS.dark_primary_text} style={styles.img} source={IMAGES.LOCATION} />
+              <Text style={[styles.addressText, darkTextStyle]}>Address:</Text>
+              <Text style={[styles.addressText, {width: '75%'}, darkTextStyle]}>
                 1243 O'keefe Crest, Isaacstad, New South Wales 2364, Australia
               </Text>
             </View>
@@ -171,6 +170,5 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: rHeight(15),
     marginHorizontal: rWidth(10),
-  }
-
+  },
 });
