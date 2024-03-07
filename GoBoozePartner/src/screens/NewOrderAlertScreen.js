@@ -1,13 +1,8 @@
 import {BlurView} from '@react-native-community/blur';
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Modal,
-  Image,
-} from 'react-native';
+import {StyleSheet, Text, View, Modal, Image} from 'react-native';
 import {useColorScheme} from '../components/ColorSchemeContext';
+import EarningPickDropDetailView from '../components/EarningPickDropDetailView';
 import ModalCancelButton from '../components/ModalCancelButton';
 import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import COLORS from '../constants/Colors';
@@ -52,47 +47,11 @@ const NewOrderAlertScreen = props => {
             </View>
 
             {/* total earning and pick drop kms */}
-            <View
-              style={[
-                styles.orderDetailsContainer,
-                styles.shadow,
-                darkSeperator,
-                darkBg,
-              ]}>
-              <View style={styles.earningContainer}>
-                <Text style={[styles.lightText, darkTextColor]}>
-                  Expected Earning <Text style={styles.darkText}>$5.89</Text>
-                </Text>
-              </View>
-              <View
-                style={[
-                  styles.pickDropContainer,
-                  isDarkTheme && {
-                    borderTopColor: COLORS.dark_disabled_background,
-                  },
-                ]}>
-                <View
-                  style={{alignItems: 'center', flex: 1, paddingVertical: 20}}>
-                  <Text style={[styles.lightText, darkTextColor]}>
-                    Pickup: <Text style={styles.darkText}>2.5km</Text>
-                  </Text>
-                </View>
-
-                <View
-                  style={[
-                    styles.seperator,
-                    isDarkTheme && {
-                      backgroundColor: COLORS.dark_disabled_background,
-                    },
-                  ]}
-                />
-                <View style={{alignItems: 'center', flex: 1}}>
-                  <Text style={[styles.lightText, darkTextColor]}>
-                    Drop: <Text style={styles.darkText}>1.79km</Text>
-                  </Text>
-                </View>
-              </View>
-            </View>
+            <EarningPickDropDetailView
+              earning={{key: 'Expected Earning: ', value: '$5.89'}}
+              bottomLeft={{key: 'Pickup: ', value: '2.5km'}}
+              bottomRight={{key: 'Drop: ', value: '28mins'}}
+            />
 
             {/* Pick up address */}
             <View
@@ -211,19 +170,6 @@ const styles = StyleSheet.create({
     fontSize: rHeight(14),
     color: '#E44956',
   },
-  orderDetailsContainer: {
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: COLORS.ligth_grey,
-    marginTop: rHeight(30),
-    marginHorizontal: rWidth(20),
-    marginBottom: 30,
-    backgroundColor: '#FFF',
-  },
-  earningContainer: {
-    marginVertical: rHeight(20),
-    alignSelf: 'center',
-  },
   lightText: {
     fontFamily: GRAPHIK_FONT.REGULAR,
     fontSize: rHeight(17),
@@ -232,18 +178,6 @@ const styles = StyleSheet.create({
   darkText: {
     fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rHeight(19),
-  },
-  pickDropContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderTopWidth: 1,
-    borderTopColor: COLORS.ligth_grey,
-  },
-  seperator: {
-    width: 2,
-    height: '100%',
-    backgroundColor: COLORS.ligth_grey,
   },
   pickupAddressContainer: {
     borderWidth: 1,
