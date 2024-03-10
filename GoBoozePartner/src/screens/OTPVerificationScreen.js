@@ -51,7 +51,7 @@ const OTPVerificationScreen = props => {
     if (inputOtp.length != 5) {
       setShowOtpErrorMessage(true);
     } else {
-      props.navigation.navigate('PresonalDetail')
+      props.navigation.navigate('PresonalDetail');
       await AsyncStorage.setItem('OTPVerified', JSON.stringify('true'));
       getOneTimeLocation();
     }
@@ -129,7 +129,10 @@ const OTPVerificationScreen = props => {
 
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1}}
+      contentContainerStyle={{
+        flexGrow: 1,
+        marginTop: keyboardHeight == 0 ? 0 : -140,
+      }}
       keyboardShouldPersistTaps={'handled'}
       style={[
         isDarkTheme && {
@@ -202,11 +205,7 @@ const OTPVerificationScreen = props => {
       </View>
 
       {/* Bottom button view */}
-      <View
-        style={[
-          styles.bottomContainerNoKeyboard,
-          keyboardHeight > 0 && {bottom: keyboardHeight + 20},
-        ]}>
+      <View style={[styles.bottomContainerNoKeyboard]}>
         <Pressable style={styles.con_1}>
           <Text
             style={[styles.resend_otp_1, isDarkTheme && styles.resend_otp_2]}>
@@ -320,7 +319,7 @@ const styles = StyleSheet.create({
   bottomContainerNoKeyboard: {
     width: '90%',
     position: 'absolute',
-    bottom: rHeight(40),
+    bottom: rHeight(20),
     alignSelf: 'center',
     justifyContent: 'center',
   },

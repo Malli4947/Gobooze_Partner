@@ -33,7 +33,7 @@ const PhoneNumberTextInput = props => {
           keyboardType="number-pad"
           style={[styles.input, darkThemeText, errorTextStyle]}
           maxLength={10}
-          defaultValue={value}
+          value={value}
           onChangeText={onChangePhoneNumText}
           onFocus={() => setOnTextinputFocus(true)}
           onSubmitEditing={() => setOnTextinputFocus(false)}
