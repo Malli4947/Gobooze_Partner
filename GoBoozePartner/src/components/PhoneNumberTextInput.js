@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   input: {
     fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rHeight(24),
-    height: rHeight(40),
+    height: rHeight(50),
     flex: 1,
     color: COLORS.light_primary_text,
   },

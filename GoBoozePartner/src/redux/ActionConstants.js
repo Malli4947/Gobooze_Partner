@@ -1,0 +1,5 @@
+export default {
+    IS_LOGGED_IN: 'IS_LOGGED_IN',
+    BEARER_ACCESS_TOKEN: 'BEARER_ACCESS_TOKEN',
+  };
+  

@@ -5,8 +5,11 @@ import {ColorSchemeProvider} from './src/components/ColorSchemeContext';
 import AppNavigator from './src/navigation/GoBoozeNavigation';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {enableLatestRenderer} from 'react-native-maps';
+import configureStore from './src/redux/store';
+import { Provider } from 'react-redux';
 
 LogBox.ignoreAllLogs();
+const store = configureStore();
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -21,11 +24,10 @@ function App() {
   return (
     <ColorSchemeProvider>
       <GestureHandlerRootView style={{flex: 1}}>
-        <AppNavigator />
+        <Provider store={store}>
+          <AppNavigator />
+        </Provider>
       </GestureHandlerRootView>
-
-      {/* {showSplash && <GBSplashNavigator />}
-      {showSplash === false && <AppNavigator />} */}
     </ColorSchemeProvider>
   );
 }

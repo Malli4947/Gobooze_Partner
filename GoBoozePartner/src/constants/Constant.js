@@ -1,15 +1,24 @@
+import {Platform} from 'react-native';
+
+export const API_BASE_URL = 'https://localhost:9000/api/partner/';
 
 export const GRAPHIK_FONT = {
-  BOLD: 'Graphik-Bold',
-  BOLD_ITALIC: 'Graphik-BoldItalic',
-  REGULAR: 'Graphik-Regular',
-  MEDIUM: 'Graphik-Medium',
-  SEMIBOLD: 'Graphik-Semibold',
-  SEMIBOLD_ITALIC: 'Graphik-SemiboldItalic',
-  LIGHT: 'Graphik-Light',
-  ITALIC: 'Graphik-RegularItalic',
+  BOLD: Platform.OS === 'android' ? 'GraphikBold' : 'Graphik-Bold',
+  BOLD_ITALIC:
+    Platform.OS === 'android' ? 'GraphikBoldItalic' : 'Graphik-BoldItalic',
+  REGULAR: Platform.OS === 'android' ? 'GraphikRegular' : 'Graphik-Regular',
+  MEDIUM: Platform.OS === 'android' ? 'GraphikMedium' : 'Graphik-Medium',
+  SEMIBOLD: Platform.OS === 'android' ? 'GraphikSemibold' : 'Graphik-Semibold',
+  SEMIBOLD_ITALIC:
+    Platform.OS === 'android'
+      ? 'GraphikSemiboldItalic'
+      : 'Graphik-SemiboldItalic',
+  LIGHT: Platform.OS === 'android' ? 'GraphikLight' : 'Graphik-Light',
+  ITALIC:
+    Platform.OS === 'android'
+      ? 'GraphikRegularItalic'
+      : 'Graphik-RegularItalic',
 };
-
 
 export const IMAGES = {
   GO_BOOZE: require('../assets/other_pngs/gobooze.png'),
@@ -63,5 +72,4 @@ export const IMAGES = {
   WRONG_PHOTO_LIGHT: require('../assets/other_pngs/wrong_photo.png'),
   RIGHT_PHOTO_DARK: require('../assets/other_pngs/right_photo_dark.png'),
   WRONG_PHOTO_DARK: require('../assets/other_pngs/wrong_photo_dark.png'),
-
-}
+};

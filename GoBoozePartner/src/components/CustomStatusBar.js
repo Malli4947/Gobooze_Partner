@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, StatusBar} from 'react-native';
+import {View, StatusBar, Platform} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import COLORS from '../constants/Colors';
 import {useColorScheme} from './ColorSchemeContext';

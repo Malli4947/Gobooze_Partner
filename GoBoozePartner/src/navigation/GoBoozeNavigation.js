@@ -40,11 +40,11 @@ export const GBAuthNavigator = () => {
 export const GBHomeNavigator = () => {
   return (
     <AuthNav.Navigator screenOptions={{headerShown: false}}>
-            <AuthNav.Screen name="TripSummary" component={TripSummaryScreen} />
+      <AuthNav.Screen name="Home" component={HomeScreen} />
+      <AuthNav.Screen name="TripSummary" component={TripSummaryScreen} />
       <AuthNav.Screen name="CollectMoney" component={ReachedDropScreen} />
       <AuthNav.Screen name="ReachPickup" component={ReachPickupScreen} />
       <AuthNav.Screen name="OrderPick" component={PickOrderScreen} />
-      <AuthNav.Screen name="Home" component={HomeScreen} />
     </AuthNav.Navigator>
   );
 };
@@ -66,7 +66,7 @@ export const AppNavigator = props => {
           <Stack.Screen name="Splash" component={GBSplashNavigator} />
         )}
         {showSplash === false && (
-          <Stack.Screen name="Auth" component={GBHomeNavigator} />
+          <Stack.Screen name="Auth" component={GBAuthNavigator} />
         )}
       </Stack.Navigator>
     </NavigationContainer>

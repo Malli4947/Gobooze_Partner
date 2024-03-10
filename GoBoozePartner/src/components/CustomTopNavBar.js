@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import RightArrow_1 from '../assets/light_theme_svgs/rightArrow.svg';
 import RightArrow_2 from '../assets/dark_theme_svgs/rightArrow.svg';
 import COLORS from '../constants/Colors';
 import {useColorScheme} from './ColorSchemeContext';
 import {GRAPHIK_FONT} from '../constants/Constant';
-import {rWidth} from '../constants/PixelSize';
+import {rHeight, rWidth} from '../constants/PixelSize';
 
 const CustomTopNavBar = ({onPress}) => {
   const colorScheme = useColorScheme();
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 10,
+    marginTop: Platform.OS === 'android' ? rHeight(10) : 0,
   },
   header_Text_1: {
     color: COLORS.light_primary_text,

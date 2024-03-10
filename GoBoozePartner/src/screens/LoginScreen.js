@@ -2,11 +2,10 @@ import {View, Text, StyleSheet, Keyboard, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import CustomStatusBar from '../components/CustomStatusBar';
-import {useNavigation} from '@react-navigation/native';
 import {rHeight, rWidth} from '../constants/PixelSize';
-// import {useSelector, useDispatch} from 'react-redux';
-import {increment, decrement} from '../../redux/features/CounterSilce';
-// import {login} from '../../redux/features/AuthSlice';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as appActions from '../redux/actions/appActionCreator';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import CustomButton from '../components/CustomButton';
@@ -17,12 +16,8 @@ const LoginScreen = props => {
   const colorScheme = useColorScheme();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [mobileNumber, setMobileNumber] = useState('');
-  const navigation = useNavigation();
   const [errorMessage, setErrorMessage] = useState(false);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  // const dispatch = useDispatch();
-  // const count = useSelector(state => state.counter.value);
-  // const {userData, isLoading} = useSelector(state => state.auth);
 
   useEffect(() => {
     const showListener = Keyboard.addListener('keyboardDidShow', e => {
@@ -38,8 +33,6 @@ const LoginScreen = props => {
   }, []);
 
   const handleContinuePress = () => {
-    props.navigation.navigate('OTP', {mobileNumber: mobileNumber});
-    return;
     const regex = /^(?!1234567890$|0123456789$|0987654321$)[0-9]+$/;
     const cleanedPhoneNumber = mobileNumber.replace(/[-.,\s]/g, '');
     if (
@@ -50,12 +43,13 @@ const LoginScreen = props => {
       setErrorMessage(true);
       return;
     }
-    const params = {
-      username: 'kminchelle',
-      password: '0lelplR',
-    };
-    dispatch(login(params));
-    navigation.navigate('Otp', {mobileNumber: mobileNumber});
+    props.appActions.loginUser(cleanedPhoneNumber, response => {
+      if (response.status == 200) {
+        props.navigation.navigate('Otp', {mobileNumber: mobileNumber});
+      } else {
+        //handle error scenario
+      }
+    });
   };
 
   const onChangePhoneNumText = number => {
@@ -146,7 +140,15 @@ const LoginScreen = props => {
   );
 };
 
-export default LoginScreen;
+const mapStateToProps = state => {
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {appActions: bindActionCreators(appActions, dispatch)};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
 
 const styles = StyleSheet.create({
   conatiner: {
