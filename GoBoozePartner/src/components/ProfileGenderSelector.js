@@ -103,9 +103,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   radioButton: {
-    width: rWidth(radioHeigth),
+    width: rHeight(radioHeigth),
     height: rHeight(radioHeigth),
-    borderRadius: 99,
+    borderRadius: rHeight(radioHeigth),
     marginRight: rWidth(10),
     borderColor: '#5D667850',
     borderWidth: 2,

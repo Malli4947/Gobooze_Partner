@@ -66,6 +66,7 @@ const LoginScreen = props => {
     <View
       style={[
         styles.conatiner,
+        {marginTop: !isKeyboardVisible ? 0 : -140},
         colorScheme == 'dark' && {
           backgroundColor: COLORS.dark_theme_background,
         },
@@ -105,12 +106,7 @@ const LoginScreen = props => {
       />
       {/* </View> */}
 
-      <View
-        style={[
-          isKeyboardVisible
-            ? styles.bottomContainerWithKeyboard
-            : styles.bottomContainerNoKeyboard,
-        ]}>
+      <View style={[styles.bottomContainerNoKeyboard]}>
         <Text
           style={[
             styles.otp_Text_1,
@@ -203,11 +199,5 @@ const styles = StyleSheet.create({
     bottom: rHeight(40),
     alignSelf: 'center',
     justifyContent: 'center',
-  },
-  bottomContainerWithKeyboard: {
-    width: '90%',
-    marginTop: rHeight(40),
-    alignSelf: 'center',
-    justifyContent: 'center',
-  },
+  }
 });

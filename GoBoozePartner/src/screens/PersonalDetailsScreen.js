@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -59,7 +60,7 @@ const PersonalDetailsScreen = props => {
     launchImageLibrary(
       {mediaType: 'photo', includeBase64: false, maxHeight: 200, maxWidth: 200},
       response => {
-        if (response) {
+        if (response && response.assets) {
           console.log('DEBUG: response: ', response.assets[0].fileName);
           setImageObject(response.assets[0]);
         }
@@ -108,7 +109,7 @@ const PersonalDetailsScreen = props => {
         selectedOption={handleImagePickerSlection}
         dismissModal={() => setImgPickerVisible(false)}
       />
-      <View style={{marginTop: insets.top + 5}}>
+      <View style={{marginTop: Platform.OS === 'ios' ? insets.top + 5 : 12}}>
         <Text style={[styles.navBarTitle, darkThemeText]}>
           Personal Details
         </Text>
@@ -242,12 +243,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   profileImgContainer: {
-    width: rWidth(100),
+    width: rHeight(100),
     height: rHeight(100),
     backgroundColor: COLORS.light_theme_background,
     alignSelf: 'center',
     justifyContent: 'center',
-    borderRadius: 99,
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: COLORS.ligth_grey,
   },
@@ -290,7 +291,7 @@ const styles = StyleSheet.create({
     width: '100%',
     bottom: 0,
     alignSelf: 'center',
-    paddingBottom: 30,
+    paddingBottom: Platform.OS === 'ios' ? rHeight(30) : rHeight(20),
     backgroundColor: 'transparent',
   },
 });
