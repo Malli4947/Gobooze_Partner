@@ -33,6 +33,7 @@ const LoginScreen = props => {
   }, []);
 
   const handleContinuePress = () => {
+    // mobile number to login :'8142787271'
     const regex = /^(?!1234567890$|0123456789$|0987654321$)[0-9]+$/;
     const cleanedPhoneNumber = mobileNumber.replace(/[-.,\s]/g, '');
     if (
