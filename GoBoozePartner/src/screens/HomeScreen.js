@@ -46,7 +46,7 @@ const HomeScreen = props => {
       <CustomStatusBar
         backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
       />
-      <View style={{marginTop: insets.top + 5}}>
+      <View style={{marginTop: insets.top}}>
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>

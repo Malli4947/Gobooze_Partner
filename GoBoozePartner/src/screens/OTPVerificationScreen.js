@@ -69,7 +69,7 @@ const OTPVerificationScreen = props => {
       props.appActions.verifyOtp(jsonBody, response => {
         if (response.status == 200) {
           console.log(' props.state.loginUserId', props.loginUserId);
-          if (hasLocationPermission) {
+          if (hasLocationPermission === true) {
             props.navigation.navigate('DashBoard');
           } else {
             props.navigation.navigate('Location');
@@ -100,7 +100,11 @@ const OTPVerificationScreen = props => {
       try {
         const status = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
         console.log(status, 'permission ios--');
-        setHasLocationPermission(status);
+        if (status === 'granted') {
+          setHasLocationPermission(true);
+        } else {
+          setHasLocationPermission(false);
+        }
       } catch (err) {
         console.log(err, 'error');
       }
