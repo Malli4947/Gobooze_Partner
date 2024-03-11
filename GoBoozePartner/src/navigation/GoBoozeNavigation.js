@@ -14,6 +14,8 @@ import CollectMoneyScreen from '../screens/ReachedDropScreen';
 import ReachDropCollectCashScreen from '../screens/ReachedDropScreen';
 import ReachedDropScreen from '../screens/ReachedDropScreen';
 import TripSummaryScreen from '../screens/TripSummaryScreen';
+import {useSelector} from 'react-redux';
+import LocationScreen from '../screens/LocationScreen';
 
 const AuthNav = createNativeStackNavigator();
 const SplashNav = createNativeStackNavigator();
@@ -28,10 +30,12 @@ export const GBSplashNavigator = () => {
 
 export const GBAuthNavigator = () => {
   return (
-    <AuthNav.Navigator screenOptions={{headerShown: false}}>
+    <AuthNav.Navigator
+      screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
       <AuthNav.Screen name="Onboarding" component={OnboardingScreen} />
       <AuthNav.Screen name="Login" component={LoginScreen} />
       <AuthNav.Screen name="OTP" component={OTPVerificationScreen} />
+      <AuthNav.Screen name="Location" component={LocationScreen} />
       <AuthNav.Screen name="PresonalDetail" component={PersonalDetailsScreen} />
     </AuthNav.Navigator>
   );
@@ -39,7 +43,8 @@ export const GBAuthNavigator = () => {
 
 export const GBHomeNavigator = () => {
   return (
-    <AuthNav.Navigator screenOptions={{headerShown: false}}>
+    <AuthNav.Navigator
+      screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
       <AuthNav.Screen name="Home" component={HomeScreen} />
       <AuthNav.Screen name="TripSummary" component={TripSummaryScreen} />
       <AuthNav.Screen name="CollectMoney" component={ReachedDropScreen} />
@@ -53,6 +58,10 @@ const Stack = createNativeStackNavigator();
 export const AppNavigator = props => {
   const [showSplash, setShowSplash] = useState(true);
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  console.log(
+    '💕 ~ file: GoBoozeNavigation.js:61 ~ AppNavigator ~ isLoggedIn:',
+    isLoggedIn,
+  );
 
   useEffect(() => {
     setTimeout(() => {
@@ -69,6 +78,7 @@ export const AppNavigator = props => {
         {showSplash === false && (
           <Stack.Screen name="Auth" component={GBAuthNavigator} />
         )}
+        <Stack.Screen name="DashBoard" component={GBHomeNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );

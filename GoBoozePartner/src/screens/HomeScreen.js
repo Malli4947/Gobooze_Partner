@@ -1,4 +1,11 @@
-import {View, StyleSheet, ScrollView, Text, Dimensions} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  Dimensions,
+  Pressable,
+} from 'react-native';
 import React, {useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
@@ -11,6 +18,7 @@ import TodayProgressView from '../components/TodayProgressView';
 import GBSegmentControl from '../components/GBSegmentControl';
 import NewOrderAlertScreen from './NewOrderAlertScreen';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import CustomStatusBar from '../components/CustomStatusBar';
 
 const screenWidth = Dimensions.get('screen').width - 30;
 
@@ -35,7 +43,10 @@ const HomeScreen = props => {
         dismissModal={() => setShowNewOrderModal(!showNewOrderModal)}
         onReachedToEnd={() => props.navigation.navigate('ReachPickup')}
       />
-      <View style={{marginTop: insets.top}}>
+      <CustomStatusBar
+        backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
+      />
+      <View style={{marginTop: insets.top + 5}}>
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
@@ -49,10 +60,14 @@ const HomeScreen = props => {
             ]}>
             Total Earning & Orders
           </Text>
-          <View style={styles.earningOrderContainer}>
+          <Pressable
+            onPress={() => {
+              set;
+            }}
+            style={styles.earningOrderContainer}>
             <TotalEarningOrderView title="Total Orders" value="23" />
             <TotalEarningOrderView title="Total Earning" value="$1.56k" />
-          </View>
+          </Pressable>
         </View>
         <View style={[styles.seperator, darkSeperator]} />
 

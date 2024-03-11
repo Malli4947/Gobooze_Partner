@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Keyboard, Image} from 'react-native';
+import {View, Text, StyleSheet, Keyboard, Image, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import CustomStatusBar from '../components/CustomStatusBar';
@@ -45,9 +45,9 @@ const LoginScreen = props => {
     }
     props.appActions.sendOtp(cleanedPhoneNumber, response => {
       if (response.status == 200) {
-        props.navigation.navigate('Otp', {mobileNumber: mobileNumber});
+        props.navigation.navigate('OTP', {mobileNumber: mobileNumber});
       } else {
-        //handle error scenario
+        Alert.alert('Invalid Mobile Number', response.error.message);
       }
     });
   };
@@ -139,7 +139,7 @@ const LoginScreen = props => {
 const mapStateToProps = state => {
   return {
     isLoggedIn: state.auth.isLoggedIn,
-    accessToken: state.auth.bearerAccessToken
+    accessToken: state.auth.bearerAccessToken,
   };
 };
 
@@ -202,5 +202,5 @@ const styles = StyleSheet.create({
     bottom: rHeight(40),
     alignSelf: 'center',
     justifyContent: 'center',
-  }
+  },
 });
