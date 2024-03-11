@@ -46,7 +46,8 @@ const HomeScreen = props => {
       <CustomStatusBar
         backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
       />
-      <View style={{marginTop: insets.top}}>
+      {/* marginTop: insets.top */}
+      <View style={{}}>
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
@@ -62,7 +63,7 @@ const HomeScreen = props => {
           </Text>
           <Pressable
             onPress={() => {
-              set;
+              setShowNewOrderModal(true);
             }}
             style={styles.earningOrderContainer}>
             <TotalEarningOrderView title="Total Orders" value="23" />

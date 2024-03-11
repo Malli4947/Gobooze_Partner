@@ -100,6 +100,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   button: {
-    bottom: 20,
+    bottom: Platform.OS === 'ios' ? 80 : 20,
   },
 });
