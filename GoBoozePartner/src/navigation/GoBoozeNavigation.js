@@ -52,6 +52,7 @@ export const GBHomeNavigator = () => {
 const Stack = createNativeStackNavigator();
 export const AppNavigator = props => {
   const [showSplash, setShowSplash] = useState(true);
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
   useEffect(() => {
     setTimeout(() => {

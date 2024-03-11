@@ -43,7 +43,7 @@ const LoginScreen = props => {
       setErrorMessage(true);
       return;
     }
-    props.appActions.loginUser(cleanedPhoneNumber, response => {
+    props.appActions.sendOtp(cleanedPhoneNumber, response => {
       if (response.status == 200) {
         props.navigation.navigate('Otp', {mobileNumber: mobileNumber});
       } else {
@@ -137,7 +137,10 @@ const LoginScreen = props => {
 };
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    isLoggedIn: state.auth.isLoggedIn,
+    accessToken: state.auth.bearerAccessToken
+  };
 };
 
 const mapDispatchToProps = dispatch => {

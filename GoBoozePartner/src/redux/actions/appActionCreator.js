@@ -10,14 +10,21 @@ export const saveIsLoggedIn = val => ({
 });
 
 
+export const saveAccessToken = val => ({
+  type: ActionConstants.BEARER_ACCESS_TOKEN,
+  payload: val,
+});
 // ***************************************************************
 // -------------------------- API CALLS -------------------------
 // ***************************************************************
-export const loginUser = (mobileNumber, callback) => {
+export const sendOtp = (mobileNumber, callback) => {
   return async (dispatch, getState) => {
-    return GoboozeAPI.loginUser(mobileNumber)
+    // const accessToken = getState().profile
+    return GoboozeAPI.sendOtp(mobileNumber, accessToken)
       .then(response => {
         if (response.status == 200) {
+          // dispatch(saveIsLoggedIn(true))
+          // dispatch(saveAccessToken("true"))
           callback && callback({status: 200, data: response.data});
         }
       })
