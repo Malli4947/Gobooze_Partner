@@ -18,6 +18,7 @@ export const verifyOtp = params => {
   return axios.post(`${API_BASE_URL}${apiConfig.verifyOtp}`, param, {headers});
 };
 
+//---deliveryOrders---
 export const deliveryOrders = params => {
   console.log('💕 ~ file: GoboozeApi.js:22 ~ deliveryOrders ~ params:', params);
   return axios.get(`${MAIN_BASE_URL}${apiConfig.deliveryOrders}`, {
