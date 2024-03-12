@@ -9,7 +9,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import {CONST_STYLES} from '../constants/ConstStyles';
 import DetailsView from '../components/DetailsView';
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
+import MapView, {PROVIDER_DEFAULT} from 'react-native-maps';
 import CallButton from '../components/CallButton';
 
 const ReachPickupScreen = props => {
@@ -25,7 +25,12 @@ const ReachPickupScreen = props => {
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top}}>
-        <NavBarWithBackButton title={'Ready Pickup'} />
+        <NavBarWithBackButton
+          onPress={() => {
+            props.navigation.goBack();
+          }}
+          title={'Ready Pickup'}
+        />
       </View>
       <View
         style={{
@@ -131,7 +136,6 @@ const styles = StyleSheet.create({
   },
   map: {
     height: '80%',
-
   },
   logoContainer: {
     marginBottom: 100,
