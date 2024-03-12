@@ -30,17 +30,17 @@ const LocationScreen = () => {
         const granted = await PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
-        console.log(granted, 'permission android--');
+        // console.log(granted, 'permission android--');
       } catch (err) {
-        console.warn(err);
+        // console.warn(err);
         return false;
       }
     } else if (Platform.OS === 'ios') {
       try {
         const status = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-        console.log(status, 'permission ios--');
+        // console.log(status, 'permission ios--');
       } catch (err) {
-        console.log(err, 'error');
+        // console.log(err, 'error');
       }
     }
   };
@@ -56,7 +56,7 @@ const LocationScreen = () => {
         navigation.navigate('DashBoard');
       },
       error => {
-        console.log(error, 'error--');
+        // console.log(error, 'error--');
       },
       {
         enableHighAccuracy: false,

@@ -58,10 +58,6 @@ const Stack = createNativeStackNavigator();
 export const AppNavigator = props => {
   const [showSplash, setShowSplash] = useState(true);
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-  console.log(
-    '💕 ~ file: GoBoozeNavigation.js:61 ~ AppNavigator ~ isLoggedIn:',
-    isLoggedIn,
-  );
 
   useEffect(() => {
     setTimeout(() => {

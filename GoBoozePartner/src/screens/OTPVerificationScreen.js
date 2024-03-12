@@ -40,10 +40,7 @@ const OTPVerificationScreen = props => {
   const [keyboardHeight, setKeyboardHeight] = useState(false);
   // --
   const [hasLocationPermission, setHasLocationPermission] = useState(false);
-  console.log(
-    '💕 ~ file: OTPVerificationScreen.js:43 ~ OTPVerificationScreen ~ hasLocationPermission:',
-    hasLocationPermission,
-  );
+
   //-
   const isDarkTheme = colorScheme === 'dark';
 
@@ -68,7 +65,6 @@ const OTPVerificationScreen = props => {
       };
       props.appActions.verifyOtp(jsonBody, response => {
         if (response.status == 200) {
-          console.log(' props.state.loginUserId', props.loginUserId);
           if (hasLocationPermission === true) {
             props.navigation.navigate('DashBoard');
           } else {
@@ -91,15 +87,12 @@ const OTPVerificationScreen = props => {
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
         setHasLocationPermission(granted);
-        console.log(granted, 'permission android--');
       } catch (err) {
-        console.warn(err);
         return false;
       }
     } else if (Platform.OS === 'ios') {
       try {
         const status = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-        console.log(status, 'permission ios--');
         if (status === 'granted') {
           setHasLocationPermission(true);
         } else {

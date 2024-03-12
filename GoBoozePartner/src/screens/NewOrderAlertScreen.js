@@ -106,7 +106,6 @@ const NewOrderAlertScreen = props => {
                 </View>
               </View>
             </View>
-
             <CustomSlideButton
               hideSeperator={true}
               title="Reached Pickup Location"

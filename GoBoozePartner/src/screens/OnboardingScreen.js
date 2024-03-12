@@ -12,14 +12,11 @@ import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 
 const OnboardingScreen = props => {
   const colorScheme = useColorScheme();
-  const isDarkTheme = colorScheme === 'dark'
+  const isDarkTheme = colorScheme === 'dark';
 
   return (
     <View
-      style={[
-        styles.light_container,
-        isDarkTheme && styles.dark_container,
-      ]}>
+      style={[styles.light_container, isDarkTheme && styles.dark_container]}>
       <CustomStatusBar />
       <View style={styles.logo}>
         <Image
@@ -35,18 +32,15 @@ const OnboardingScreen = props => {
       />
       <View style={styles.bottomContainer}>
         <View style={styles.con_1}>
-          <Text
-            style={[styles.ltext_1, isDarkTheme && styles.dtext_1]}>
+          <Text style={[styles.ltext_1, isDarkTheme && styles.dtext_1]}>
             WELCOME TO THE WORLD OF WINE
           </Text>
 
-          <Text
-            style={[styles.ltext_2, isDarkTheme && styles.dtext_2]}>
+          <Text style={[styles.ltext_2, isDarkTheme && styles.dtext_2]}>
             {`Here you pick up a\ndrink that fits all your\ncriteria`}
           </Text>
 
-          <Text
-            style={[styles.ltext_3, isDarkTheme && styles.dtext_3]}>
+          <Text style={[styles.ltext_3, isDarkTheme && styles.dtext_3]}>
             {`Find low prices near you. We collect wine, beer and spirit prices from across the globe and put them on your mobile.`}
           </Text>
         </View>
@@ -66,7 +60,7 @@ const OnboardingScreen = props => {
 
         <Text
           onPress={() => {
-            console.log('🚀 ~ file: Intro.js:129 ~ Intro ~ e:');
+            // console.log('🚀 ~ file: Intro.js:129 ~ Intro ~ e:');
           }}
           style={styles.bottom_text}>
           Continue as guest

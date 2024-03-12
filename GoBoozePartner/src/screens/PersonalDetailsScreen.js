@@ -42,7 +42,6 @@ const PersonalDetailsScreen = props => {
 
   // ----------------- Button enable & disable -----------------
   React.useEffect(() => {
-    // console.log(name.length, mobileNumber.length, emailAddress.length, gender > -1)
     if (
       name.length > 3 &&
       mobileNumber.length == 10 &&
