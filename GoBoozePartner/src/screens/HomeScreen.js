@@ -58,6 +58,9 @@ const HomeScreen = props => {
         {/* ------------- total arning and order view  ------------- */}
         <View style={styles.horizontalMargin}>
           <Text
+            onPress={() => {
+              props.navigation.navigate('ReachPickup');
+            }}
             style={[
               styles.totalEarningText,
               isDarkTheme && {color: '#FFFFFF'},
