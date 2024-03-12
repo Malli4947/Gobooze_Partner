@@ -42,6 +42,9 @@ const HomeScreen = props => {
         modalVisible={showNewOrderModal}
         dismissModal={() => setShowNewOrderModal(!showNewOrderModal)}
         onReachedToEnd={() => props.navigation.navigate('ReachPickup')}
+        denyClick={() => {
+          setShowNewOrderModal(false);
+        }}
       />
       <CustomStatusBar
         backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
