@@ -1,6 +1,15 @@
 import {Platform} from 'react-native';
 
-export const API_BASE_URL = 'https://localhost:9000/api/partner/';
+export const API_BASE_URL =
+  'https://service.liquorplus.com.au/admin/api/partner/';
+
+export const MAIN_BASE_URL = 'https://service.liquorplus.com.au/';
+
+export const apiConfig = {
+  sendOtp: 'send-otp',
+  verifyOtp: 'verify-otp',
+  deliveryOrders: 'order/api/orders/get-orders-by-delivery',
+};
 
 export const GRAPHIK_FONT = {
   BOLD: Platform.OS === 'android' ? 'GraphikBold' : 'Graphik-Bold',

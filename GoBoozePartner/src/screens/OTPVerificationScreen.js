@@ -10,6 +10,8 @@ import {
   ScrollView,
   Keyboard,
   Image,
+  Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -23,17 +25,22 @@ import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import LocationPermissionModal from '../components/LocationPermissionModal';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import OTPTextView from '../components/OTPTextView';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as appActions from '../redux/actions/appActionCreator';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 const OTPVerificationScreen = props => {
   const colorScheme = useColorScheme();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [inputOtp, setInputOtp] = useState('');
+
   const [showOtpErrorMessage, setShowOtpErrorMessage] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(false);
   // --
-  const [hasPermission, setHasPermission] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [hasLocationPermission, setHasLocationPermission] = useState(false);
+
   //-
   const isDarkTheme = colorScheme === 'dark';
 
@@ -48,66 +55,60 @@ const OTPVerificationScreen = props => {
   );
 
   const handleContinuePress = async () => {
-    if (inputOtp.length != 5) {
+    if (inputOtp.length != 4) {
       setShowOtpErrorMessage(true);
     } else {
-      props.navigation.navigate('PresonalDetail');
-      await AsyncStorage.setItem('OTPVerified', JSON.stringify('true'));
-      getOneTimeLocation();
+      const phoneNumber = props.route.params.mobileNumber;
+      const jsonBody = {
+        phone: `+91${phoneNumber}`,
+        otp: inputOtp,
+      };
+      props.appActions.verifyOtp(jsonBody, response => {
+        if (response.status == 200) {
+          if (hasLocationPermission === true) {
+            props.navigation.navigate('DashBoard');
+          } else {
+            props.navigation.navigate('Location');
+          }
+        } else {
+        }
+      });
     }
   };
 
   useEffect(() => {
-    if (!loading && hasPermission) {
-      setTimeout(() => {
-        setHasPermission(true);
-        getOneTimeLocation();
-      }, 2000);
-    }
-  }, [hasPermission, props.navigation]);
-
-  useEffect(() => {
-    checkPermissions();
+    checkLocationPermission();
   }, []);
 
-  const checkPermissions = async () => {
-    try {
-      const PremissionCheck = JSON.parse(
-        await AsyncStorage.getItem('permissionGiven'),
-      );
-      if (PremissionCheck == 'false') {
-        setModalVisible(true);
+  const checkLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+        setHasLocationPermission(granted);
+      } catch (err) {
+        return false;
       }
-    } catch (e) {}
+    } else if (Platform.OS === 'ios') {
+      try {
+        const status = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        if (status === 'granted') {
+          setHasLocationPermission(true);
+        } else {
+          setHasLocationPermission(false);
+        }
+      } catch (err) {
+        console.log(err, 'error');
+      }
+    }
   };
-
-  const getOneTimeLocation = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        setHasPermission(true);
-        const currentLongitude = JSON.stringify(position.coords.longitude);
-        const currentLatitude = JSON.stringify(position.coords.latitude);
-        AsyncStorage.setItem('permissionGiven', JSON.stringify('true'));
-        setModalVisible(false);
-        navigation.navigate('HomeScreen');
-        setHasPermission(true);
-      },
-      error => {
-        setHasPermission(false);
-        setModalVisible(true);
-        AsyncStorage.setItem('permissionGiven', JSON.stringify('false'));
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 30000,
-        maximumAge: 1000,
-      },
-    );
-  };
-
+  useEffect(() => {
+    checkLocationPermission();
+  }, []);
   useEffect(() => {
     console.log('text change---', inputOtp.length);
-    if (inputOtp.length != 5) {
+    if (inputOtp.length != 4) {
       setButtonDisabled(true);
     } else {
       setButtonDisabled(false);
@@ -141,11 +142,9 @@ const OTPVerificationScreen = props => {
       ]}>
       <CustomStatusBar
         backgroundColor={
-          hasPermission === false
-            ? 'rgba(27, 31, 39, 0.80)'
-            : colorScheme == 'dark'
-            ? COLORS.dark_con
-            : COLORS.white
+          colorScheme == 'dark'
+            ? COLORS.dark_theme_background
+            : COLORS.light_theme_background
         }
       />
 
@@ -190,7 +189,7 @@ const OTPVerificationScreen = props => {
           <OTPTextView
             handleTextChange={value => setInputOtp(value)}
             containerStyle={{marginTop: rHeight(40)}}
-            inputCount={5}
+            inputCount={4}
             textInputStyle={
               isDarkTheme ? {backgroundColor: 'transparent', color: '#FFF'} : {}
             }
@@ -233,7 +232,22 @@ const OTPVerificationScreen = props => {
   );
 };
 
-export default OTPVerificationScreen;
+const mapStateToProps = state => {
+  return {
+    isLoggedIn: state.auth.isLoggedIn,
+    accessToken: state.auth.bearerAccessToken,
+    loginUserId: state.auth.loginUserId,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {appActions: bindActionCreators(appActions, dispatch)};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(OTPVerificationScreen);
 
 const styles = StyleSheet.create({
   container: {

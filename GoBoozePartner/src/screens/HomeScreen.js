@@ -1,5 +1,12 @@
-import {View, StyleSheet, ScrollView, Text, Dimensions} from 'react-native';
-import React, {useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  Dimensions,
+  Pressable,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
@@ -11,6 +18,12 @@ import TodayProgressView from '../components/TodayProgressView';
 import GBSegmentControl from '../components/GBSegmentControl';
 import NewOrderAlertScreen from './NewOrderAlertScreen';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import CustomStatusBar from '../components/CustomStatusBar';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as appActions from '../redux/actions/appActionCreator';
+import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
+import ChartComponent from '../components/ChartComponent';
 
 const screenWidth = Dimensions.get('screen').width - 30;
 
@@ -28,14 +41,30 @@ const HomeScreen = props => {
     backgroundColor: COLORS.dark_disabled_background,
   };
 
+  useEffect(() => {
+    props.appActions.fecthDeliveryOrders(response => {
+      if (response.status == 200) {
+      } else {
+        Alert.alert('Invalid Mobile Number', response.error.message);
+      }
+    });
+  }, []);
+
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <NewOrderAlertScreen
         modalVisible={showNewOrderModal}
         dismissModal={() => setShowNewOrderModal(!showNewOrderModal)}
         onReachedToEnd={() => props.navigation.navigate('ReachPickup')}
+        denyClick={() => {
+          setShowNewOrderModal(false);
+        }}
       />
-      <View style={{marginTop: insets.top}}>
+      <CustomStatusBar
+        backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
+      />
+      {/* marginTop: insets.top */}
+      <View style={{}}>
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
@@ -75,7 +104,20 @@ const HomeScreen = props => {
         </View>
         <View style={[styles.seperator, darkSeperator]} />
 
+        <TouchableWithoutFeedback
+          style={{
+            width: '100%',
+            height: 50,
+            backgroundColor: 'red',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onPress={() => setShowNewOrderModal(true)}>
+          <Text>Show Order Modal</Text>
+        </TouchableWithoutFeedback>
+
         {/* ------------- total arning and order view  ------------- */}
+
         <View style={styles.horizontalMargin}>
           <Text
             style={[
@@ -97,13 +139,25 @@ const HomeScreen = props => {
             onValueChange={index => setInsightSelectedIndex(index)}
           />
         </View>
-        <TouchableWithoutFeedback
-          style={{width: 100, height: 100}}
-          onPress={() => setShowNewOrderModal(true)}></TouchableWithoutFeedback>
+
+        <ChartComponent />
       </ScrollView>
     </View>
   );
 };
+
+const mapStateToProps = state => {
+  return {
+    isLoggedIn: state.auth.isLoggedIn,
+    accessToken: state.auth.bearerAccessToken,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {appActions: bindActionCreators(appActions, dispatch)};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -139,5 +193,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F3F9',
   },
 });
-
-export default HomeScreen;

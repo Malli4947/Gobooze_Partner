@@ -12,7 +12,7 @@ import {rHeight, rWidth} from '../constants/PixelSize';
 const NewOrderAlertScreen = props => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
-  const {modalVisible, dismissModal, onReachedToEnd} = props;
+  const {modalVisible, dismissModal, onReachedToEnd, denyClick} = props;
   const darkTextColor = isDarkTheme && {color: '#FFF'};
   const darkSeperator = isDarkTheme && {
     borderColor: COLORS.dark_disabled_background,
@@ -21,10 +21,15 @@ const NewOrderAlertScreen = props => {
 
   return (
     <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
-      <BlurView
+      {/* <BlurView
         blurType={'light'}
         blurAmount={3}
-        style={styles.mainOuterComponent}>
+        style={styles.mainOuterComponent}> */}
+      <View
+        style={[
+          styles.mainOuterComponent,
+          isDarkTheme && {backgroundColor: '#31364180'},
+        ]}>
         <View style={styles.mainContainer}>
           <ModalCancelButton onPress={dismissModal} />
           <View
@@ -43,7 +48,9 @@ const NewOrderAlertScreen = props => {
               <Text style={[styles.newOrderText, darkTextColor]}>
                 New Order!
               </Text>
-              <Text style={styles.denyText}>Deny</Text>
+              <Text onPress={denyClick} style={styles.denyText}>
+                Deny
+              </Text>
             </View>
 
             {/* total earning and pick drop kms */}
@@ -99,7 +106,6 @@ const NewOrderAlertScreen = props => {
                 </View>
               </View>
             </View>
-
             <CustomSlideButton
               hideSeperator={true}
               title="Reached Pickup Location"
@@ -111,7 +117,8 @@ const NewOrderAlertScreen = props => {
             />
           </View>
         </View>
-      </BlurView>
+      </View>
+      {/* </BlurView> */}
     </Modal>
   );
 };
@@ -119,7 +126,7 @@ const NewOrderAlertScreen = props => {
 const styles = StyleSheet.create({
   mainOuterComponent: {
     flex: 1,
-    backgroundColor: '#00000095',
+    backgroundColor: '#31364180',
   },
   mainContainer: {
     position: 'absolute',

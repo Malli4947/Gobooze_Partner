@@ -55,7 +55,12 @@ const PickOrderScreen = props => {
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <PickOrderNowAlert modalVisible={false} />
       <View style={{marginTop: insets.top}}>
-        <NavBarWithBackButton title={'Pickup Order'} />
+        <NavBarWithBackButton
+          title={'Pickup Order'}
+          onPress={() => {
+            props.navigation.goBack();
+          }}
+        />
         <View style={[styles.seperator, darkSep]} />
       </View>
 
