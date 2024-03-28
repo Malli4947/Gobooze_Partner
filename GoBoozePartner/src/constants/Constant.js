@@ -31,6 +31,7 @@ export const GRAPHIK_FONT = {
 
 export const IMAGES = {
   GO_BOOZE: require('../assets/other_pngs/gobooze.png'),
+  GO_BOOZE_DARK: require('../assets/other_pngs/gobooze_dark.png'),
   INTRO_LIGHT: require('../assets/other_pngs/intro.png'),
   INTRO_DARK: require('../assets/other_pngs/intro_dark.png'),
   DELETE: require('../assets/other_pngs/delete.png'),

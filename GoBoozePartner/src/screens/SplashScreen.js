@@ -7,20 +7,18 @@ import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 
 const SplashScreen = props => {
   const colorScheme = useColorScheme();
-  const imagePath =
-    colorScheme === 'dark'
-      ? require('../assets/dak_theme_pngs/splashBackground.png')
-      : require('../assets/light_theme_pngs/splashBackground.png');
+  const isDarkTheme = colorScheme === 'dark';
+  const imagePath = isDarkTheme
+    ? require('../assets/dak_theme_pngs/splashBackground.png')
+    : require('../assets/light_theme_pngs/splashBackground.png');
 
   return (
     <View
-      style={[
-        colorScheme == 'dark' ? styles.dark_container : styles.light_container,
-      ]}>
+      style={[isDarkTheme ? styles.dark_container : styles.light_container]}>
       <ImageBackground source={imagePath} style={styles.background}>
         <View style={styles.logoContainer}>
           <Image
-            source={IMAGES.GO_BOOZE}
+            source={isDarkTheme ? IMAGES.GO_BOOZE_DARK : IMAGES.GO_BOOZE}
             resizeMode="contain"
             style={[{height: rWidth(130)}]}
           />
