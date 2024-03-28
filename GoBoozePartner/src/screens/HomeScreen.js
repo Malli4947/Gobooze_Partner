@@ -68,7 +68,7 @@ const HomeScreen = props => {
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingBottom: 30}}>
         {/* ------------- total arning and order view  ------------- */}
         <View style={styles.horizontalMargin}>
           <Text

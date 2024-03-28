@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   image: {
     height: '38%',
-    marginTop: Platform.OS == 'ios' ? -30 : 0,
+    marginTop: Platform.OS == 'ios' ? -0 : 0,
   },
   bottomContainer: {
     position: 'absolute',
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.SEMIBOLD,
     fontSize: rHeight(28),
     textAlign: 'left',
-    lineHeight: rWidth(33),
+    lineHeight: rHeight(35),
     marginTop: rHeight(10),
   },
   dtext_2: {
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   ltext_3: {
     color: COLORS.light_secondary_text,
     fontFamily: GRAPHIK_FONT.REGULAR,
-    fontSize: rWidth(14),
+    fontSize: rHeight(14),
     marginTop: rHeight(10),
     marginRight: 10,
     lineHeight: 21,

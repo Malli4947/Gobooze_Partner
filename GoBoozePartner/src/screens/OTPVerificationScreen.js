@@ -29,15 +29,16 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as appActions from '../redux/actions/appActionCreator';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import Loader from '../components/Loader';
 
 const OTPVerificationScreen = props => {
   const colorScheme = useColorScheme();
   const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [inputOtp, setInputOtp] = useState('');
-
   const [showOtpErrorMessage, setShowOtpErrorMessage] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   // --
   const [hasLocationPermission, setHasLocationPermission] = useState(false);
 
@@ -58,12 +59,14 @@ const OTPVerificationScreen = props => {
     if (inputOtp.length != 4) {
       setShowOtpErrorMessage(true);
     } else {
+      setShowLoader(true)
       const phoneNumber = props.route.params.mobileNumber;
       const jsonBody = {
         phone: `+91${phoneNumber}`,
         otp: inputOtp,
       };
       props.appActions.verifyOtp(jsonBody, response => {
+        setShowLoader(false)
         if (response.status == 200) {
           if (hasLocationPermission === true) {
             props.navigation.navigate('DashBoard');
@@ -71,6 +74,7 @@ const OTPVerificationScreen = props => {
             props.navigation.navigate('Location');
           }
         } else {
+          Alert.alert('Error', response.error);
         }
       });
     }
@@ -103,9 +107,11 @@ const OTPVerificationScreen = props => {
       }
     }
   };
+  
   useEffect(() => {
     checkLocationPermission();
   }, []);
+
   useEffect(() => {
     console.log('text change---', inputOtp.length);
     if (inputOtp.length != 4) {
@@ -127,12 +133,12 @@ const OTPVerificationScreen = props => {
       showListener.remove();
     };
   }, []);
-
+console.log(keyboardHeight)
   return (
     <ScrollView
       contentContainerStyle={{
         flexGrow: 1,
-        marginTop: keyboardHeight == 0 ? 0 : -140,
+        marginTop: keyboardHeight == 0 ? 0 : -(keyboardHeight / 4),
       }}
       keyboardShouldPersistTaps={'handled'}
       style={[
@@ -140,6 +146,7 @@ const OTPVerificationScreen = props => {
           backgroundColor: COLORS.dark_theme_background,
         },
       ]}>
+      <Loader loading={showLoader} />
       <CustomStatusBar
         backgroundColor={
           colorScheme == 'dark'
@@ -204,7 +211,11 @@ const OTPVerificationScreen = props => {
       </View>
 
       {/* Bottom button view */}
-      <View style={[styles.bottomContainerNoKeyboard]}>
+      <View
+        style={[
+          styles.bottomContainerNoKeyboard,
+          {bottom: rHeight(keyboardHeight > 0 ? keyboardHeight + 15 : 25)},
+        ]}>
         <Pressable style={styles.con_1}>
           <Text
             style={[styles.resend_otp_1, isDarkTheme && styles.resend_otp_2]}>
