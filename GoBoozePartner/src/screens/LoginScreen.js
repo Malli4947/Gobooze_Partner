@@ -25,7 +25,7 @@ const LoginScreen = props => {
   const colorScheme = useColorScheme();
   const [showLoader, setShowLoader] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  const [mobileNumber, setMobileNumber] = useState('8142787271');
+  const [mobileNumber, setMobileNumber] = useState('489921106');
   const [errorMessage, setErrorMessage] = useState(false);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -47,19 +47,24 @@ const LoginScreen = props => {
 
   const handleContinuePress = () => {
     // mobile number to login :'8142787271'
-    setShowLoader(true)
+    setShowLoader(true);
     const regex = /^(?!1234567890$|0123456789$|0987654321$)[0-9]+$/;
     const cleanedPhoneNumber = mobileNumber.replace(/[-.,\s]/g, '');
-    if (
-      !/^(0?[1-9][0-9]{9})$/.test(cleanedPhoneNumber) ||
-      mobileNumber.length !== 10 ||
-      !regex.test(cleanedPhoneNumber)
-    ) {
-      setErrorMessage(true);
-      return;
-    }
+    // if (
+    //   !/^(0?[1-9][0-9]{9})$/.test(cleanedPhoneNumber) ||
+    //   mobileNumber.length !== 10 ||
+    //   !regex.test(cleanedPhoneNumber)
+    // ) {
+    //   setErrorMessage(true);
+    //   return;
+    // }
     props.appActions.sendOtp(cleanedPhoneNumber, response => {
-      setShowLoader(false)
+      console.log(
+        '💕 ~ file: LoginScreen.js:69 ~ handleContinuePress ~ response:',
+        response,
+      );
+
+      setShowLoader(false);
       if (response.status == 200) {
         props.navigation.navigate('OTP', {mobileNumber: mobileNumber});
       } else {
@@ -71,7 +76,7 @@ const LoginScreen = props => {
   const onChangePhoneNumText = number => {
     setMobileNumber(number);
     setErrorMessage('');
-    if (number.length == 10) {
+    if (number.length == 9) {
       setButtonDisabled(false);
     } else {
       setButtonDisabled(true);
@@ -83,7 +88,7 @@ const LoginScreen = props => {
       <View
         style={[
           styles.conatiner,
-          {marginTop: !isKeyboardVisible ? 0 : -(keyboardHeight/4)},
+          {marginTop: !isKeyboardVisible ? 0 : -(keyboardHeight / 4)},
           colorScheme == 'dark' && {
             backgroundColor: COLORS.dark_theme_background,
           },

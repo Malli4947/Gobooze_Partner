@@ -1,0 +1,270 @@
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  Dimensions,
+  TouchableNativeFeedback,
+  Pressable,
+} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useColorScheme} from '../components/ColorSchemeContext';
+import COLORS from '../constants/Colors';
+import {rHeight} from '../constants/PixelSize';
+import {GRAPHIK_FONT} from '../constants/Constant';
+import OrderNavigationBar from '../components/OrderNavigationBar';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import TotalEarningOrderView from '../components/TotalEarningOrderView';
+import GBSegmentControl from '../components/GBSegmentControl';
+import NewOrderAlertScreen from './NewOrderAlertScreen';
+import CustomStatusBar from '../components/CustomStatusBar';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as appActions from '../redux/actions/appActionCreator';
+import io from 'socket.io-client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NewSlideButton from '../components/NewSlideButton';
+
+import Song from '../assets/BearSound.mp3';
+import OrdersCard from '../components/OrdersCard';
+import {useFocusEffect} from '@react-navigation/native';
+var Sound = require('react-native-sound');
+
+Sound.setCategory('Playback');
+
+var ding = new Sound(Song, Sound.MAIN_BUNDLE, error => {
+  if (error) {
+    console.log('failed to load the sound', error);
+    return;
+  }
+  // if loaded successfully
+  console.log(
+    'duration in seconds: ' +
+      ding.getDuration() +
+      'number of channels: ' +
+      ding.getNumberOfChannels(),
+  );
+});
+const screenWidth = Dimensions.get('screen').width - 30;
+
+const NewHomeScreen = props => {
+  const [showNewOrderModal, setShowNewOrderModal] = useState(false);
+  const colorScheme = useColorScheme();
+
+  const [insignSelectedIndex, setInsightSelectedIndex] = useState(0);
+  console.log(
+    '💕 ~ file: NewHomeScreen.js:55 ~ NewHomeScreen ~ insignSelectedIndex:',
+    insignSelectedIndex,
+  );
+  const [orderRequest, setOrderRequest] = useState([]);
+
+  const [listOfRequests, setListOfRequests] = useState([]);
+  const [modalData, setModaldata] = useState([]);
+
+  const socket = io('https://devapigobooze.codefactstech.com');
+
+  const isDarkTheme = colorScheme === 'dark';
+  const darkSeperator = isDarkTheme && {
+    backgroundColor: COLORS.dark_theme_background,
+  };
+
+  //   --
+  console.log(props.loginUserId, '---');
+  useEffect(() => {
+    ding.setVolume(10);
+    return () => {
+      ding.release();
+    };
+  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setShowNewOrderModal(false);
+    }, []),
+  );
+
+  const playPause = () => {
+    ding.play(success => {
+      if (success) {
+        playPause();
+      }
+    });
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log('', 'socket calling--');
+
+      socket.on(`${'partner-notification'}`, order => {
+        if (order) {
+          setTimeout(() => {
+            playPause();
+          }, 100);
+          setOrderRequest([order.data.orderDetails[0]]);
+          setListOfRequests([...listOfRequests, order.data.orderDetails[0]]);
+        }
+      });
+    }, 20000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (orderRequest.length !== 0) {
+      // setShowNewOrderModal(true);
+      socket.disconnect();
+    }
+  }, [orderRequest]);
+
+  return (
+    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+      <NewOrderAlertScreen
+        modalVisible={showNewOrderModal}
+        dismissModal={() => setShowNewOrderModal(!showNewOrderModal)}
+        onReachedToEnd={() => props.navigation.navigate('ReachPickup')}
+        orderDetails={modalData}
+        denyClick={() => {
+          setShowNewOrderModal(false);
+        }}
+      />
+      <CustomStatusBar
+        backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
+      />
+      {/* marginTop: insets.top */}
+      <View style={{}}>
+        <OrderNavigationBar />
+        <View style={[styles.seperator, darkSeperator]} />
+      </View>
+      <ScrollView
+        stickyHeaderIndices={[2]}
+        contentContainerStyle={{paddingBottom: 30}}>
+        {/* ------------- total arning and order view  ------------- */}
+        <View style={styles.horizontalMargin}>
+          <Text
+            style={[
+              styles.totalEarningText,
+              isDarkTheme && {color: COLORS.dark_primary_text},
+            ]}>
+            Total Earning & Orders
+          </Text>
+          <View style={styles.earningOrderContainer}>
+            <TotalEarningOrderView title="Total Orders" value="23" />
+            <TotalEarningOrderView title="Total Earning" value="$1.56k" />
+          </View>
+        </View>
+        <View style={[styles.seperator, darkSeperator]}></View>
+
+        {/* ------------- total arning and order view  ------------- */}
+        <View
+          style={{
+            padding: 10,
+            paddingLeft: 0,
+            backgroundColor: isDarkTheme ? COLORS.dark_con : COLORS.light_con,
+          }}>
+          <View style={styles.horizontalMargin}>
+            <Text
+              style={[
+                styles.totalEarningText,
+                {marginBottom: 20},
+                isDarkTheme && {color: COLORS.dark_primary_text},
+              ]}>
+              Orders
+            </Text>
+            <GBSegmentControl
+              width={screenWidth}
+              segmentBorderRadius={10}
+              inactiveBgColor={isDarkTheme && '#00000070'}
+              tintColor={isDarkTheme ? '#3F444D' : '#FFF'}
+              inactiveFont={isDarkTheme && '#FFFFFFBF'}
+              activeFont={isDarkTheme ? '#FFF' : COLORS.light_primary_text}
+              segmentArray={['Me', 'On Going', 'Delivered']}
+              selectedIndex={insignSelectedIndex}
+              onValueChange={index => {
+                setInsightSelectedIndex(index);
+              }}
+            />
+          </View>
+        </View>
+        <View>
+          {insignSelectedIndex == 0 && (
+            <OrdersCard
+              onPress={() => {
+                setShowNewOrderModal(true);
+              }}
+            />
+          )}
+          {insignSelectedIndex == 0 && (
+            <OrdersCard
+              onPress={() => {
+                // setModaldata();
+
+                setShowNewOrderModal(true);
+              }}
+            />
+          )}
+          {insignSelectedIndex == 0 && (
+            <OrdersCard
+              orderRequests={listOfRequests}
+              onOrderPress={item => {
+                setModaldata(item);
+
+                setShowNewOrderModal(true);
+              }}
+            />
+          )}
+        </View>
+
+        <View style={{height: 100}} />
+      </ScrollView>
+    </View>
+  );
+};
+
+const mapStateToProps = state => {
+  return {
+    isLoggedIn: state.auth.isLoggedIn,
+    accessToken: state.auth.bearerAccessToken,
+    loginUserId: state.auth.loginUserId,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {appActions: bindActionCreators(appActions, dispatch)};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewHomeScreen);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF',
+  },
+  dark_container: {
+    backgroundColor: COLORS.dark_con,
+  },
+  seperator: {
+    backgroundColor: COLORS.light_theme_background,
+    height: rHeight(9),
+    width: '100%',
+    marginTop: rHeight(6),
+  },
+  totalEarningText: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rHeight(20),
+    color: COLORS.light_primary_text,
+  },
+  horizontalMargin: {
+    marginHorizontal: 15,
+    marginVertical: rHeight(15),
+  },
+  earningOrderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: rHeight(20),
+    alignItems: 'center',
+  },
+  verticalSeperator: {
+    width: 2,
+    height: '70%',
+    backgroundColor: '#F1F3F9',
+  },
+});

@@ -12,7 +12,7 @@ const CustomButton = props => {
     textStyle,
     disabled = false,
     showView = true,
-    image
+    image,
   } = props;
 
   return (

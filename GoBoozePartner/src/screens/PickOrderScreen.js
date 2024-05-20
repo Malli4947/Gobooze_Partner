@@ -5,6 +5,7 @@ import {
   Text,
   ScrollView,
   FlatList,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -16,6 +17,9 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import OrderDetailsView from '../components/OrderDetailsView';
 import PickOrderNowAlert from './PickOrderNowAlert';
+import NewSlideButton from '../components/NewSlideButton';
+import {useNavigation} from '@react-navigation/native';
+import updateOrder from '../constants/statusUpdate';
 
 const orders = [
   {
@@ -49,6 +53,17 @@ const PickOrderScreen = props => {
   const slideBtnColor = isDarkTheme ? '#FFFFFF99' : '#1D2433A6';
   const darkSep = isDarkTheme && {
     backgroundColor: COLORS.dark_theme_background,
+  };
+  const navigation = useNavigation();
+
+  const handleUpdateOrder = async () => {
+    const orderId = '664b4af749c3034a3f9e3950';
+    const orderStatus = 'Order Picked From Store';
+    try {
+      await updateOrder(orderId, orderStatus);
+    } catch (e) {
+      Alert.alert('Error', 'Failed to update order status');
+    }
   };
 
   return (
@@ -165,7 +180,7 @@ const PickOrderScreen = props => {
           styles.slideBtnContainer,
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
-        <CustomSlideButton
+        {/* <CustomSlideButton
           title="Reached Pickup Location"
           confirmedText="Reached"
           disabled={isOrderReady}
@@ -186,6 +201,12 @@ const PickOrderScreen = props => {
                 : COLORS.ligth_grey
               : undefined
           }
+        /> */}
+
+        <NewSlideButton
+          title={`Okay, I'm Pickink`}
+          navigationScreen={'ReachMapDrop'}
+          onComplete={handleUpdateOrder}
         />
       </View>
     </View>

@@ -1,6 +1,7 @@
 import {useSelector} from 'react-redux';
 import ActionConstants from '../ActionConstants';
 import * as GoboozeAPI from '../GoboozeApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ***************************************************************
 // ----------------------- SAVE USER STATE -----------------------
@@ -46,7 +47,23 @@ export const verifyOtp = (params, callback) => {
       .then(response => {
         if (response.status == 200) {
           const accessToken = response.data.data.token;
+          console.log(
+            '💕 ~ file: appActionCreator.js:49 ~ return ~ accessToken:',
+            accessToken,
+          );
           const userId = response.data.data.userId;
+          console.log(
+            '💕 ~ file: appActionCreator.js:50 ~ return ~ userId:',
+            userId,
+          );
+          const combinedData = `${accessToken}:${userId}`;
+
+          console.log(
+            '💕 ~ file: appActionCreator.js:61 ~ return ~ combinedData:',
+            combinedData,
+          );
+          AsyncStorage.setItem('USER_DATA', combinedData);
+
           dispatch(saveAccessToken(accessToken));
           dispatch(saveLoginUserId(userId));
           dispatch(saveIsLoggedIn(true));

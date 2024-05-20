@@ -8,16 +8,53 @@ import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import {rHeight, rWidth} from '../constants/PixelSize';
+import NewSlideButton from '../components/NewSlideButton';
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+
+import {API_BASE_URL, MAIN_BASE_URL} from '../constants/Constant';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NewOrderAlertScreen = props => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
-  const {modalVisible, dismissModal, onReachedToEnd, denyClick} = props;
+  const {modalVisible, dismissModal, onReachedToEnd, denyClick, orderDetails} =
+    props;
+
+  console.log(
+    '💕 ~ file: NewOrderAlertScreen.js:18 ~ NewOrderAlertScreen ~ orderDetails:',
+    orderDetails,
+  );
+
+  const navigation = useNavigation();
+
   const darkTextColor = isDarkTheme && {color: '#FFF'};
   const darkSeperator = isDarkTheme && {
     borderColor: COLORS.dark_disabled_background,
   };
   const darkBg = isDarkTheme && {backgroundColor: COLORS.dark_con};
+
+  const acceptOrder = async () => {
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+      const acceptRes = await axios.post(
+        `${MAIN_BASE_URL}order/api/orders/accept-order?orderId=${orderDetails._id}&userId=${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `${accessToken}`, // Include the access token in the headers
+          },
+        },
+      );
+      console.log(
+        '💕 ~ file: NewOrderAlertScreen.js:49 ~ acceptOrder ~ acceptRes:',
+        acceptRes,
+      );
+    } catch (e) {
+      console.log('💕 ~ file: NewOrderAlertScreen.js:35 ~ acceptOrder ~ e:', e);
+    }
+  };
 
   return (
     <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
@@ -25,99 +62,99 @@ const NewOrderAlertScreen = props => {
         blurType={'light'}
         blurAmount={3}
         style={styles.mainOuterComponent}> */}
-      <View
-        style={[
-          styles.mainOuterComponent,
-          isDarkTheme && {backgroundColor: '#31364180'},
-        ]}>
-        <View style={styles.mainContainer}>
-          <ModalCancelButton onPress={dismissModal} />
-          <View
-            style={[
-              styles.bottomContainer,
-              isDarkTheme && {backgroundColor: COLORS.dark_theme_background},
-            ]}>
+      {orderDetails.length !== 0 && (
+        <View
+          style={[
+            styles.mainOuterComponent,
+            isDarkTheme && {backgroundColor: '#31364180'},
+          ]}>
+          <View style={styles.mainContainer}>
+            <ModalCancelButton onPress={dismissModal} />
             <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginHorizontal: 15,
-                alignItems: 'center',
-              }}>
-              <View></View>
-              <Text style={[styles.newOrderText, darkTextColor]}>
-                New Order!
-              </Text>
-              <Text onPress={denyClick} style={styles.denyText}>
-                Deny
-              </Text>
-            </View>
+              style={[
+                styles.bottomContainer,
+                isDarkTheme && {backgroundColor: COLORS.dark_theme_background},
+              ]}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginHorizontal: 15,
+                  alignItems: 'center',
+                }}>
+                <View></View>
+                <Text style={[styles.newOrderText, darkTextColor]}>
+                  New Order!
+                </Text>
+                <Text onPress={denyClick} style={styles.denyText}>
+                  Deny
+                </Text>
+              </View>
 
-            {/* total earning and pick drop kms */}
-            <EarningPickDropDetailView
+              {/* total earning and pick drop kms */}
+              {/* <EarningPickDropDetailView
               earning={{key: 'Expected Earning: ', value: '$5.89'}}
               bottomLeft={{key: 'Pickup: ', value: '2.5km'}}
               bottomRight={{key: 'Drop: ', value: '28mins'}}
-            />
+            /> */}
 
-            {/* Pick up address */}
-            <View
-              style={[
-                styles.pickupAddressContainer,
-                styles.shadow,
-                darkSeperator,
-                darkBg,
-              ]}>
-              <View style={styles.pickUpTopView}>
-                <Text style={[styles.darkText, darkTextColor]}>
-                  PICKUP FROM
-                </Text>
+              {/* Pick up address */}
+              <View
+                style={[
+                  styles.pickupAddressContainer,
+                  styles.shadow,
+                  darkSeperator,
+                  darkBg,
+                ]}>
                 <View style={styles.pickUpTopView}>
+                  <Text style={[styles.darkText, darkTextColor]}>
+                    PICKUP FROM
+                  </Text>
+                  {/* <View style={styles.pickUpTopView}>
                   <Image
                     tintColor={isDarkTheme && COLORS.dark_primary_text}
                     style={styles.clockImg}
                     source={IMAGES.CLOCK}
                   />
                   <Text style={[darkTextColor]}>5min away</Text>
+                </View> */}
+                </View>
+                <View style={styles.pickUpBottomView}>
+                  <View style={styles.logoImgView}>
+                    <Image
+                      resizeMode="contain"
+                      style={styles.logoImg}
+                      source={IMAGES.GO_LOGO}
+                    />
+                  </View>
+                  <View style={{marginLeft: 10, width: '75%'}}>
+                    <Text
+                      style={[styles.darkText, {fontSize: 15}, darkTextColor]}>
+                      {orderDetails.store.storeName}(
+                      {orderDetails.store.storeNumber})
+                    </Text>
+                    <Text
+                      style={[
+                        styles.lightText,
+                        styles.addressText,
+                        darkTextColor,
+                      ]}>
+                      {orderDetails.store.storeAddress}
+                    </Text>
+                  </View>
                 </View>
               </View>
-              <View style={styles.pickUpBottomView}>
-                <View style={styles.logoImgView}>
-                  <Image
-                    resizeMode="contain"
-                    style={styles.logoImg}
-                    source={IMAGES.GO_LOGO}
-                  />
-                </View>
-                <View style={{marginLeft: 10, width: '75%'}}>
-                  <Text
-                    style={[styles.darkText, {fontSize: 15}, darkTextColor]}>
-                    Univeristy of Melbourne (3010)
-                  </Text>
-                  <Text
-                    style={[
-                      styles.lightText,
-                      styles.addressText,
-                      darkTextColor,
-                    ]}>
-                    1243 O'keefe Crest, Isaacstad, New South Wales 2364,
-                    Australia
-                  </Text>
-                </View>
-              </View>
+
+              <NewSlideButton
+                title={'Accept order'}
+                navigationScreen={'ReachPickup'}
+                onComplete={acceptOrder}
+              />
             </View>
-            <CustomSlideButton
-              hideSeperator={true}
-              title="Reached Pickup Location"
-              confirmedText="Placing your order"
-              onReachedToEnd={() => {
-                dismissModal();
-                onReachedToEnd();
-              }}
-            />
           </View>
         </View>
-      </View>
+      )}
+
       {/* </BlurView> */}
     </Modal>
   );
@@ -193,6 +230,7 @@ const styles = StyleSheet.create({
     marginHorizontal: rWidth(20),
     padding: rHeight(20),
     backgroundColor: '#FFF',
+    marginTop: rHeight(20),
   },
   pickUpTopView: {
     flexDirection: 'row',

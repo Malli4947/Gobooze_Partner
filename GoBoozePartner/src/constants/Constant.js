@@ -1,9 +1,9 @@
 import {Platform} from 'react-native';
 
 export const API_BASE_URL =
-  'https://service.liquorplus.com.au/admin/api/partner/';
+  'https://devapigobooze.codefactstech.com/admin/api/partner/';
 
-export const MAIN_BASE_URL = 'https://service.liquorplus.com.au/';
+export const MAIN_BASE_URL = 'https://devapigobooze.codefactstech.com/';
 
 export const apiConfig = {
   sendOtp: 'send-otp',

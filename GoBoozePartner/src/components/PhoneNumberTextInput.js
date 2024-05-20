@@ -32,7 +32,7 @@ const PhoneNumberTextInput = props => {
         <TextInput
           keyboardType="number-pad"
           style={[styles.input, darkThemeText, errorTextStyle]}
-          maxLength={10}
+          maxLength={9}
           value={value}
           onChangeText={onChangePhoneNumText}
           onFocus={() => setOnTextinputFocus(true)}

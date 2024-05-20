@@ -11,15 +11,50 @@ import {CONST_STYLES} from '../constants/ConstStyles';
 import DetailsView from '../components/DetailsView';
 import MapView, {PROVIDER_DEFAULT} from 'react-native-maps';
 import CallButton from '../components/CallButton';
+import NewSlideButton from '../components/NewSlideButton';
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+
+import {MAIN_BASE_URL} from '../constants/Constant';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ReachPickupScreen = props => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkBg = isDarkTheme && {backgroundColor: COLORS.dark_con};
   const darkTextStyle = isDarkTheme && {color: COLORS.dark_primary_text};
   const darkSeperator = isDarkTheme && {
     borderColor: COLORS.dark_disabled_background,
+  };
+  console.log(
+    '💕 ~ file: ReachPickupScreen.js:11 ~ MAIN_BASE_URL:',
+    MAIN_BASE_URL,
+  );
+
+  const updateOrder = async () => {
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+      const acceptRes = await axios.patch(
+        `${MAIN_BASE_URL}order/api/orders/update-order-status/664b4af749c3034a3f9e3950`,
+        {
+          order_status: 'Reached Pickup Location',
+        },
+        {
+          headers: {
+            Authorization: `${accessToken}`, // Include the access token in the headers
+          },
+        },
+      );
+      console.log(
+        '💕 ~ file: NewOrderAlertScreen.js:49 ~ acceptOrder ~ acceptRes:',
+        acceptRes,
+      );
+    } catch (e) {
+      console.log('💕 ~ file: ReachPickupScreen.js:55 ~ updateOrder ~ e:', e);
+    }
   };
 
   return (
@@ -29,7 +64,7 @@ const ReachPickupScreen = props => {
           onPress={() => {
             props.navigation.goBack();
           }}
-          title={'Ready Pickup'}
+          title={'Reach Pickup'}
         />
       </View>
       <View
@@ -114,12 +149,10 @@ const ReachPickupScreen = props => {
           />
         </View>
 
-        {/* ------------- Bottom slide button ----------- */}
-        <CustomSlideButton
-          hideSeperator={true}
-          title="Reached Pickup Location"
-          confirmedText="Placing your order"
-          onReachedToEnd={() => props.navigation.navigate('OrderPick')}
+        <NewSlideButton
+          title={'Reached Pickup Location'}
+          navigationScreen={'OrderPick'}
+          onComplete={updateOrder}
         />
       </View>
     </View>

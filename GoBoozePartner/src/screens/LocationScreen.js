@@ -56,7 +56,8 @@ const LocationScreen = () => {
         navigation.navigate('DashBoard');
       },
       error => {
-        // console.log(error, 'error--');
+        console.log(error, 'error--');
+        navigation.navigate('DashBoard');
       },
       {
         enableHighAccuracy: false,
@@ -65,6 +66,7 @@ const LocationScreen = () => {
       },
     );
   };
+  //---//---//--//--//--//--//--//--
   return (
     <View
       style={[styles.light_container, isDarkTheme && styles.dark_container]}>

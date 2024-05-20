@@ -20,7 +20,7 @@ const CannotLeaveOrderAlert = props => {
   const colorScheme = useColorScheme();
   const [reasons, setReasons] = useState(options);
   const isDarkTheme = colorScheme === 'dark';
-  const {modalVisible, dismissModal} = props;
+  const {modalVisible, dismissModal, onGoback} = props;
   const darkTextColor = isDarkTheme && {color: '#FFF'};
   const checked = isDarkTheme ? IMAGES.CHECKED_DARK : IMAGES.CHECKED_LIGHT;
   const unchecked = isDarkTheme
@@ -52,9 +52,9 @@ const CannotLeaveOrderAlert = props => {
 
   return (
     <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
-      <BlurView
-        blurType={'light'}
-        blurAmount={3}
+      <View
+        // blurType={'light'}
+        // blurAmount={3}
         style={styles.mainOuterComponent}>
         <View style={styles.mainContainer}>
           <ModalCancelButton onPress={dismissModal} />
@@ -82,6 +82,7 @@ const CannotLeaveOrderAlert = props => {
             />
             <View style={styles.buttonCon}>
               <CustomButton
+                handleClick={onGoback}
                 buttonText="Go Back"
                 buttonStyle={[
                   styles.buttonStyle,
@@ -99,7 +100,7 @@ const CannotLeaveOrderAlert = props => {
             </View>
           </View>
         </View>
-      </BlurView>
+      </View>
     </Modal>
   );
 };

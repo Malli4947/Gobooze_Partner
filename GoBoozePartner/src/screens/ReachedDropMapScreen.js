@@ -1,4 +1,4 @@
-import {View, StyleSheet, Image, Text} from 'react-native';
+import {View, StyleSheet, Image, Text, Alert} from 'react-native';
 import React from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
@@ -9,7 +9,9 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import {CONST_STYLES} from '../constants/ConstStyles';
 import DetailsView from '../components/DetailsView';
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps';
+import MapView, {PROVIDER_DEFAULT} from 'react-native-maps';
+import NewSlideButton from '../components/NewSlideButton';
+import updateOrder from '../constants/statusUpdate';
 
 const ReachedDropMapScreen = props => {
   const insets = useSafeAreaInsets();
@@ -21,10 +23,20 @@ const ReachedDropMapScreen = props => {
     borderColor: COLORS.dark_disabled_background,
   };
 
+  const handleUpdateOrder = async () => {
+    const orderId = '664b4af749c3034a3f9e3950';
+    const orderStatus = 'Ready For Delivery';
+    try {
+      await updateOrder(orderId, orderStatus);
+    } catch (e) {
+      Alert.alert('Error', 'Failed to update order status');
+    }
+  };
+
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top}}>
-        <NavBarWithBackButton title={'Ready Pickup'} />
+        <NavBarWithBackButton title={'Reach Drop'} />
       </View>
       <View
         style={{
@@ -129,11 +141,19 @@ const ReachedDropMapScreen = props => {
         </View>
 
         {/* ------------- Bottom slide button ----------- */}
-        <CustomSlideButton
+        {/* <CustomSlideButton
           hideSeperator={true}
           title="Reached Pickup Location"
           confirmedText="Placing your order"
           onReachedToEnd={() => props.navigation.navigate('OrderPick')}
+        /> */}
+        <NewSlideButton
+          title={'Reached Pickup Location'}
+          navigationScreen={'CollectMoney'}
+          onComplete={handleUpdateOrder}
+          // onComplete={() => {
+          //   navigation.navigate('ReachDrop');
+          // }}
         />
       </View>
     </View>
@@ -150,7 +170,6 @@ const styles = StyleSheet.create({
   },
   map: {
     height: '80%',
-
   },
   logoContainer: {
     marginBottom: 100,

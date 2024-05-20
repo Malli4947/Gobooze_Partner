@@ -7,7 +7,7 @@ import {rHeight, rWidth} from '../constants/PixelSize';
 import {useColorScheme} from './ColorSchemeContext';
 import CustomButton from './CustomButton';
 
-const LeaveOrderAtDoorView = ({}) => {
+const LeaveOrderAtDoorView = ({Children}) => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
 
@@ -32,14 +32,7 @@ const LeaveOrderAtDoorView = ({}) => {
           </Text>
         </View>
       </View>
-      <CustomButton
-        buttonText="Add Photo"
-        showView={false}
-        buttonStyle={{
-          backgroundColor: isDarkTheme ? '#099A6A' : '#08875D',
-          height: 43,
-        }}
-      />
+      {Children}
     </View>
   );
 };

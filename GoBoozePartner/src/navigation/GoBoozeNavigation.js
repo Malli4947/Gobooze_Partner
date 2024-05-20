@@ -16,6 +16,8 @@ import ReachedDropScreen from '../screens/ReachedDropScreen';
 import TripSummaryScreen from '../screens/TripSummaryScreen';
 import {useSelector} from 'react-redux';
 import LocationScreen from '../screens/LocationScreen';
+import NewHomeScreen from '../screens/NewHomeScreen';
+import ReachedDropMapScreen from '../screens/ReachedDropMapScreen';
 
 const AuthNav = createNativeStackNavigator();
 const SplashNav = createNativeStackNavigator();
@@ -45,11 +47,12 @@ export const GBHomeNavigator = () => {
   return (
     <AuthNav.Navigator
       screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
-      <AuthNav.Screen name="Home" component={HomeScreen} />
+      <AuthNav.Screen name="Home" component={NewHomeScreen} />
       <AuthNav.Screen name="TripSummary" component={TripSummaryScreen} />
       <AuthNav.Screen name="CollectMoney" component={ReachedDropScreen} />
       <AuthNav.Screen name="ReachPickup" component={ReachPickupScreen} />
       <AuthNav.Screen name="OrderPick" component={PickOrderScreen} />
+      <AuthNav.Screen name="ReachMapDrop" component={ReachedDropMapScreen} />
     </AuthNav.Navigator>
   );
 };

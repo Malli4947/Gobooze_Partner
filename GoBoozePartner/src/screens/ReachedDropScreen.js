@@ -14,6 +14,9 @@ import LeaveOrderAtDoorView from '../components/LeaveOrderAtDoorView';
 import UPIView from '../components/UPIView';
 import AddPhotoAlert from '../components/AddPhotoAlert';
 import CannotLeaveOrderAlert from '../components/CannotLeaveOrderAlert';
+import CustomButton from '../components/CustomButton';
+import NewSlideButton from '../components/NewSlideButton';
+import updateOrder from '../constants/statusUpdate';
 
 const orders = [
   {
@@ -51,12 +54,42 @@ const ReachedDropScreen = props => {
   const darkSep = isDarkTheme && {
     backgroundColor: COLORS.dark_theme_background,
   };
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [showCancelOrder, setShowCancelOrder] = useState(false);
+  const handleUpdateOrder = async () => {
+    const orderId = '664b4af749c3034a3f9e3950';
+    const orderStatus = 'completed';
+    try {
+      await updateOrder(orderId, orderStatus);
+    } catch (e) {
+      Alert.alert('Error', 'Failed to update order status');
+    }
+  };
 
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <PickOrderNowAlert modalVisible={false} />
-      <AddPhotoAlert modalVisible={false} />
-      <CannotLeaveOrderAlert modalVisible={true} />
+      <AddPhotoAlert
+        modalVisible={showPhotoModal}
+        dismissModal={() => {
+          setShowPhotoModal(false);
+        }}
+        cancelOrder={() => {
+          setShowCancelOrder(true);
+          setShowPhotoModal(false);
+        }}
+      />
+      <CannotLeaveOrderAlert
+        modalVisible={showCancelOrder}
+        onGoback={() => {
+          setShowCancelOrder(false);
+          setShowPhotoModal(true);
+        }}
+        dismissModal={() => {
+          setShowCancelOrder(false);
+          setShowPhotoModal(true);
+        }}
+      />
       <View style={{marginTop: insets.top}}>
         <NavBarWithBackButton title={'Reach Drop'} />
         <View style={[styles.seperator, darkSep]} />
@@ -64,7 +97,24 @@ const ReachedDropScreen = props => {
 
       {/* ---------------- BOTTOM CONTAINER ---------------- */}
       <ScrollView>
-        {isPaidOnline && <LeaveOrderAtDoorView />}
+        {isPaidOnline && (
+          <LeaveOrderAtDoorView
+            Children={
+              <CustomButton
+                buttonText="Add Photo"
+                showView={false}
+                handleClick={() => {
+                  console.log('h99------');
+                  setShowPhotoModal(true);
+                }}
+                buttonStyle={{
+                  backgroundColor: isDarkTheme ? '#099A6A' : '#08875D',
+                  height: 43,
+                }}
+              />
+            }
+          />
+        )}
         {!isPaidOnline && <UPIView orderDetails={orderDetails} />}
 
         <CollectCashView
@@ -121,7 +171,7 @@ const ReachedDropScreen = props => {
           styles.slideBtnContainer,
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
-        <CustomSlideButton
+        {/* <CustomSlideButton
           title="Order Delivered"
           confirmedText="Order Delivered"
           disabled={isOrderReady}
@@ -142,6 +192,12 @@ const ReachedDropScreen = props => {
                 : COLORS.ligth_grey
               : undefined
           }
+        /> */}
+
+        <NewSlideButton
+          title={`Order Delivered`}
+          navigationScreen={'Home'}
+          onComplete={handleUpdateOrder}
         />
       </View>
     </View>
