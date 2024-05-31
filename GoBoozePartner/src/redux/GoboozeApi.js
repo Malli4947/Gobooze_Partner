@@ -31,3 +31,20 @@ export const deliveryOrders = params => {
     },
   });
 };
+// --- fecth pending Orders---
+
+export const pendingOrders = params => {
+  console.log('💕 ~ file: GoboozeApi.js:22 ~ deliveryOrders ~ params:', params);
+  return axios.post(
+    `${MAIN_BASE_URL}${apiConfig.deliveryOrders(params)}`,
+    {
+      order_status: 'pending',
+    },
+    {
+      headers: {
+        ...headers,
+        Authorization: params ? `${params}` : '',
+      },
+    },
+  );
+};

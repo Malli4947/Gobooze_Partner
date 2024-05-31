@@ -100,3 +100,26 @@ export const fecthDeliveryOrders = callback => {
       });
   };
 };
+
+// --pending orders---
+
+export const fetchPendingOrders = callback => {
+  return async (dispatch, getState) => {
+    const accessToken = getState().auth.bearerAccessToken;
+
+    return GoboozeAPI.pendingOrders(accessToken)
+      .then(response => {
+        if (response.status == 200) {
+          callback && callback({status: 200, data: response.data});
+        }
+      })
+      .catch(error => {
+        console.log(
+          '💕 ~ file: appActionCreator.js:64 ~ return ~ error:',
+          error,
+        );
+
+        callback({error: error && error.response && error.response.data});
+      });
+  };
+};

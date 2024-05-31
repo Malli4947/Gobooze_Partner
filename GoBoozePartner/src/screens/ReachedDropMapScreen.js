@@ -1,4 +1,12 @@
-import {View, StyleSheet, Image, Text, Alert} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Alert,
+  TouchableOpacity,
+  Linking,
+} from 'react-native';
 import React from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
@@ -9,11 +17,20 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import {CONST_STYLES} from '../constants/ConstStyles';
 import DetailsView from '../components/DetailsView';
-import MapView, {PROVIDER_DEFAULT} from 'react-native-maps';
+import MapView, {MapMarker, PROVIDER_DEFAULT} from 'react-native-maps';
 import NewSlideButton from '../components/NewSlideButton';
 import updateOrder from '../constants/statusUpdate';
 
-const ReachedDropMapScreen = props => {
+const ReachedDropMapScreen = ({route}) => {
+  const OrderDetails = route.params.orderDetails;
+  console.log(
+    '💕 ~ file: ReachedDropMapScreen.js:18 ~ ReachedDropMapScreen ~ OrderDetails:',
+    OrderDetails,
+  );
+
+  const orders = OrderDetails.order.order_Variants;
+
+  const storeDetails = route.params.orderDetails.order.store;
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
@@ -23,11 +40,14 @@ const ReachedDropMapScreen = props => {
     borderColor: COLORS.dark_disabled_background,
   };
 
+  const origin = {
+    latitude: -37.8057853,
+    longitude: 144.9479622,
+  };
+
   const handleUpdateOrder = async () => {
-    const orderId = '664b4af749c3034a3f9e3950';
-    const orderStatus = 'Ready For Delivery';
     try {
-      await updateOrder(orderId, orderStatus);
+      await updateOrder(OrderDetails.order_id, 'ready-for-delivery');
     } catch (e) {
       Alert.alert('Error', 'Failed to update order status');
     }
@@ -38,23 +58,29 @@ const ReachedDropMapScreen = props => {
       <View style={{marginTop: insets.top}}>
         <NavBarWithBackButton title={'Reach Drop'} />
       </View>
-      <View
+      {/* <View
         style={{
           height: '50%',
           // backgroundColor: 'lightblue',
           marginTop: 10,
+        }}> */}
+      <MapView
+        provider={PROVIDER_DEFAULT} // remove if not using Google Maps
+        style={styles.map}
+        region={{
+          latitude: storeDetails
+            ? storeDetails.location.coordinates[1]
+            : -37.8057853,
+          longitude: storeDetails
+            ? storeDetails.location.coordinates[0]
+            : 144.9479622,
+          latitudeDelta: 0.0121,
+          longitudeDelta: 0.0121,
         }}>
-        <MapView
-          provider={PROVIDER_DEFAULT} // remove if not using Google Maps
-          style={styles.map}
-          region={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.0121,
-          }}></MapView>
-        {/* map view */}
-      </View>
+        <MapMarker coordinate={origin}></MapMarker>
+      </MapView>
+      {/* map view */}
+      {/* </View> */}
 
       {/* ---------------- BOTTOM CONTAINER ---------------- */}
       <View style={[styles.bottomContainer, darkBg]}>
@@ -83,10 +109,11 @@ const ReachedDropMapScreen = props => {
             <View style={styles.addressTopView}>
               <View style={{width: '70%'}}>
                 <Text style={[styles.lightBlackText, darkTextStyle]}>
-                  Univeristy of Melbourne (3010)
+                  {OrderDetails.order.address.first_name}
+                  {OrderDetails.order.address.last_name}
                 </Text>
                 <Text style={[styles.ultralightBlackText, darkTextStyle]}>
-                  1243 O'keefe Crest, Isaacstad, New South Wales 2364, Australia
+                  {OrderDetails.order.address.state}
                 </Text>
               </View>
               <View style={styles.logoImgView}>
@@ -105,7 +132,13 @@ const ReachedDropMapScreen = props => {
                 styles.addressBottomView,
                 isDarkTheme && styles.addressBottomViewDark,
               ]}>
-              <View style={styles.callContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL(
+                    `tel:${OrderDetails.order.address.addressPhoneNumber}`,
+                  );
+                }}
+                style={styles.callContainer}>
                 <Image
                   tintColor={isDarkTheme && COLORS.pink_light}
                   resizeMode="contain"
@@ -119,7 +152,7 @@ const ReachedDropMapScreen = props => {
                   ]}>
                   Call
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -130,27 +163,32 @@ const ReachedDropMapScreen = props => {
             id="0"
             image={IMAGES.BOX}
             title={'Order:'}
-            value="4286690449"
+            value={`   #${OrderDetails.order_id.slice(
+              0,
+              5,
+            )}-${OrderDetails.order_id.slice(-5)}`}
           />
           <DetailsView
             id="1"
             image={IMAGES.CUSTOMER}
             title={'Customer:'}
-            value="Rahul Singh"
+            value={`${OrderDetails.order.address.first_name} ${OrderDetails.order.address.last_name}`}
           />
         </View>
 
         {/* ------------- Bottom slide button ----------- */}
         {/* <CustomSlideButton
           hideSeperator={true}
-          title="Reached Pickup Location"
+          title="reached-pickup-location"
           confirmedText="Placing your order"
           onReachedToEnd={() => props.navigation.navigate('OrderPick')}
         /> */}
         <NewSlideButton
-          title={'Reached Pickup Location'}
+          title={'ready-for-delivery'}
           navigationScreen={'CollectMoney'}
           onComplete={handleUpdateOrder}
+          orderData={OrderDetails}
+
           // onComplete={() => {
           //   navigation.navigate('ReachDrop');
           // }}

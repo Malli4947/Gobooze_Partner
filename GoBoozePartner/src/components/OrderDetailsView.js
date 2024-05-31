@@ -18,8 +18,13 @@ const OrderDetailsView = ({
   customerDetail,
   expandCustomerDetail,
   expandOrderDetail,
+  expandStoreDetail,
   onPress,
 }) => {
+  console.log(
+    '💕 ~ file: OrderDetailsView.js:24 ~ orderDetails:',
+    orderDetails,
+  );
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkTextStyle = isDarkTheme && {color: COLORS.dark_primary_text};
@@ -32,6 +37,7 @@ const OrderDetailsView = ({
         isDarkTheme && styles.dark_container,
       ]}>
       <View style={styles.topView}>
+        {/* {orderDetails.map(item,index)=>{}} */}
         <View style={styles.imgTextContainer}>
           <View
             style={[
@@ -59,17 +65,26 @@ const OrderDetailsView = ({
         </TouchableOpacity>
       </View>
       {id == 1 && expandCustomerDetail && (
-        <View style={styles.expandedView}>
-          <View
-            style={[
-              styles.seperator,
-              isDarkTheme && {backgroundColor: COLORS.dark_disabled_background},
-            ]}
-          />
-          <CustomerDetailView
-            name={customerDetail.name}
-            mobileNumber={customerDetail.mobileNum}
-            orderId={customerDetail.orderId}
+        <View>
+          <View style={styles.expandedView}>
+            <View
+              style={[
+                styles.seperator,
+                isDarkTheme && {
+                  backgroundColor: COLORS.dark_disabled_background,
+                },
+              ]}
+            />
+            <CustomerDetailView
+              name={customerDetail.name}
+              mobileNumber={customerDetail.mobileNum}
+              orderId={customerDetail.orderId}
+            />
+          </View>
+          <CallButton
+            onPress={() => {
+              Linking.openURL(`tel:${storeDetails.phone}`);
+            }}
           />
         </View>
       )}
@@ -80,7 +95,7 @@ const OrderDetailsView = ({
         </View>
       )}
 
-      {id == 3 && expandCustomerDetail && (
+      {id == 2 && expandStoreDetail && (
         <View>
           <View
             style={[
@@ -90,13 +105,23 @@ const OrderDetailsView = ({
           />
           <View style={{marginTop: 10}}>
             <View style={styles.userExpandCon}>
-              <Image tintColor={isDarkTheme && COLORS.dark_primary_text} style={styles.img} source={IMAGES.LOCATION} />
-              <Text style={[styles.addressText, darkTextStyle]}>Address:</Text>
-              <Text style={[styles.addressText, {width: '75%'}, darkTextStyle]}>
-                1243 O'keefe Crest, Isaacstad, New South Wales 2364, Australia
-              </Text>
+              <Image
+                tintColor={isDarkTheme && COLORS.dark_primary_text}
+                style={styles.img}
+                source={IMAGES.LOCATION}
+              />
+              <View>
+                <Text style={[styles.addressText, darkTextStyle]}>
+                  Address:
+                </Text>
+
+                <Text
+                  style={[styles.addressText, {width: '75%'}, darkTextStyle]}>
+                  {orderDetails.order.store.storeAddress}
+                </Text>
+              </View>
             </View>
-            <CallButton />
+            {/* <CallButton /> */}
           </View>
         </View>
       )}

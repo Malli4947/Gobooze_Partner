@@ -25,7 +25,7 @@ const LoginScreen = props => {
   const colorScheme = useColorScheme();
   const [showLoader, setShowLoader] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  const [mobileNumber, setMobileNumber] = useState('489921106');
+  const [mobileNumber, setMobileNumber] = useState('489921108');
   const [errorMessage, setErrorMessage] = useState(false);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);

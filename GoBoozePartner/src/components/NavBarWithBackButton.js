@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     marginHorizontal: rWidth(15),
+    marginVertical: rHeight(10),
   },
   menuContainer: {
     width: rHeight(44),

@@ -6,12 +6,13 @@ import {
   Dimensions,
   TouchableNativeFeedback,
   Pressable,
+  Alert,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight} from '../constants/PixelSize';
-import {GRAPHIK_FONT} from '../constants/Constant';
+import {API_BASE_URL, GRAPHIK_FONT} from '../constants/Constant';
 import OrderNavigationBar from '../components/OrderNavigationBar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TotalEarningOrderView from '../components/TotalEarningOrderView';
@@ -27,39 +28,33 @@ import NewSlideButton from '../components/NewSlideButton';
 
 import Song from '../assets/BearSound.mp3';
 import OrdersCard from '../components/OrdersCard';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 var Sound = require('react-native-sound');
 
 Sound.setCategory('Playback');
 
 var ding = new Sound(Song, Sound.MAIN_BUNDLE, error => {
   if (error) {
-    console.log('failed to load the sound', error);
     return;
   }
-  // if loaded successfully
-  console.log(
-    'duration in seconds: ' +
-      ding.getDuration() +
-      'number of channels: ' +
-      ding.getNumberOfChannels(),
-  );
 });
 const screenWidth = Dimensions.get('screen').width - 30;
 
 const NewHomeScreen = props => {
+  const navigation = useNavigation();
   const [showNewOrderModal, setShowNewOrderModal] = useState(false);
   const colorScheme = useColorScheme();
 
   const [insignSelectedIndex, setInsightSelectedIndex] = useState(0);
-  console.log(
-    '💕 ~ file: NewHomeScreen.js:55 ~ NewHomeScreen ~ insignSelectedIndex:',
-    insignSelectedIndex,
-  );
-  const [orderRequest, setOrderRequest] = useState([]);
 
   const [listOfRequests, setListOfRequests] = useState([]);
+  const [deliveredOrders, setDeliveriedOrders] = useState([]);
+  const [accepteddOrders, setAcceptedOrders] = useState([]);
   const [modalData, setModaldata] = useState([]);
+  const [allPendingOrders, setAllpendingOrders] = useState([]);
+
+  const previousLengthRef = useRef(0);
 
   const socket = io('https://devapigobooze.codefactstech.com');
 
@@ -69,7 +64,6 @@ const NewHomeScreen = props => {
   };
 
   //   --
-  console.log(props.loginUserId, '---');
   useEffect(() => {
     ding.setVolume(10);
     return () => {
@@ -90,30 +84,164 @@ const NewHomeScreen = props => {
     });
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log('', 'socket calling--');
+  useFocusEffect(
+    useCallback(() => {
+      fetchOrders();
+      fecthPendingOrders();
 
-      socket.on(`${'partner-notification'}`, order => {
-        if (order) {
-          setTimeout(() => {
-            playPause();
-          }, 100);
-          setOrderRequest([order.data.orderDetails[0]]);
-          setListOfRequests([...listOfRequests, order.data.orderDetails[0]]);
-        }
-      });
-    }, 20000);
+      const interval = setInterval(() => {
+        fecthPendingOrders();
+        fetchOrders();
+      }, 60000);
 
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearInterval(interval);
+    }, []),
+  );
 
-  useEffect(() => {
-    if (orderRequest.length !== 0) {
-      // setShowNewOrderModal(true);
-      socket.disconnect();
+  const fecthPendingOrders = async () => {
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+
+      const checkingPendingOrders = await axios.post(
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
+        {
+          order_status: 'pending',
+        },
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+
+      const newData = checkingPendingOrders.data.data.reverse();
+      if (newData.length > previousLengthRef.current) {
+        playPause();
+      }
+      previousLengthRef.current = newData.length;
+
+      setListOfRequests(newData);
+      setTimeout(() => {
+        ding.stop();
+      }, 2500);
+      return;
+    } catch (e) {}
+  };
+
+  const fetchOrders = async () => {
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+
+      // Fetch delivered orders
+      const deliveredOrdersResponse = axios.post(
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
+        {
+          order_status: 'delivered',
+        },
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+
+      // Fetch active orders
+      const activeOrdersResponse = axios.post(
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+
+      const allPendingResponse = await axios.get(
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId} `,
+      );
+
+      console.log(
+        '💕 ~ file: NewHomeScreen.js:161 ~ fetchOrders ~ allPendingResponse:',
+        allPendingResponse,
+      );
+      setAllpendingOrders(allPendingResponse.data.data);
+
+      // Await both API calls
+      const [deliveredOrders, activeOrders] = await Promise.all([
+        deliveredOrdersResponse,
+        activeOrdersResponse,
+      ]);
+
+      setDeliveriedOrders(deliveredOrders.data.data.reverse());
+      setAcceptedOrders(activeOrders.data.data.reverse());
+    } catch (e) {
+      console.error('Error fetching orders:', e);
     }
-  }, [orderRequest]);
+  };
+
+  // const fetchDelivered = async () => {
+  //   try {
+  //     const combinedData = await AsyncStorage.getItem('USER_DATA');
+  //     const [accessToken, userId] = combinedData?.split(':') ?? [];
+
+  //     const checkingPendingOrders = await axios.post(
+  //       `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
+  //       {
+  //         order_status: 'delivered',
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `${accessToken}`,
+  //         },
+  //       },
+  //     );
+
+  //     setDeliveriedOrders(checkingPendingOrders.data.data.reverse());
+
+  //     return;
+  //   } catch (e) {}
+  // };
+
+  // const activeOrders = async () => {
+  //   try {
+  //     const combinedData = await AsyncStorage.getItem('USER_DATA');
+  //     const [accessToken, userId] = combinedData?.split(':') ?? [];
+
+  //     const checkingActiveOrders = await axios.post(
+  //       `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `${accessToken}`,
+  //         },
+  //       },
+  //     );
+
+  //     setAcceptedOrders(checkingActiveOrders.data.data.reverse());
+
+  //     return;
+  //   } catch (e) {}
+  // };
+
+  const handleOrderPress = item => {
+    if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
+      setModaldata(item);
+      setShowNewOrderModal(true);
+    } else if (insignSelectedIndex === 1) {
+      const {order_status} = item.order;
+      if (order_status === 'accepted') {
+        navigation.navigate('ReachPickup', {orderDetails: item});
+      } else if (order_status === 'reached-pickup-location') {
+        navigation.navigate('OrderPick', {orderDetails: item});
+      } else if (order_status === 'on-the-way') {
+        navigation.navigate('ReachMapDrop', {orderDetails: item});
+      } else if (order_status === 'ready-for-delivery') {
+        navigation.navigate('CollectMoney', {orderDetails: item});
+      }
+    }
+  };
 
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
@@ -176,42 +304,27 @@ const NewHomeScreen = props => {
               tintColor={isDarkTheme ? '#3F444D' : '#FFF'}
               inactiveFont={isDarkTheme && '#FFFFFFBF'}
               activeFont={isDarkTheme ? '#FFF' : COLORS.light_primary_text}
-              segmentArray={['Me', 'On Going', 'Delivered']}
+              segmentArray={['Me', 'On Going', 'Pending']}
               selectedIndex={insignSelectedIndex}
               onValueChange={index => {
+                // playPause();
                 setInsightSelectedIndex(index);
               }}
             />
           </View>
         </View>
-        <View>
-          {insignSelectedIndex == 0 && (
-            <OrdersCard
-              onPress={() => {
-                setShowNewOrderModal(true);
-              }}
-            />
-          )}
-          {insignSelectedIndex == 0 && (
-            <OrdersCard
-              onPress={() => {
-                // setModaldata();
-
-                setShowNewOrderModal(true);
-              }}
-            />
-          )}
-          {insignSelectedIndex == 0 && (
-            <OrdersCard
-              orderRequests={listOfRequests}
-              onOrderPress={item => {
-                setModaldata(item);
-
-                setShowNewOrderModal(true);
-              }}
-            />
-          )}
-        </View>
+        <OrdersCard
+          orderRequests={
+            insignSelectedIndex === 0
+              ? listOfRequests
+              : insignSelectedIndex === 1
+              ? accepteddOrders
+              : insignSelectedIndex === 2
+              ? allPendingOrders
+              : []
+          }
+          onOrderPress={item => handleOrderPress(item)}
+        />
 
         <View style={{height: 100}} />
       </ScrollView>

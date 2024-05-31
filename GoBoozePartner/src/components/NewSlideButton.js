@@ -14,7 +14,13 @@ import {flingGestureHandlerProps} from 'react-native-gesture-handler/lib/typescr
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import {useNavigation} from '@react-navigation/native';
 
-const NewSlideButton = ({title, navigationScreen, onComplete}) => {
+const NewSlideButton = ({
+  title,
+  navigationScreen,
+  onComplete,
+  orderData,
+  slideButoon = true,
+}) => {
   const navigation = useNavigation();
   const [sliderValue, setSliderValue] = useState(0);
   const [buttonText, setButtonText] = useState('Slide to Accept');
@@ -22,56 +28,45 @@ const NewSlideButton = ({title, navigationScreen, onComplete}) => {
   const isDarkTheme = colorScheme === 'dark';
   const isFullySlidRef = useRef(false);
 
-  // const panResponder = PanResponder.create({
-  //   onStartShouldSetPanResponder: () => true,
-  //   onPanResponderMove: (event, gestureState) => {
-  //     const {moveX} = gestureState;
-  //     if (!isFullySlidRef.current) {
-  //       const newValue = Math.min(1, Math.max(0, moveX / 305));
-  //       setSliderValue(newValue);
-  //       if (newValue === 1) {
-  //         navigation.navigate(navigationScreen);
-  //         setButtonText('Accepted!');
-  //         isFullySlidRef.current = true; // Set it here since navigation is immediate
-  //       } else {
-  //         setButtonText('Slide to Accept');
-  //       }
-  //     }
-  //   },
-  // });
-
   const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
+    onStartShouldSetPanResponder: () => slideButoon, // Allow pan responder only if slideButoon is true
     onPanResponderMove: (event, gestureState) => {
-      const {moveX} = gestureState;
-      const newValue = Math.min(1, Math.max(0, moveX / 290));
-      if (sliderValue != 1) {
-        setSliderValue(newValue);
+      if (slideButoon) {
+        // Check slideButoon before handling move
+        const {moveX} = gestureState;
+        const newValue = Math.min(1, Math.max(0, moveX / 290));
+        if (sliderValue !== 1) {
+          setSliderValue(newValue);
+        }
+        knobPosition.setValue(Math.min(290, Math.max(0, moveX)));
       }
-      knobPosition.setValue(Math.min(290, Math.max(0, moveX)));
     },
     onPanResponderRelease: () => {
-      if (isFullySlidRef.current == false) {
-        if (sliderValue < 0.5) {
-          Animated.timing(knobPosition, {
-            toValue: 0,
-            duration: 200,
-            useNativeDriver: true,
-          }).start();
-        } else if (sliderValue > 0.5) {
-          Animated.timing(knobPosition, {
-            toValue: rWidth(290),
-            duration: 200,
-            useNativeDriver: true,
-          }).start();
-          isFullySlidRef.current = true;
-          setSliderValue(1);
-          onComplete();
-          navigation.navigate(navigationScreen);
+      if (slideButoon) {
+        // Check slideButoon before handling release
+        if (isFullySlidRef.current === false) {
+          if (sliderValue < 0.5) {
+            Animated.timing(knobPosition, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: true,
+            }).start();
+          } else if (sliderValue > 0.5) {
+            Animated.timing(knobPosition, {
+              toValue: rWidth(290),
+              duration: 200,
+              useNativeDriver: true,
+            }).start();
+            isFullySlidRef.current = true;
+            setSliderValue(1);
+            onComplete();
+            navigation.navigate(navigationScreen, {orderDetails: orderData});
+          }
         }
       }
     },
   });
+
   const knobPosition = useRef(new Animated.Value(0)).current;
 
   return (

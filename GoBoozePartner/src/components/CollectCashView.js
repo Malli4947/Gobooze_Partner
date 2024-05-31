@@ -13,6 +13,7 @@ const CollectCashView = ({
   isChecked,
   isPaidOnline,
 }) => {
+  console.log('💕 ~ file: CollectCashView.js:16 ~ orderDetails:', orderDetails);
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkTxt = isDarkTheme && {color: COLORS.dark_primary_text};
@@ -68,7 +69,10 @@ const CollectCashView = ({
                 style={[
                   styles.orderText,
                   lightTxt,
-                ]}>{`Order: ${orderDetails.orderId}`}</Text>
+                ]}>{`Order: #${orderDetails.order_id.slice(
+                0,
+                5,
+              )}-${orderDetails.order_id.slice(-5)}`}</Text>
             </View>
           </View>
           {!isPaidOnline && (

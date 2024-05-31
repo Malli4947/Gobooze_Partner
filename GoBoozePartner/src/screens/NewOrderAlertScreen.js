@@ -23,7 +23,7 @@ const NewOrderAlertScreen = props => {
 
   console.log(
     '💕 ~ file: NewOrderAlertScreen.js:18 ~ NewOrderAlertScreen ~ orderDetails:',
-    orderDetails,
+    orderDetails.order_id,
   );
 
   const navigation = useNavigation();
@@ -39,7 +39,7 @@ const NewOrderAlertScreen = props => {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
       const acceptRes = await axios.post(
-        `${MAIN_BASE_URL}order/api/orders/accept-order?orderId=${orderDetails._id}&userId=${userId}`,
+        `${MAIN_BASE_URL}order/api/orders/accept-order?orderId=${orderDetails.order_id}&userId=${userId}`,
         {},
         {
           headers: {
@@ -130,8 +130,8 @@ const NewOrderAlertScreen = props => {
                   <View style={{marginLeft: 10, width: '75%'}}>
                     <Text
                       style={[styles.darkText, {fontSize: 15}, darkTextColor]}>
-                      {orderDetails.store.storeName}(
-                      {orderDetails.store.storeNumber})
+                      {orderDetails.order.store.storeName}(
+                      {orderDetails.order.store.storeNumber})
                     </Text>
                     <Text
                       style={[
@@ -139,7 +139,7 @@ const NewOrderAlertScreen = props => {
                         styles.addressText,
                         darkTextColor,
                       ]}>
-                      {orderDetails.store.storeAddress}
+                      {orderDetails.order.store.storeAddress}
                     </Text>
                   </View>
                 </View>
@@ -149,6 +149,7 @@ const NewOrderAlertScreen = props => {
                 title={'Accept order'}
                 navigationScreen={'ReachPickup'}
                 onComplete={acceptOrder}
+                orderData={orderDetails}
               />
             </View>
           </View>

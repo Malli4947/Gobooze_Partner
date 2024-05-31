@@ -21,30 +21,20 @@ import NewSlideButton from '../components/NewSlideButton';
 import {useNavigation} from '@react-navigation/native';
 import updateOrder from '../constants/statusUpdate';
 
-const orders = [
-  {
-    id: 0,
-    quantity: 1,
-    image: '',
-    name: 'VICKERS GIN',
-    description: 'Vickers London Dry Gin 37.0% 700ml',
-  },
-  {
-    id: 1,
-    quantity: 2,
-    image: '',
-    name: 'CARLTON',
-    description: 'Carlton Draught 4.6% 750mL 3pack',
-  },
-];
-
 // const detailsData = [{id: 0, title: 'Order Details'}]
 
-const PickOrderScreen = props => {
+const PickOrderScreen = ({route}) => {
+  const OrderDetails = route.params.orderDetails;
+
+  const orders = OrderDetails.order.order_Variants;
+
+  const storeDetails = route.params.orderDetails.order.store;
+
   const [isOrderReady, setIsOrderReady] = useState(false);
   const [expandOrderDetailView, setExpandOrderDetailView] = useState(false);
   const [expandCustomerDetailView, setExpandCustomerDetailView] =
     useState(false);
+  const [expandStoreDetailsView, setExpandStoreDetailsView] = useState(false);
   let orderNumber = '4286690449';
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
@@ -57,10 +47,8 @@ const PickOrderScreen = props => {
   const navigation = useNavigation();
 
   const handleUpdateOrder = async () => {
-    const orderId = '664b4af749c3034a3f9e3950';
-    const orderStatus = 'Order Picked From Store';
     try {
-      await updateOrder(orderId, orderStatus);
+      await updateOrder(OrderDetails.order_id, 'on-the-way');
     } catch (e) {
       Alert.alert('Error', 'Failed to update order status');
     }
@@ -116,9 +104,9 @@ const PickOrderScreen = props => {
         <View style={[styles.seperator, darkSep]} />
         <Text style={[styles.orderidStaticText, darkTextStyle]}>ORDER ID</Text>
         <Text style={[styles.orderNumText, darkTextStyle]}>
-          {orderNumber.slice(0, orderNumber.length - 4)}
+          {OrderDetails.order_id.slice(0, orderNumber.length - 4)}-
           <Text style={{fontFamily: GRAPHIK_FONT.SEMIBOLD}}>
-            {orderNumber.slice(-4)}
+            {OrderDetails.order_id.slice(-5)}
           </Text>
         </Text>
         <View style={{paddingBottom: 20}}>
@@ -147,10 +135,14 @@ const PickOrderScreen = props => {
                     expandCustomerDetail={expandCustomerDetailView}
                     image={IMAGES.CUSTOMER}
                     title={'Customer Details'}
+                    orderDetails={OrderDetails}
                     customerDetail={{
-                      name: 'Rahul Singh',
-                      mobileNum: '8866157629',
-                      orderId: '4286690449',
+                      name: `${OrderDetails.order.address.addressFullName}`,
+                      mobileNum: `${OrderDetails.order.address.addressPhoneNumber}`,
+                      orderId: `#${OrderDetails.order_id.slice(
+                        0,
+                        5,
+                      )}-${OrderDetails.order_id.slice(-5)}`,
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
@@ -163,7 +155,11 @@ const PickOrderScreen = props => {
                     id={2}
                     image={IMAGES.SHOP}
                     title={'Store Details'}
+                    expandStoreDetail={expandStoreDetailsView}
+                    orderDetails={OrderDetails}
                     onPress={() => {
+                      setExpandStoreDetailsView(!expandStoreDetailsView);
+
                       console.log('-----2-----');
                     }}
                   />
@@ -180,33 +176,11 @@ const PickOrderScreen = props => {
           styles.slideBtnContainer,
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
-        {/* <CustomSlideButton
-          title="Reached Pickup Location"
-          confirmedText="Reached"
-          disabled={isOrderReady}
-          imgColor={isOrderReady == false ? slideBtnColor : undefined}
-          titleStyle={isOrderReady == false ? slideBtnColor : undefined}
-          onReachedToEnd={() => props.navigation.navigate('OrderPick')}
-          thumbColor={
-            isOrderReady == false
-              ? isDarkTheme
-                ? '#1B1F27'
-                : '#FFF'
-              : undefined
-          }
-          containerColor={
-            isOrderReady == false
-              ? isDarkTheme
-                ? COLORS.dark_disabled_background
-                : COLORS.ligth_grey
-              : undefined
-          }
-        /> */}
-
         <NewSlideButton
           title={`Okay, I'm Pickink`}
           navigationScreen={'ReachMapDrop'}
           onComplete={handleUpdateOrder}
+          orderData={OrderDetails}
         />
       </View>
     </View>

@@ -12,7 +12,7 @@ import CustomButton from './CustomButton';
 const AddPhotoAlert = props => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
-  const {modalVisible, dismissModal, cancelOrder} = props;
+  const {modalVisible, dismissModal, cancelOrder, openCamera} = props;
   const darkTextColor = isDarkTheme && {color: '#FFF'};
 
   return (
@@ -64,6 +64,7 @@ const AddPhotoAlert = props => {
                 image={IMAGES.CAMERA_OUTLINED}
                 buttonText="Click Photo"
                 buttonStyle={{height: rHeight(45)}}
+                handleClick={openCamera}
               />
               <TouchableOpacity
                 onPress={() => {

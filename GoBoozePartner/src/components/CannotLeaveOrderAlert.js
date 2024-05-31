@@ -1,28 +1,45 @@
 import {BlurView} from '@react-native-community/blur';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Modal, Image, FlatList} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import ModalCancelButton from '../components/ModalCancelButton';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import CustomButton from './CustomButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const options = [
-  {id: 0, selected: false, option: 'Customer request to meet 1'},
-  {id: 1, selected: false, option: 'Customer request to meet 2'},
-  {id: 2, selected: false, option: 'Customer request to meet 3'},
-  {id: 3, selected: false, option: 'Customer request to meet 4'},
+  {id: 0, option: 'Customer request to redeliver'},
+  {id: 1, option: 'Absence of customer'},
+  {id: 2, option: 'Change In Delivery Address'},
+  {id: 3, option: 'Others'},
 ];
 
 const CannotLeaveOrderAlert = props => {
   const colorScheme = useColorScheme();
   const [reasons, setReasons] = useState(options);
   const isDarkTheme = colorScheme === 'dark';
-  const {modalVisible, dismissModal, onGoback} = props;
+  const {modalVisible, dismissModal, onGoback, onSuccessCancel, orderId} =
+    props;
+  console.log(
+    '💕 ~ file: CannotLeaveOrderAlert.js:34 ~ CannotLeaveOrderAlert ~ orderId:',
+    orderId,
+  );
+
   const darkTextColor = isDarkTheme && {color: '#FFF'};
   const checked = isDarkTheme ? IMAGES.CHECKED_DARK : IMAGES.CHECKED_LIGHT;
+  const [selectedOption, setSelectedOption] = useState('');
   const unchecked = isDarkTheme
     ? IMAGES.UNCHECKED_DARK
     : IMAGES.UNCHECKED_LIGHT;
@@ -38,16 +55,63 @@ const CannotLeaveOrderAlert = props => {
 
   const optionSelection = ({item, index}) => {
     return (
-      <View style={styles.optionContainer}>
-        <TouchableOpacity onPress={() => itemSelected(index)}>
+      <TouchableOpacity
+        onPress={() => {
+          setSelectedOption(item);
+        }}
+        style={styles.optionContainer}>
+        <TouchableOpacity>
           <Image
             style={styles.checkStyle}
-            source={item.selected ? checked : unchecked}
+            source={selectedOption == item ? checked : unchecked}
           />
         </TouchableOpacity>
-        <Text style={[styles.optionText, darkTextColor]}>{item.option}</Text>
-      </View>
+        <Text
+          style={[
+            styles.optionText,
+            darkTextColor,
+            selectedOption == item && {color: 'red'},
+          ]}>
+          {item.option}
+        </Text>
+      </TouchableOpacity>
     );
+  };
+
+  const cancelOrder = async () => {
+    try {
+      if (selectedOption == '') {
+        Alert.alert('', 'Please Select Reason Before Cancelling the Order');
+      }
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+      const orderCancelRes = await axios.patch(
+        `https://devapigobooze.codefactstech.com/order/api/orders/update-order-status/${orderId}`,
+        {
+          order_status: 'cancelled',
+          cancel_reason: `${selectedOption}`,
+        },
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+
+      console.log(
+        '💕 ~ file: CannotLeaveOrderAlert.js:102 ~ cancelOrder ~ orderCancelRes:',
+        orderCancelRes,
+      );
+
+      if (orderCancelRes.status == 200) {
+        onSuccessCancel();
+      }
+
+      return;
+    } catch (e) {
+      // Alert.alert('', 'Unable to cancel order.Please try again');
+      console.log(e);
+    }
   };
 
   return (
@@ -78,7 +142,23 @@ const CannotLeaveOrderAlert = props => {
                 marginTop: 10,
               }}
               data={reasons}
-              renderItem={optionSelection}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log('hi---');
+                    setSelectedOption(item);
+                  }}
+                  style={styles.optionContainer}>
+                  <Image
+                    style={styles.checkStyle}
+                    source={selectedOption === item ? checked : unchecked}
+                  />
+                  <Text style={[styles.optionText, darkTextColor]}>
+                    {item.option}
+                  </Text>
+                </TouchableOpacity>
+              )}
             />
             <View style={styles.buttonCon}>
               <CustomButton
@@ -94,6 +174,7 @@ const CannotLeaveOrderAlert = props => {
                 }}
               />
               <CustomButton
+                handleClick={cancelOrder}
                 buttonText="Submit"
                 buttonStyle={styles.buttonStyle}
               />
