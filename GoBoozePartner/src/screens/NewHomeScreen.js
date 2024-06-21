@@ -98,8 +98,7 @@ const NewHomeScreen = props => {
       const interval = setInterval(() => {
         fecthPendingOrders();
         fetchOrders();
-        console.log('hoii');
-      }, 5000);
+      }, 60000);
 
       return () => clearInterval(interval);
     }, []),
