@@ -27,6 +27,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8D3BD64C3E3E4770B6F12DCD /* GraphikExtralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 75B2224C5B264EF8B4610D6C /* GraphikExtralight.otf */; };
 		A6A7D198366048C694C2687A /* GraphikBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 00D574FA631E46B4B4774124 /* GraphikBold.otf */; };
+		ABD9C2382C25848D009EB9E7 /* BearSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABD9C2372C25848D009EB9E7 /* BearSound.mp3 */; };
 		C2515823AE5A4CD3A790A5BC /* GraphikSemibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 167D4443ADFD4E01ABE9DF0E /* GraphikSemibold.otf */; };
 		CDF1639257954B05855A546A /* GraphikBlack.otf in Resources */ = {isa = PBXBuildFile; fileRef = 74BDCFD39E9E41CDB34F2030 /* GraphikBlack.otf */; };
 		E47A893C8A7C402094055FCD /* GraphikLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 02F5E490A30246638A1C460B /* GraphikLightItalic.otf */; };
@@ -73,6 +74,7 @@
 		75B2224C5B264EF8B4610D6C /* GraphikExtralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikExtralight.otf; path = ../assets/fonts/GraphikExtralight.otf; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = GoBoozePartner/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner-GoBoozePartnerTests/Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; sourceTree = "<group>"; };
+		ABD9C2372C25848D009EB9E7 /* BearSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = BearSound.mp3; path = ../src/assets/BearSound.mp3; sourceTree = "<group>"; };
 		AF6D390317A24F4595C9A813 /* GraphikBlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBlackItalic.otf; path = ../assets/fonts/GraphikBlackItalic.otf; sourceTree = "<group>"; };
 		B02FE8FF4D4740CFAE262061 /* GraphikRegular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikRegular.otf; path = ../assets/fonts/GraphikRegular.otf; sourceTree = "<group>"; };
 		BF04AECDD4B14C00B10C63D0 /* GraphikMediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikMediumItalic.otf; path = ../assets/fonts/GraphikMediumItalic.otf; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				ABD9C2372C25848D009EB9E7 /* BearSound.mp3 */,
 				13B07FAE1A68108700A75B9A /* GoBoozePartner */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* GoBoozePartnerTests */,
@@ -306,6 +309,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				ABD9C2382C25848D009EB9E7 /* BearSound.mp3 in Resources */,
 				CDF1639257954B05855A546A /* GraphikBlack.otf in Resources */,
 				6A0689DD818F4BB39DA1780A /* GraphikBlackItalic.otf in Resources */,
 				A6A7D198366048C694C2687A /* GraphikBold.otf in Resources */,
@@ -572,6 +576,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = GoBoozePartner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "GoBooze Partner";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -605,6 +610,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = YSKJ36B8N8;
 				INFOPLIST_FILE = GoBoozePartner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "GoBooze Partner";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -693,7 +699,11 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl",
+					"-ld_classic",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 			};
@@ -763,7 +773,11 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl",
+					"-ld_classic",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
