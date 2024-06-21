@@ -30,6 +30,7 @@ import Song from '../assets/BearSound.mp3';
 import OrdersCard from '../components/OrdersCard';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+import {pendingOrders} from '../redux/GoboozeApi';
 var Sound = require('react-native-sound');
 
 Sound.setCategory('Playback');
@@ -272,11 +273,17 @@ const NewHomeScreen = props => {
               styles.totalEarningText,
               isDarkTheme && {color: COLORS.dark_primary_text},
             ]}>
-            Total Earning & Orders
+            Orders
           </Text>
           <View style={styles.earningOrderContainer}>
-            <TotalEarningOrderView title="Total Orders" value="23" />
-            <TotalEarningOrderView title="Total Earning" value="$1.56k" />
+            <TotalEarningOrderView
+              title="Active Orders"
+              value={`${accepteddOrders.length}`}
+            />
+            <TotalEarningOrderView
+              title="Pending Orders"
+              value={allPendingOrders.length}
+            />
           </View>
         </View>
         <View style={[styles.seperator, darkSeperator]}></View>

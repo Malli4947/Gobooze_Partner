@@ -50,6 +50,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: rHeight(20),
+    // position: 'absolute',
+    // width: '100%',
+    // bottom: 0,
   },
   img: {
     width: 22,

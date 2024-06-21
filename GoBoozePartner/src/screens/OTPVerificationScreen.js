@@ -210,7 +210,7 @@ const OTPVerificationScreen = props => {
       <View
         style={[
           styles.bottomContainerNoKeyboard,
-          {bottom: rHeight(keyboardHeight > 0 ? keyboardHeight + 15 : 25)},
+          // {bottom: rHeight(keyboardHeight > 0 ? keyboardHeight + 15 : 25)},
         ]}>
         <Pressable style={styles.con_1}>
           <Text

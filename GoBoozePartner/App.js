@@ -17,11 +17,10 @@ const store = configureStore();
 
 function App() {
   useEffect(() => {
-    const interval = setInterval(() => {
-      getLatAndLong();
-    }, 18000);
-
-    return () => clearInterval(interval);
+    // const interval = setInterval(() => {
+    //   // getLatAndLong();
+    // }, 18000);
+    // return () => clearInterval(interval);
   }, []);
 
   const getLatAndLong = async () => {
@@ -82,13 +81,13 @@ function App() {
   };
 
   return (
-    <ColorSchemeProvider>
-      <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <ColorSchemeProvider>
         <Provider store={store}>
           <AppNavigator />
         </Provider>
-      </GestureHandlerRootView>
-    </ColorSchemeProvider>
+      </ColorSchemeProvider>
+    </GestureHandlerRootView>
   );
 }
 

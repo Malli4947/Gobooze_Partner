@@ -31,6 +31,9 @@ const LoginScreen = props => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {
+    if (mobileNumber.length == 9) {
+      setButtonDisabled(false);
+    }
     const showListener = Keyboard.addListener('keyboardDidShow', e => {
       setKeyboardVisible(true);
       setKeyboardHeight(e.endCoordinates.height);
@@ -129,11 +132,7 @@ const LoginScreen = props => {
         />
         {/* </View> */}
 
-        <View
-          style={[
-            styles.bottomContainerNoKeyboard,
-            {bottom: rHeight(keyboardHeight > 0 ? keyboardHeight + 15 : 40)},
-          ]}>
+        <View style={[styles.bottomContainerNoKeyboard]}>
           <Text
             style={[
               styles.otp_Text_1,

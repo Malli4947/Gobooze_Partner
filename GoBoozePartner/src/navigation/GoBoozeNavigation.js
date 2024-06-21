@@ -24,9 +24,8 @@ const SplashNav = createNativeStackNavigator();
 
 export const GBSplashNavigator = () => {
   return (
-    <SplashNav.Navigator screenOptions={{headerShown: false}}>
-      <AuthNav.Screen name="SplashScreen" component={SplashScreen} />
-    </SplashNav.Navigator>
+    <SplashNav.Navigator
+      screenOptions={{headerShown: false}}></SplashNav.Navigator>
   );
 };
 
@@ -34,6 +33,7 @@ export const GBAuthNavigator = () => {
   return (
     <AuthNav.Navigator
       screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
+      <AuthNav.Screen name="SplashScreen" component={SplashScreen} />
       <AuthNav.Screen name="Onboarding" component={OnboardingScreen} />
       <AuthNav.Screen name="Login" component={LoginScreen} />
       <AuthNav.Screen name="OTP" component={OTPVerificationScreen} />
@@ -71,12 +71,12 @@ export const AppNavigator = props => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        {showSplash && (
+        {/* {showSplash && (
           <Stack.Screen name="Splash" component={GBSplashNavigator} />
-        )}
-        {showSplash === false && (
-          <Stack.Screen name="Auth" component={GBAuthNavigator} />
-        )}
+        )} */}
+        {/* {showSplash === false && ( */}
+        <Stack.Screen name="Auth" component={GBAuthNavigator} />
+        {/* )} */}
         <Stack.Screen name="DashBoard" component={GBHomeNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
