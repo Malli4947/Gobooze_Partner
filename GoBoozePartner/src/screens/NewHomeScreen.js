@@ -7,6 +7,7 @@ import {
   TouchableNativeFeedback,
   Pressable,
   Alert,
+  Platform,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -35,11 +36,15 @@ var Sound = require('react-native-sound');
 
 Sound.setCategory('Playback');
 
-var ding = new Sound(Song, Sound.MAIN_BUNDLE, error => {
-  if (error) {
-    return;
-  }
-});
+var ding = new Sound(
+  Platform.OS == 'android' ? Song : 'BearSound.mp3',
+  Sound.MAIN_BUNDLE,
+  error => {
+    if (error) {
+      return;
+    }
+  },
+);
 const screenWidth = Dimensions.get('screen').width - 30;
 
 const NewHomeScreen = props => {
@@ -93,7 +98,7 @@ const NewHomeScreen = props => {
       const interval = setInterval(() => {
         fecthPendingOrders();
         fetchOrders();
-      }, 6000);
+      }, 60000);
 
       return () => clearInterval(interval);
     }, []),
