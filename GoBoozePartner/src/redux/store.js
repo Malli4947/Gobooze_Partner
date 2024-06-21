@@ -1,5 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {legacy_createStore as createStore, combineReducers, applyMiddleware} from 'redux';
+import {
+  legacy_createStore as createStore,
+  combineReducers,
+  applyMiddleware,
+} from 'redux';
 import persistReducer from 'redux-persist/es/persistReducer';
 import {thunk} from 'redux-thunk';
 import {authReducer} from './reducers/authReducer';

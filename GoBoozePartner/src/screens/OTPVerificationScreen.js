@@ -59,16 +59,16 @@ const OTPVerificationScreen = props => {
     if (inputOtp.length != 4) {
       setShowOtpErrorMessage(true);
     } else {
-      setShowLoader(true)
+      setShowLoader(true);
       const phoneNumber = props.route.params.mobileNumber;
       const jsonBody = {
-        phone: `+91${phoneNumber}`,
+        phone: `+61${phoneNumber}`,
         otp: inputOtp,
       };
       props.appActions.verifyOtp(jsonBody, response => {
-        setShowLoader(false)
+        setShowLoader(false);
         if (response.status == 200) {
-          if (hasLocationPermission === true) {
+          if (hasLocationPermission == true) {
             props.navigation.navigate('DashBoard');
           } else {
             props.navigation.navigate('Location');
@@ -107,10 +107,6 @@ const OTPVerificationScreen = props => {
       }
     }
   };
-  
-  useEffect(() => {
-    checkLocationPermission();
-  }, []);
 
   useEffect(() => {
     console.log('text change---', inputOtp.length);
@@ -133,7 +129,7 @@ const OTPVerificationScreen = props => {
       showListener.remove();
     };
   }, []);
-console.log(keyboardHeight)
+  console.log(keyboardHeight);
   return (
     <ScrollView
       contentContainerStyle={{
@@ -214,7 +210,7 @@ console.log(keyboardHeight)
       <View
         style={[
           styles.bottomContainerNoKeyboard,
-          {bottom: rHeight(keyboardHeight > 0 ? keyboardHeight + 15 : 25)},
+          // {bottom: rHeight(keyboardHeight > 0 ? keyboardHeight + 15 : 25)},
         ]}>
         <Pressable style={styles.con_1}>
           <Text

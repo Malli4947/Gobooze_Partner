@@ -4,8 +4,13 @@ import COLORS from '../../constants/Colors';
 import {GRAPHIK_FONT, IMAGES} from '../../constants/Constant';
 import {rHeight, rWidth} from '../../constants/PixelSize';
 import {useColorScheme} from '../ColorSchemeContext';
+import FastImage from 'react-native-fast-image';
 
 const OrderDetailExpandView = ({orderDetails}) => {
+  console.log(
+    '💕 ~ file: OrderDetailExpandView.js:9 ~ OrderDetailExpandView ~ orderDetails:',
+    orderDetails,
+  );
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkTextStyle = isDarkTheme && {color: '#FFFFFFBF'};
@@ -18,18 +23,23 @@ const OrderDetailExpandView = ({orderDetails}) => {
             style={[
               styles.quantity,
               darkTextStyle,
-            ]}>{`${item.quantity}X`}</Text>
-          <Image
-            style={styles.whiskeyImg}
+            ]}>{`${item.orderQuantity}X`}</Text>
+
+          <FastImage
+            source={{
+              uri: `https://d12keppzk8wa17.cloudfront.net/goboozestore/${item.variantImage}`,
+            }}
             resizeMode="contain"
-            source={IMAGES.DUMMY_WHISKEY}
+            style={styles.whiskeyImg}
           />
           <View style={{alignSelf: 'flex-start'}}>
-            <Text style={[styles.nameTxt, darkTextStyle]}>{item.name}</Text>
+            <Text style={[styles.nameTxt, darkTextStyle]}>
+              {item.quantity}-Pack
+            </Text>
             <Text
               numberOfLines={2}
               style={[styles.descriptionTxt, darkTextStyle]}>
-              {item.description}
+              {item.variantName}
             </Text>
           </View>
         </View>
@@ -37,7 +47,7 @@ const OrderDetailExpandView = ({orderDetails}) => {
           style={[
             styles.seperator,
             isDarkTheme && {backgroundColor: COLORS.dark_disabled_background},
-            index == orderDetails.length-1 && {backgroundColor: 'clear'}
+            index == orderDetails.length - 1 && {backgroundColor: 'clear'},
           ]}
         />
       </View>

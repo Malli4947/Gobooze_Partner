@@ -21,11 +21,18 @@ const TotalEarningOrderView = ({title, value}) => {
           resizeMode="contain"
         />
         <Text
-          style={[styles.totalOrderText, isDarkTheme && {color: '#FFFFFF'}]}>
+          style={[
+            styles.totalOrderText,
+            isDarkTheme && {color: COLORS.dark_primary_text},
+          ]}>
           {title}
         </Text>
       </View>
-      <Text style={[styles.earningValue, isDarkTheme && {color: '#FFFFFF'}]}>
+      <Text
+        style={[
+          styles.earningValue,
+          isDarkTheme && {color: COLORS.dark_primary_text},
+        ]}>
         {value}
       </Text>
     </View>
@@ -51,10 +58,12 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rHeight(15),
     paddingLeft: 10,
+    color: COLORS.light_primary_text,
   },
   earningValue: {
     fontFamily: GRAPHIK_FONT.SEMIBOLD,
     fontSize: rHeight(22),
     marginTop: rHeight(35),
+    color: COLORS.light_primary_text,
   },
 });

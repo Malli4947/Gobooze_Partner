@@ -1,8 +1,15 @@
-import {View, StyleSheet, ScrollView, FlatList} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  Image,
+  Alert,
+} from 'react-native';
 import React, {useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
-import {rHeight} from '../constants/PixelSize';
+import {rHeight, rWidth} from '../constants/PixelSize';
 import {IMAGES} from '../constants/Constant';
 import NavBarWithBackButton from '../components/NavBarWithBackButton';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -14,6 +21,14 @@ import LeaveOrderAtDoorView from '../components/LeaveOrderAtDoorView';
 import UPIView from '../components/UPIView';
 import AddPhotoAlert from '../components/AddPhotoAlert';
 import CannotLeaveOrderAlert from '../components/CannotLeaveOrderAlert';
+import CustomButton from '../components/CustomButton';
+import NewSlideButton from '../components/NewSlideButton';
+import updateOrder from '../constants/statusUpdate';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import axios from 'axios';
+import ImageResizer from 'react-native-image-resizer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 
 const orders = [
   {
@@ -32,12 +47,13 @@ const orders = [
   },
 ];
 
-const orderDetails = {
-  amount: 76.89,
-  orderId: 4286690449,
-};
+const ReachedDropScreen = ({route}) => {
+  const OrderDetails = route.params.orderDetails;
+  const navigation = useNavigation();
 
-const ReachedDropScreen = props => {
+  const orders = OrderDetails.order.order_Variants;
+
+  const storeDetails = route.params.orderDetails.order.store;
   const [isOrderReady, setIsOrderReady] = useState(false);
   const [isPaidOnline, setIsPaidOnline] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
@@ -51,12 +67,142 @@ const ReachedDropScreen = props => {
   const darkSep = isDarkTheme && {
     backgroundColor: COLORS.dark_theme_background,
   };
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [showCancelOrder, setShowCancelOrder] = useState(false);
+  const [photo, setPhoto] = useState();
+  console.log(
+    '💕 ~ file: ReachedDropScreen.js:73 ~ ReachedDropScreen ~ photo:',
+    photo,
+  );
+
+  const handleUpdateOrder = async () => {
+    try {
+      if (photo) {
+        await updateOrder(OrderDetails.order_id, 'delivered');
+      } else {
+        Alert.alert('', 'Please upload the image');
+      }
+    } catch (e) {
+      Alert.alert('Error', 'Failed to update order status');
+    }
+  };
+
+  const onSuccessCancel = () => {
+    navigation.navigate('Home');
+  };
+
+  const takePhoto = () => {
+    try {
+      let options = {
+        mediaType: 'photo',
+        saveToPhotos: true,
+        quality: 0.8,
+
+        includeBase64: false,
+      };
+
+      launchCamera(options, response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton);
+        }
+        console.log(
+          '💕 ~ file: ReachedDropScreen.js:114 ~ takePhoto ~ response:',
+          response,
+        );
+
+        const source = {
+          uri: response.assets[0].uri,
+          fileName: response.assets[0].fileName,
+        };
+
+        setPhoto(source);
+        setShowPhotoModal(false);
+        uploadPhoto(source);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const uploadPhoto = async source => {
+    const formData = new FormData();
+
+    const resizedImage = await ImageResizer.createResizedImage(
+      source.uri,
+      800,
+      600,
+      'JPEG',
+      80,
+    );
+
+    formData.append('Images', {
+      uri: resizedImage.uri,
+      name: 'image.jpg',
+      type: 'image/jpg',
+    });
+
+    try {
+      const response = await fetch(
+        `https://devapigobooze.codefactstech.com/order/api/orders/upload-delivery-images/${OrderDetails.order_id}`,
+        {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+
+      console.log(
+        '💕 ~ file: ReachedDropScreen.js:166 ~ uploadPhoto ~ response:',
+        response,
+      );
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Upload Success', responseData);
+      } else {
+        const errorData = await response.json();
+        console.log('Upload Error', errorData);
+      }
+    } catch (error) {
+      console.log('Upload Error', error);
+    }
+  };
 
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <PickOrderNowAlert modalVisible={false} />
-      <AddPhotoAlert modalVisible={false} />
-      <CannotLeaveOrderAlert modalVisible={true} />
+      <AddPhotoAlert
+        modalVisible={showPhotoModal}
+        dismissModal={() => {
+          setShowPhotoModal(false);
+        }}
+        cancelOrder={() => {
+          setShowCancelOrder(true);
+          setShowPhotoModal(false);
+        }}
+        openCamera={() => {
+          takePhoto();
+        }}
+      />
+      <CannotLeaveOrderAlert
+        modalVisible={showCancelOrder}
+        orderId={OrderDetails.order_id}
+        onGoback={() => {
+          setShowCancelOrder(false);
+          setShowPhotoModal(true);
+        }}
+        onSuccessCancel={onSuccessCancel}
+        dismissModal={() => {
+          setShowCancelOrder(false);
+          setShowPhotoModal(true);
+        }}
+      />
       <View style={{marginTop: insets.top}}>
         <NavBarWithBackButton title={'Reach Drop'} />
         <View style={[styles.seperator, darkSep]} />
@@ -64,15 +210,40 @@ const ReachedDropScreen = props => {
 
       {/* ---------------- BOTTOM CONTAINER ---------------- */}
       <ScrollView>
-        {isPaidOnline && <LeaveOrderAtDoorView />}
-        {!isPaidOnline && <UPIView orderDetails={orderDetails} />}
+        {isPaidOnline && (
+          <LeaveOrderAtDoorView
+            Children={
+              <CustomButton
+                buttonText="Add Photo"
+                showView={false}
+                handleClick={() => {
+                  console.log('h99------');
+                  setShowPhotoModal(true);
 
+                  if (photo) {
+                    // Alert.alert('', 'Already Uploaded');
+                    // return;
+                  } else {
+                    // setShowPhotoModal(true);
+                  }
+                }}
+                buttonStyle={{
+                  backgroundColor: isDarkTheme ? '#099A6A' : '#08875D',
+                  height: 43,
+                }}
+              />
+            }
+          />
+        )}
+        {/* {!isPaidOnline && <UPIView orderDetails={OrderDetails} />} */}
+        {photo && <Image source={photo} style={styles.deliveryImage} />}
         <CollectCashView
           isPaidOnline={isPaidOnline}
           isChecked={isChecked}
-          orderDetails={orderDetails}
+          orderDetails={OrderDetails}
           onCheckboxPress={() => setIsChecked(!isChecked)}
         />
+
         <View style={{paddingBottom: 20}}>
           <FlatList
             scrollEnabled={false}
@@ -82,14 +253,17 @@ const ReachedDropScreen = props => {
               if (index === 0) {
                 return (
                   <OrderDetailsView
-                    id={3}
+                    id={1}
                     expandCustomerDetail={expandCustomerDetailView}
                     image={IMAGES.CUSTOMER}
-                    title={'Rahul Singh'}
+                    title={`${OrderDetails.order.address.addressFullName}`}
                     customerDetail={{
-                      name: 'Rahul Singh',
-                      mobileNum: '8866157629',
-                      orderId: '4286690449',
+                      name: `${OrderDetails.order.address.addressFullName}`,
+                      mobileNum: `${OrderDetails.order.address.addressPhoneNumber}`,
+                      orderId: `#${OrderDetails.order_id.slice(
+                        0,
+                        5,
+                      )}-${OrderDetails.order_id.slice(-5)}`,
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
@@ -121,27 +295,11 @@ const ReachedDropScreen = props => {
           styles.slideBtnContainer,
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
-        <CustomSlideButton
-          title="Order Delivered"
-          confirmedText="Order Delivered"
-          disabled={isOrderReady}
-          imgColor={isOrderReady == false ? slideBtnColor : undefined}
-          titleStyle={isOrderReady == false ? slideBtnColor : undefined}
-          onReachedToEnd={() => props.navigation.navigate('OrderPick')}
-          thumbColor={
-            isOrderReady == false
-              ? isDarkTheme
-                ? '#1B1F27'
-                : '#FFF'
-              : undefined
-          }
-          containerColor={
-            isOrderReady == false
-              ? isDarkTheme
-                ? COLORS.dark_disabled_background
-                : COLORS.ligth_grey
-              : undefined
-          }
+        <NewSlideButton
+          title={!photo ? `Upload Photo` : `Order Delivered`}
+          navigationScreen={'Home'}
+          onComplete={handleUpdateOrder}
+          slideButoon={photo ? true : false}
         />
       </View>
     </View>
@@ -165,6 +323,13 @@ const styles = StyleSheet.create({
   slideBtnContainer: {
     width: '100%',
     backgroundColor: '#FFF',
+  },
+  deliveryImage: {
+    height: rHeight(100),
+    width: rHeight(100),
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginTop: rHeight(20),
   },
 });
 

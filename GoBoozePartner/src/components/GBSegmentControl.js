@@ -2,6 +2,7 @@ import React from 'react';
 import COLORS from '../constants/Colors';
 import {useColorScheme} from './ColorSchemeContext';
 import CustomSegmentedControl from './CustomSegmentControl';
+import {View} from 'react-native';
 
 const GBSegmentControl = props => {
   const colorScheme = useColorScheme();
@@ -15,27 +16,33 @@ const GBSegmentControl = props => {
     activeFont,
     tintColor,
     width,
-    segmentBorderRadius
+    segmentBorderRadius,
   } = props;
 
   return (
-    <CustomSegmentedControl
-      tabs={segmentArray}
-      onChange={onValueChange}
-      currentIndex={selectedIndex}
-      segmentWidth={width ? width : 250}
-      segmentBorderRadius={segmentBorderRadius ? segmentBorderRadius : 30}
-      segmentedControlBackgroundColor={
-        inactiveBgColor ? inactiveBgColor : isDarkTheme ? '#00000070' : '#00000015'
-      }
-      activeSegmentBackgroundColor={tintColor ? tintColor : COLORS.red_error}
-      activeTextColor={
-        activeFont ? activeFont : isDarkTheme ? '#FFFFFF' : '#FFF'
-      }
-      textColor={
-        inactiveFont ? inactiveFont : isDarkTheme ? '#FFFFFFBF' : '#1D2433CC'
-      }
-    />
+    <View style={{}}>
+      <CustomSegmentedControl
+        tabs={segmentArray}
+        onChange={onValueChange}
+        currentIndex={selectedIndex}
+        segmentWidth={width ? width : 250}
+        segmentBorderRadius={segmentBorderRadius ? segmentBorderRadius : 30}
+        segmentedControlBackgroundColor={
+          inactiveBgColor
+            ? inactiveBgColor
+            : isDarkTheme
+            ? '#00000070'
+            : '#00000015'
+        }
+        activeSegmentBackgroundColor={tintColor ? tintColor : COLORS.red_error}
+        activeTextColor={
+          activeFont ? activeFont : isDarkTheme ? '#FFFFFF' : '#FFF'
+        }
+        textColor={
+          inactiveFont ? inactiveFont : isDarkTheme ? '#FFFFFFBF' : '#1D2433CC'
+        }
+      />
+    </View>
   );
 };
 

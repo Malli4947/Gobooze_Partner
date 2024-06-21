@@ -12,14 +12,14 @@ import CustomButton from './CustomButton';
 const AddPhotoAlert = props => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
-  const {modalVisible, dismissModal} = props;
+  const {modalVisible, dismissModal, cancelOrder, openCamera} = props;
   const darkTextColor = isDarkTheme && {color: '#FFF'};
 
   return (
     <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
-      <BlurView
-        blurType={'light'}
-        blurAmount={3}
+      <View
+        // blurType={'light'}
+        // blurAmount={3}
         style={styles.mainOuterComponent}>
         <View style={styles.mainContainer}>
           <ModalCancelButton onPress={dismissModal} />
@@ -64,20 +64,25 @@ const AddPhotoAlert = props => {
                 image={IMAGES.CAMERA_OUTLINED}
                 buttonText="Click Photo"
                 buttonStyle={{height: rHeight(45)}}
+                handleClick={openCamera}
               />
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log('hi---');
+                }}>
                 <Text
+                  onPress={cancelOrder}
                   style={[
                     styles.bottomText,
                     isDarkTheme && {color: '#E44956'},
                   ]}>
-                  Cannot leave order at door
+                  Cannot leave order at door..
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
-      </BlurView>
+      </View>
     </Modal>
   );
 };
