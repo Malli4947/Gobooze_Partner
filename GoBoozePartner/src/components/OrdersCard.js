@@ -93,6 +93,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
   return (
     <>
       {orderRequests?.map((item, index) => {
+        console.log(item.order.address, '==');
         return (
           <Pressable
             key={index}
@@ -254,7 +255,9 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                 Customer Name:
               </Text>
               <Text style={[styles.lRightText, isDark && styles.dRightText]}>
-                {item.order.address.addressFullName}
+                {item.order.address.first_name == item.order.address.first_name
+                  ? item.order.address.first_name
+                  : `${item.order.address.first_name} ${item.order.address.last_name}`}
               </Text>
             </View>
             {/* ---Customer Name */}
