@@ -15,7 +15,7 @@ const CustomStatusBar = ({showHideTransition = 'none', backgroundColor}) => {
       : COLORS.light_theme_background);
 
   return (
-    <View style={{height: insets.top + 5}}>
+    <View style={{height: insets.top +5,margin:0}}>
       <StatusBar
         animated={true}
         backgroundColor={dynamicBackgroundColor}

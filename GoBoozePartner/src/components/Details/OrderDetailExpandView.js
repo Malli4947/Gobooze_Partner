@@ -100,15 +100,17 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.REGULAR,
     fontSize: rHeight(12),
     color: '#1D2433CC',
-    paddingTop: 5,
+    paddingTop: rHeight(5),
+    paddingLeft:rWidth(30)
   },
   descriptionTxt: {
     fontFamily: GRAPHIK_FONT.SEMIBOLD,
     fontSize: rHeight(14),
     lineHeight: 22,
-    width: '90%',
+    width: '80%',
     color: COLORS.light_primary_text,
-    paddingTop: 5,
+    paddingTop:rHeight(5),
+    paddingLeft:rWidth(30)
   },
   seperator: {
     width: '100%',

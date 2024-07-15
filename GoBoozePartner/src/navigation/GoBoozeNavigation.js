@@ -18,7 +18,7 @@ import {useSelector} from 'react-redux';
 import LocationScreen from '../screens/LocationScreen';
 import NewHomeScreen from '../screens/NewHomeScreen';
 import ReachedDropMapScreen from '../screens/ReachedDropMapScreen';
-
+import ProfileScreen from '../screens/ProfileScreen'
 const AuthNav = createNativeStackNavigator();
 const SplashNav = createNativeStackNavigator();
 
@@ -53,6 +53,7 @@ export const GBHomeNavigator = () => {
       <AuthNav.Screen name="ReachPickup" component={ReachPickupScreen} />
       <AuthNav.Screen name="OrderPick" component={PickOrderScreen} />
       <AuthNav.Screen name="ReachMapDrop" component={ReachedDropMapScreen} />
+      <AuthNav.Screen name="ProfileScreen" component={ProfileScreen} />
     </AuthNav.Navigator>
   );
 };

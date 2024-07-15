@@ -8,10 +8,11 @@ import persistReducer from 'redux-persist/es/persistReducer';
 import {thunk} from 'redux-thunk';
 import {authReducer} from './reducers/authReducer';
 import {orderReducer} from './reducers/orderReducer';
-
+import LocationSlices from './slices/LocationSlices';
 const reducers = combineReducers({
   auth: authReducer,
   order: orderReducer,
+  location: LocationSlices,
 });
 
 const presistConfig = {

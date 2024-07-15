@@ -8,8 +8,11 @@ import {
   Pressable,
   Alert,
   Platform,
+  RefreshControl
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+
+import Geolocation from '@react-native-community/geolocation';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight} from '../constants/PixelSize';
@@ -26,12 +29,13 @@ import * as appActions from '../redux/actions/appActionCreator';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NewSlideButton from '../components/NewSlideButton';
-
+import { useDispatch } from 'react-redux';
 import Song from '../assets/BearSound.mp3';
 import OrdersCard from '../components/OrdersCard';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {pendingOrders} from '../redux/GoboozeApi';
+import { onGettingCoordinates } from '../redux/slices/LocationSlices';
 var Sound = require('react-native-sound');
 
 Sound.setCategory('Playback');
@@ -51,7 +55,7 @@ const NewHomeScreen = props => {
   const navigation = useNavigation();
   const [showNewOrderModal, setShowNewOrderModal] = useState(false);
   const colorScheme = useColorScheme();
-
+  const dispatch = useDispatch();
   const [insignSelectedIndex, setInsightSelectedIndex] = useState(0);
 
   const [listOfRequests, setListOfRequests] = useState([]);
@@ -59,7 +63,7 @@ const NewHomeScreen = props => {
   const [accepteddOrders, setAcceptedOrders] = useState([]);
   const [modalData, setModaldata] = useState([]);
   const [allPendingOrders, setAllpendingOrders] = useState([]);
-
+const [refresh,setRefresh]=useState(false)
   const previousLengthRef = useRef(0);
 
   const socket = io('https://devapigobooze.codefactstech.com');
@@ -103,6 +107,74 @@ const NewHomeScreen = props => {
       return () => clearInterval(interval);
     }, []),
   );
+  useEffect(() => {
+    getLatAndLong();
+    const interval = setInterval(() => {
+      getLatAndLong();
+    }, 240000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getLatAndLong = async () => {
+   
+    Geolocation.watchPosition(
+      position => {
+        const lat = position.coords.latitude;
+        const long = position.coords.longitude;
+      
+        if (lat && long) {
+          postDriverLocation(lat, long);
+          dispatch(onGettingCoordinates({ lattitude: lat, longitude: long }));
+        }
+      },
+      error => {
+        console.log(error, 'error--');
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        distanceFilter: 1,
+        interval: 1000,
+        fastestInterval: 2000,
+      },
+    );
+  };
+
+
+  const postDriverLocation = async (lat, long) => {
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      if (!combinedData) {
+        throw new Error('User data is not available.');
+      }
+
+      const [accessToken, userId] = combinedData.split(':');
+      if (!accessToken || !userId) {
+        throw new Error('Invalid user data format.');
+      }
+
+      const obj = {
+        location: {
+          type: 'Point',
+          coordinates: [lat, long],
+        },
+      };
+
+      const res = await axios.patch(
+        'https://devapigobooze.codefactstech.com/order/api/orders/update-driver-location/663a87e2dff6fb111f5e4907 ',
+        obj,
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+
+      
+    } catch (error) {
+     
+    }
+  };
 
   const fecthPendingOrders = async () => {
     try {
@@ -168,10 +240,7 @@ const NewHomeScreen = props => {
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId} `,
       );
 
-      console.log(
-        '💕 ~ file: NewHomeScreen.js:161 ~ fetchOrders ~ allPendingResponse:',
-        allPendingResponse,
-      );
+    
       setAllpendingOrders(allPendingResponse.data.data);
 
       // Await both API calls
@@ -230,7 +299,12 @@ const NewHomeScreen = props => {
   //     return;
   //   } catch (e) {}
   // };
-
+  const onRefresh = async () => {
+    setRefresh(true);
+    await   fetchOrders();
+    fecthPendingOrders();
+    setRefresh(false);
+  };
   const handleOrderPress = item => {
     if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
       setModaldata(item);
@@ -270,6 +344,9 @@ const NewHomeScreen = props => {
       </View>
       <ScrollView
         stickyHeaderIndices={[2]}
+        refreshControl={
+          <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+      }
         contentContainerStyle={{paddingBottom: 30}}>
         {/* ------------- total arning and order view  ------------- */}
         <View style={styles.horizontalMargin}>

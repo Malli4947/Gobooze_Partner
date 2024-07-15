@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View,Linking} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
@@ -16,6 +16,7 @@ const OrderDetailsView = ({
   title,
   orderDetails,
   customerDetail,
+  storeDetails,
   expandCustomerDetail,
   expandOrderDetail,
   expandStoreDetail,

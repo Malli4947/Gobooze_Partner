@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.ligth_grey,
     padding: 15,
-    paddingLeft: 20,
+    // paddingLeft: 2,
   },
   cubeImg: {
     width: rWidth(20),
@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
   earningValue: {
     fontFamily: GRAPHIK_FONT.SEMIBOLD,
     fontSize: rHeight(22),
-    marginTop: rHeight(35),
+    marginTop: rHeight(10),
     color: COLORS.light_primary_text,
+    textAlign:'center'
   },
 });

@@ -21,7 +21,7 @@ const NavBarWithBackButton = ({onPress, title}) => {
 
   return (
     <View style={[styles.container]}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={[
           styles.menuContainer,
           isDarkTheme && {
@@ -36,7 +36,7 @@ const NavBarWithBackButton = ({onPress, title}) => {
           source={IMAGES.BACK}
           style={styles.menuImg}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <View style={{width: rWidth(15)}} />
 
       <Text style={[styles.title, isDarkTheme && {color: '#FFFFFF'}]}>

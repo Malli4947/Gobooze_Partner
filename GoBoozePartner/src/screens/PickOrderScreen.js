@@ -27,7 +27,7 @@ const PickOrderScreen = ({route}) => {
   const OrderDetails = route.params.orderDetails;
 
   const orders = OrderDetails.order.order_Variants;
-
+console.log(OrderDetails,'OrderDetails=========================')
   const storeDetails = route.params.orderDetails.order.store;
 
   const [isOrderReady, setIsOrderReady] = useState(false);
@@ -60,9 +60,7 @@ const PickOrderScreen = ({route}) => {
       <View style={{marginTop: insets.top}}>
         <NavBarWithBackButton
           title={'Pickup Order'}
-          onPress={() => {
-            props.navigation.goBack();
-          }}
+         
         />
         <View style={[styles.seperator, darkSep]} />
       </View>
@@ -74,13 +72,13 @@ const PickOrderScreen = ({route}) => {
             styles.timerConatiner,
             isDarkTheme && {backgroundColor: COLORS.dark_theme_background},
           ]}>
-          <View
+          {/* <View
             style={[
               styles.timerContainer,
               isDarkTheme && {backgroundColor: COLORS.blue_dark},
             ]}>
             <Text style={[styles.timerText, {color: '#FFF'}]}>2:59</Text>
-          </View>
+          </View> */}
           <View
             style={{
               flexDirection: 'row',
@@ -137,7 +135,7 @@ const PickOrderScreen = ({route}) => {
                     title={'Customer Details'}
                     orderDetails={OrderDetails}
                     customerDetail={{
-                      name: `${OrderDetails.order.address.addressFullName}`,
+                      name: `${OrderDetails.order.address.first_name}`,
                       mobileNum: `${OrderDetails.order.address.addressPhoneNumber}`,
                       orderId: `#${OrderDetails.order_id.slice(
                         0,
@@ -146,6 +144,7 @@ const PickOrderScreen = ({route}) => {
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
+
                     }
                   />
                 );
@@ -177,7 +176,7 @@ const PickOrderScreen = ({route}) => {
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
         <NewSlideButton
-          title={`Okay, I'm Pickink`}
+          title={`Okay, Pick the Order`}
           navigationScreen={'ReachMapDrop'}
           onComplete={handleUpdateOrder}
           orderData={OrderDetails}

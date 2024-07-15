@@ -49,6 +49,7 @@ const orders = [
 
 const ReachedDropScreen = ({route}) => {
   const OrderDetails = route.params.orderDetails;
+  console.log(OrderDetails,'OrderDetails')
   const navigation = useNavigation();
 
   const orders = OrderDetails.order.order_Variants;
@@ -253,12 +254,13 @@ const ReachedDropScreen = ({route}) => {
               if (index === 0) {
                 return (
                   <OrderDetailsView
+                  storeDetails={OrderDetails.order.address.addressPhoneNumber}
                     id={1}
                     expandCustomerDetail={expandCustomerDetailView}
                     image={IMAGES.CUSTOMER}
-                    title={`${OrderDetails.order.address.addressFullName}`}
+                    title={`${OrderDetails.order.address.first_name}`}
                     customerDetail={{
-                      name: `${OrderDetails.order.address.addressFullName}`,
+                      name: `${OrderDetails.order.address.first_name}`,
                       mobileNum: `${OrderDetails.order.address.addressPhoneNumber}`,
                       orderId: `#${OrderDetails.order_id.slice(
                         0,

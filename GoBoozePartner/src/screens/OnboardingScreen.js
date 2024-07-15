@@ -58,13 +58,13 @@ const OnboardingScreen = props => {
           </TouchableOpacity>
         </View>
 
-        <Text
+        {/* <Text
           onPress={() => {
             // console.log('🚀 ~ file: Intro.js:129 ~ Intro ~ e:');
           }}
           style={styles.bottom_text}>
           Continue as guest
-        </Text>
+        </Text> */}
       </View>
     </View>
   );

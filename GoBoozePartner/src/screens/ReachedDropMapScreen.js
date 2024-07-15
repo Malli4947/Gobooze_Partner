@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
@@ -20,17 +20,33 @@ import DetailsView from '../components/DetailsView';
 import MapView, {MapMarker, PROVIDER_DEFAULT} from 'react-native-maps';
 import NewSlideButton from '../components/NewSlideButton';
 import updateOrder from '../constants/statusUpdate';
-
+import Nav from '../assets/Navi.svg'
+import { Marker } from 'react-native-svg';
+import MapViewDirections from 'react-native-maps-directions';
+import Shop from '../assets/Shop.svg'
+import Geolocation from '@react-native-community/geolocation';
+import UserPin from '../assets/UserPin.svg'
+import { useSelector } from 'react-redux';
 const ReachedDropMapScreen = ({route}) => {
-  const OrderDetails = route.params.orderDetails;
-  console.log(
-    '💕 ~ file: ReachedDropMapScreen.js:18 ~ ReachedDropMapScreen ~ OrderDetails:',
-    OrderDetails,
+  const GOOGLE_MAPS_APIKEY = 'AIzaSyCtTH8DV1-h4tYTSb-geYjdn71a0Up_63k';
+  const {currentLattitude, currentLongitude} = useSelector(
+    state => state.location,
   );
 
-  const orders = OrderDetails.order.order_Variants;
+  const OrderDetails = route.params.orderDetails;
+  
+console.log(OrderDetails,'OrderDetails===========><====')
+  
 
-  const storeDetails = route.params.orderDetails.order.store;
+// Use orders.length or check for specific properties inside orders to safely access data
+
+ 
+
+  // const orders = OrderDetails.order && OrderDetails.order.order_Variants ? OrderDetails.order.order_Variants : [];
+  // const ordersAddress = OrderDetails.order.address;
+  const storeDetails = OrderDetails.order.store;
+
+  
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
@@ -39,10 +55,27 @@ const ReachedDropMapScreen = ({route}) => {
   const darkSeperator = isDarkTheme && {
     borderColor: COLORS.dark_disabled_background,
   };
+  const calculateDistance = (startLat, startLng, endLat, endLng) => {
+    const earthRadius = 6371; // Radius of the Earth in kilometers
+    const dLat = toRadians(endLat - startLat);
+    const dLng = toRadians(endLng - startLng);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(startLat)) * Math.cos(toRadians(endLat)) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = earthRadius * c;
+    return distance.toFixed(2); // Return distance rounded to 2 decimal places
+  };
 
-  const origin = {
-    latitude: -37.8057853,
-    longitude: 144.9479622,
+  const toRadians = (angle) => {
+    return angle * (Math.PI / 180);
+  };
+  const calculateTravelTime = (distanceInKm) => {
+    const averageSpeed = 40; // Average speed assumed in km/h
+    const travelTimeHours = distanceInKm / averageSpeed;
+    const travelTimeMinutes = travelTimeHours * 60;
+    return Math.round(travelTimeMinutes); // Round to nearest whole number
   };
 
   const handleUpdateOrder = async () => {
@@ -52,6 +85,16 @@ const ReachedDropMapScreen = ({route}) => {
       Alert.alert('Error', 'Failed to update order status');
     }
   };
+  ;
+
+        
+  
+  const storeLocation = {
+    latitude: storeDetails.location.coordinates[1],
+    longitude: storeDetails.location.coordinates[0],
+  };
+  // Assuming OrderDetails is your variable containing the order details JSON
+ 
 
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
@@ -64,22 +107,169 @@ const ReachedDropMapScreen = ({route}) => {
           // backgroundColor: 'lightblue',
           marginTop: 10,
         }}> */}
-      <MapView
+   
+       {/* <MapView
         provider={PROVIDER_DEFAULT} // remove if not using Google Maps
         style={styles.map}
         region={{
-          latitude: storeDetails
-            ? storeDetails.location.coordinates[1]
-            : -37.8057853,
-          longitude: storeDetails
-            ? storeDetails.location.coordinates[0]
-            : 144.9479622,
+          // latitude: storeDetails
+          //   ? storeDetails.location.coordinates[1]
+          //   : -37.8057853,
+          // longitude: storeDetails
+          //   ? storeDetails.location.coordinates[0]
+          //   : 144.9479622,
+          // latitudeDelta: 0.0121,
+          // longitudeDelta: 0.0121,
+         
+           latitude: -37.840935,
+            // ? currentLocation.latitude
+            // ? -37.5939222
+            // : -37.8057853,
+          longitude:144.9102342,
+            // ? currentLocation.longitude
+            // ?144.9102342
+            // : 144.9479622,
           latitudeDelta: 0.0121,
           longitudeDelta: 0.0121,
+          
         }}>
-        <MapMarker coordinate={origin}></MapMarker>
+            {currentLocation && (
+    <Marker coordinate={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }}>
+     <Shop/>
+    </Marker>
+    
+  )}
+        <MapMarker coordinate={storeLocation}>
+
+<UserPin/>
+        </MapMarker>
+        <MapMarker coordinate={{latitude:-37.840935,
+      longitude:144.9102342}}>
+<Nav/>
+        </MapMarker>
+        {true &&
+        <MapViewDirections
+    origin={{  
+      latitude:-37.840935,
+      longitude:144.9102342
+    //   latitude: currentLocation
+    //   ? currentLocation.latitude
+    //   : -37.8057853,
+    // longitude: currentLocation
+    //   ? currentLocation.longitude
+    //   : 144.9479622,
+    }}
+    destination={storeLocation}
+    apikey={GOOGLE_MAPS_APIKEY}
+       strokeWidth={3}
+    strokeColor="hotpink"
+  />}
+
+      </MapView> */}
+     {/* <MapView
+  provider={PROVIDER_DEFAULT}
+  style={styles.map}
+  region={{
+    latitude: -37.840935,
+    longitude: 144.9102342,
+    latitudeDelta: 0.0121,
+    longitudeDelta: 0.0121,
+  }}
+>
+ 
+  {currentLocation && (
+    <Marker coordinate={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }}>
+ 
+    </Marker>
+  )}
+
+ 
+  
+  <Marker coordinate={{ latitude: -37.840935, longitude: 144.9102342 }}>
+  <Nav/>
+  </Marker>
+
+  {storeLocation && ( 
+    <>
+    <Marker coordinate={{ latitude: storeLocation.latitude, longitude: storeLocation.longitude }}>
+    <UserPin/>
+    </Marker> 
+   
+    <MapViewDirections
+      origin={{ latitude: -37.840935, longitude: 144.9102342 }}
+      destination={{
+        latitude: storeLocation.latitude,
+        longitude: storeLocation.longitude,
+      }}
+      apikey={GOOGLE_MAPS_APIKEY}
+      strokeWidth={3}
+      strokeColor="hotpink"
+    />
+    </>
+  )}
+</MapView> */}
+
+<MapView
+        provider={PROVIDER_DEFAULT} // remove if not using Google Maps
+        style={styles.map}
+        region={{
+          // latitude: storeDetails
+          //   ? storeDetails.location.coordinates[1]
+          //   : -37.8057853,
+          // longitude: storeDetails
+          //   ? storeDetails.location.coordinates[0]
+          //   : 144.9479622,
+          // latitudeDelta: 0.0121,
+          // longitudeDelta: 0.0121,
+         
+           latitude: -37.840935,
+            // ? currentLocation.latitude
+            // ? -37.5939222
+            // : -37.8057853,
+          longitude:144.9102342,
+            // ? currentLocation.longitude
+            // ?144.9102342
+            // : 144.9479622,
+          latitudeDelta: 0.0121,
+          longitudeDelta: 0.0121,
+          
+        }}>
+          
+          {/* {currentLattitude && currentLongitude && (
+          <Marker coordinate={{ latitude: currentLattitude, longitude: currentLongitude }}>
+            <Nav />
+          </Marker>
+        )} */}
+    
+ 
+        <MapMarker coordinate={storeLocation}>
+<UserPin/>
+        </MapMarker>
+        <MapMarker coordinate={{latitude:-37.840935,
+      longitude:144.9102342}}>
+<Nav/>
+        </MapMarker>
+      
+        {true &&
+        <MapViewDirections
+    origin={{  
+      latitude:-37.840935,
+      longitude:144.9102342
+    //   latitude: currentLocation
+    //   ? currentLocation.latitude
+    //   : -37.8057853,
+    // longitude: currentLocation
+    //   ? currentLocation.longitude
+    //   : 144.9479622,
+    }}
+    destination={storeLocation}
+    apikey={GOOGLE_MAPS_APIKEY}
+       strokeWidth={3}
+    strokeColor="hotpink"
+  />}
+
       </MapView>
-      {/* map view */}
+      
       {/* </View> */}
 
       {/* ---------------- BOTTOM CONTAINER ---------------- */}
@@ -90,10 +280,10 @@ const ReachedDropMapScreen = ({route}) => {
             isDarkTheme && {backgroundColor: '#FFFFFF80'},
           ]}
         />
-        <Text style={[styles.kmText, isDarkTheme && {color: '#099A6A'}]}>
-          {`${8} min`}
+       <Text style={[styles.kmText, isDarkTheme && {color: '#099A6A'}]}>
+        {`${calculateTravelTime(calculateDistance(-37.840935, 144.9102342, storeLocation.latitude, storeLocation.longitude))} min`}
           <Text style={[{color: COLORS.light_primary_text}, darkTextStyle]}>
-            {` (${3.5}km)`}
+           ( {`${calculateDistance(-37.840935, 144.9102342, storeLocation.latitude, storeLocation.longitude)} km`})
           </Text>
         </Text>
 

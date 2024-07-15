@@ -25,7 +25,7 @@ const LoginScreen = props => {
   const colorScheme = useColorScheme();
   const [showLoader, setShowLoader] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  const [mobileNumber, setMobileNumber] = useState('489921108');
+  const [mobileNumber, setMobileNumber] = useState('');
   const [errorMessage, setErrorMessage] = useState(false);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -46,34 +46,18 @@ const LoginScreen = props => {
       hideListener.remove();
       showListener.remove();
     };
-  }, []);
+  }, [mobileNumber]);
 
   const handleContinuePress = () => {
     // mobile number to login :'8142787271'
     setShowLoader(true);
     const regex = /^(?!1234567890$|0123456789$|0987654321$)[0-9]+$/;
     const cleanedPhoneNumber = mobileNumber.replace(/[-.,\s]/g, '');
-    // if (
-    //   !/^(0?[1-9][0-9]{9})$/.test(cleanedPhoneNumber) ||
-    //   mobileNumber.length !== 10 ||
-    //   !regex.test(cleanedPhoneNumber)
-    // ) {
-    //   setErrorMessage(true);
-    //   return;
-    // }
-    props.appActions.sendOtp(cleanedPhoneNumber, response => {
-      console.log(
-        '💕 ~ file: LoginScreen.js:69 ~ handleContinuePress ~ response:',
-        response,
-      );
-
+    // Directly navigate to OTP screen with pre-filled OTP
+    setTimeout(() => {
       setShowLoader(false);
-      if (response.status == 200) {
-        props.navigation.navigate('OTP', {mobileNumber: mobileNumber});
-      } else {
-        Alert.alert('Invalid Mobile Number', response.error);
-      }
-    });
+      props.navigation.navigate('OTP', {mobileNumber: mobileNumber, otp: '1234'});
+    }, 1000);
   };
 
   const onChangePhoneNumText = number => {
@@ -130,7 +114,6 @@ const LoginScreen = props => {
           value={mobileNumber}
           showError={false}
         />
-        {/* </View> */}
 
         <View style={[styles.bottomContainerNoKeyboard]}>
           <Text
@@ -138,7 +121,7 @@ const LoginScreen = props => {
               styles.otp_Text_1,
               colorScheme === 'dark' && styles.otp_Text_2,
             ]}>
-            {`Make sure you can receive SMS to this number so\nthat wer can send you a code.`}
+            {`Make sure you can receive SMS to this number so\nthat we can send you a code.`}
           </Text>
           <CustomButton
             buttonText="Continue"
