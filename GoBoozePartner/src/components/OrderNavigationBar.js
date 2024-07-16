@@ -67,7 +67,7 @@ const OrderNavigationBar = () => {
           },
         ]}
         onPress={() => {
-          // navigation.navigate('ProfileScreen');
+          navigation.navigate('ProfileScreen');
         }}>
         {/* <Badge /> */}
         <Image

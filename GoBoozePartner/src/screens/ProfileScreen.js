@@ -9,8 +9,10 @@ import { rHeight, rWidth } from '../constants/PixelSize';
 import Clock from '../assets/ClockBlue.svg'
 import Arrow from '../assets/arrowRightBlack.svg'
 import Task from '../assets/TaskSquare.svg'
-
+import MessageBox from '../assets/MessageBox.svg'
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Logout from '../assets/Logout.svg'
+import MyProfile from '../assets/MyProfile.svg'
 const ProfileScreen = () => {
     const colorScheme = useColorScheme();
     const isDarkTheme = colorScheme === 'dark';
@@ -31,14 +33,29 @@ const ProfileScreen = () => {
       </View>
       
       <View style={{marginTop:rHeight(10)}}>
-        <Pressable style={{flexDirection:'row',alignItems:'center',padding:16,borderBottomColor:'#D3178A',borderBottomWidth:1}}>
+        <Pressable style={{flexDirection:'row',alignItems:'center',padding:16,borderBottomColor:COLORS.light_disabled_background,borderBottomWidth:1}}>
 <Clock style={{marginTop:rHeight(5)}}/>
-<Text style={{color:'#D3178A',fontSize:rWidth(20), fontFamily: GRAPHIK_FONT.MEDIUM,marginLeft:rWidth(10)}}>Histroy</Text>
+<Text style={{color:'#000',fontSize:rWidth(16), fontFamily: GRAPHIK_FONT.MEDIUM,marginLeft:rWidth(10)}}>Order Histroy</Text>
 <Arrow style={{position:'absolute',right:16,marginTop:rHeight(6)}}/>
         </Pressable>
-        <Pressable style={{flexDirection:'row',alignItems:'center',padding:16,borderBottomColor:'#D3178A',borderBottomWidth:1}}>
+        <Pressable style={{flexDirection:'row',alignItems:'center',padding:16,borderBottomColor:COLORS.light_disabled_background,borderBottomWidth:1}}>
 <Task style={{marginTop:rHeight(5)}}/>
-<Text style={{color:'#D3178A',fontSize:rWidth(20), fontFamily: GRAPHIK_FONT.MEDIUM,marginLeft:rWidth(10)}}>Partner Instructions</Text>
+<Text style={{color:'#000',fontSize:rWidth(16), fontFamily: GRAPHIK_FONT.MEDIUM,marginLeft:rWidth(10)}}>Partner Instructions</Text>
+<Arrow style={{position:'absolute',right:16,marginTop:rHeight(6)}}/>
+        </Pressable>
+        <Pressable style={{flexDirection:'row',alignItems:'center',padding:16,borderBottomColor:COLORS.light_disabled_background,borderBottomWidth:1}}>
+<MyProfile style={{marginTop:rHeight(5)}}/>
+<Text style={{color:'#000',fontSize:rWidth(16), fontFamily: GRAPHIK_FONT.MEDIUM,marginLeft:rWidth(10)}}>Profile Information</Text>
+<Arrow style={{position:'absolute',right:16,marginTop:rHeight(6)}}/>
+        </Pressable>
+        <Pressable style={{flexDirection:'row',alignItems:'center',padding:16,borderBottomColor:COLORS.light_disabled_background,borderBottomWidth:1}}>
+<MessageBox style={{marginTop:rHeight(5)}}/>
+<Text style={{color:'#000',fontSize:rWidth(16), fontFamily: GRAPHIK_FONT.MEDIUM,marginLeft:rWidth(10)}}>Support/Help</Text>
+<Arrow style={{position:'absolute',right:16,marginTop:rHeight(6)}}/>
+        </Pressable>
+        <Pressable style={{flexDirection:'row',alignItems:'center',padding:16,borderBottomColor:COLORS.light_disabled_background,borderBottomWidth:1}}>
+<Logout style={{marginTop:rHeight(5)}}/>
+<Text style={{color:'#000',fontSize:rWidth(16), fontFamily: GRAPHIK_FONT.MEDIUM,marginLeft:rWidth(10)}}>LogOut</Text>
 <Arrow style={{position:'absolute',right:16,marginTop:rHeight(6)}}/>
         </Pressable>
       </View>
