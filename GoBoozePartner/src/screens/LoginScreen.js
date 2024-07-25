@@ -20,9 +20,12 @@ import CustomButton from '../components/CustomButton';
 import PhoneNumberTextInput from '../components/PhoneNumberTextInput';
 import CustomTopNavBar from '../components/CustomTopNavBar';
 import Loader from '../components/Loader';
-
+import {MAIN_BASE_URL} from '../constants/Constant';
+import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
 const LoginScreen = props => {
   const colorScheme = useColorScheme();
+  const navigation = useNavigation();
   const [showLoader, setShowLoader] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [mobileNumber, setMobileNumber] = useState('');
@@ -48,18 +51,44 @@ const LoginScreen = props => {
     };
   }, [mobileNumber]);
 
-  const handleContinuePress = () => {
-    // mobile number to login :'8142787271'
-    setShowLoader(true);
-    const regex = /^(?!1234567890$|0123456789$|0987654321$)[0-9]+$/;
-    const cleanedPhoneNumber = mobileNumber.replace(/[-.,\s]/g, '');
-    // Directly navigate to OTP screen with pre-filled OTP
-    setTimeout(() => {
-      setShowLoader(false);
-      props.navigation.navigate('OTP', {mobileNumber: mobileNumber, otp: '1234'});
-    }, 1000);
-  };
+  // const handleContinuePress = () => {
+  //   // mobile number to login :'8142787271'
+  //   setShowLoader(true);
+  //   const regex = /^(?!1234567890$|0123456789$|0987654321$)[0-9]+$/;
+  //   const cleanedPhoneNumber = mobileNumber.replace(/[-.,\s]/g, '');
+  //   // Directly navigate to OTP screen with pre-filled OTP
+  //   setTimeout(() => {
+  //     setShowLoader(false);
+  //     props.navigation.navigate('OTP', {mobileNumber: mobileNumber, otp: '1234'});
+  //   }, 1000);
+  // };
+  const handleContinuePress = async () => {
+    try {
+      const regex = /^(?!1234567890$|0123456789$|0987654321$)[0-9]+$/;
+      const cleanedPhoneNumber = mobileNumber.replace(/[-.,\s]/g, '');
 
+      const obj = {
+        phone: `+61${mobileNumber}`,
+      };
+
+      console.log(obj, 'obj----------------------');
+      const response = await axios.post(
+        `${MAIN_BASE_URL}admin/api/partner/send-otp`,
+        obj,
+      );
+      const data = response.data;
+      console.log(data, 'response=======================================');
+
+      if (data.message === 'Mobile not registered') {
+        Alert.alert('', 'Mobile Number is not registered.');
+      } else {
+        navigation.navigate('OTP', {mobileNumber: mobileNumber});
+      }
+    } catch (error) {
+      console.log(error, 'error===============');
+      Alert.alert('', 'Unable To Login Now. Please Try After Some Time');
+    }
+  };
   const onChangePhoneNumText = number => {
     setMobileNumber(number);
     setErrorMessage('');

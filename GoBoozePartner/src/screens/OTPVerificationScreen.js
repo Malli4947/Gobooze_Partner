@@ -74,7 +74,7 @@ const OTPVerificationScreen = props => {
             props.navigation.navigate('Location');
           }
         } else {
-          Alert.alert('Error', response.error);
+          Alert.alert('Invalid OTP', response.error);
         }
       });
     }

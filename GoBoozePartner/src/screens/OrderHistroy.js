@@ -1,14 +1,22 @@
-import { View, Text,StyleSheet,TouchableOpacity,ScrollView,ActivityIndicator } from 'react-native'
-import React,{useEffect, useState} from 'react'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import NavBarWithBackButton from '../components/NavBarWithBackButton';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import COLORS from '../constants/Colors';
-import { rWidth,rHeight } from '../constants/PixelSize';
-import { GRAPHIK_FONT } from '../constants/Constant';
+import {rWidth, rHeight} from '../constants/PixelSize';
+import {GRAPHIK_FONT} from '../constants/Constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
-const OrderHistroy = ({orderRequests}) => {
+
+const OrderHistory = ({orderRequests}) => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkTextStyle = isDarkTheme && {color: COLORS.dark_primary_text};
@@ -16,71 +24,86 @@ const OrderHistroy = ({orderRequests}) => {
     backgroundColor: COLORS.dark_theme_background,
   };
   const insets = useSafeAreaInsets();
-  const [orderData,setOrderData]=useState([])
+  const [orderData, setOrderData] = useState([]);
   const [showAllProducts, setShowAllProducts] = useState(0);
-  const [loading, setLoading] = useState(true); 
-  console.log(orderData,'orderData===============')
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    FetchOrderDetails()
+    FetchOrderDetails();
   }, []);
+
   const FetchOrderDetails = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
-   
       const fetchOrderDetails = await fetch(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-completed-orders/${userId}`,
         {
-         headers: {
-              Authorization: `${accessToken}`,
-              }
-        }
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
       );
       const data = await fetchOrderDetails.json();
-       setOrderData(data?.data)
+      setOrderData(data?.data);
     } catch (error) {
-
-      console.log(error,'error')
+      console.log(error, 'error');
     } finally {
-      setLoading(false); // Set loading to false once data is fetched
+      setLoading(false);
     }
   };
+
   const formatDate = dateString => {
     const date = new Date(dateString);
     const options = {day: '2-digit', month: 'long', year: 'numeric'};
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
+
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
-      <View style={{ marginTop: insets.top }}>
+      <View style={{marginTop: insets.top}}>
         <NavBarWithBackButton title={'Order History'} />
         <View style={[styles.seperator, darkSep]} />
       </View>
       {loading ? (
         <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={isDarkTheme ? COLORS.dark_primary_text : COLORS.light_primary_text} />
+          <ActivityIndicator
+            size="large"
+            color={
+              isDarkTheme ? COLORS.dark_primary_text : COLORS.light_primary_text
+            }
+          />
         </View>
       ) : (
         <ScrollView>
           {orderData.map((item, index) => (
-            <View key={index} style={[styles.lcardCon, isDarkTheme && styles.dcardCon]}>
-              <View style={[styles.lheaderCon, isDarkTheme && styles.dheaderCon]}>
+            <View
+              key={index}
+              style={[styles.lcardCon, isDarkTheme && styles.dcardCon]}>
+              <View
+                style={[styles.lheaderCon, isDarkTheme && styles.dheaderCon]}>
                 <View>
                   <Text style={[styles.ltext1, isDarkTheme && styles.dtext1]}>
                     ORDER PLACED
                   </Text>
                   <Text
-                    style={[styles.lorder_date, isDarkTheme && styles.dorder_date]}>
+                    style={[
+                      styles.lorder_date,
+                      isDarkTheme && styles.dorder_date,
+                    ]}>
                     {formatDate(item.createdAt)}
                   </Text>
                 </View>
 
-                <View style={{ marginLeft: rWidth(32) }}>
+                <View style={{marginLeft: rWidth(32)}}>
                   <Text style={[styles.ltext1, isDarkTheme && styles.dtext1]}>
                     ORDER ID
                   </Text>
                   <Text
-                    style={[styles.lorder_date, isDarkTheme && styles.dorder_date]}>
+                    style={[
+                      styles.lorder_date,
+                      isDarkTheme && styles.dorder_date,
+                    ]}>
                     {item.order.sequence_number}
                   </Text>
                 </View>
@@ -98,7 +121,10 @@ const OrderHistroy = ({orderRequests}) => {
                       ]}>
                       <View style={styles.lproductsRowCon}>
                         <Text
-                          style={[styles.lqtyText, isDarkTheme && styles.dqtyText]}>
+                          style={[
+                            styles.lqtyText,
+                            isDarkTheme && styles.dqtyText,
+                          ]}>
                           {variant.orderQuantity}x
                         </Text>
                         <FastImage
@@ -108,7 +134,7 @@ const OrderHistroy = ({orderRequests}) => {
                           resizeMode="contain"
                           style={styles.product_Image}
                         />
-                        <View style={{ marginLeft: rWidth(12) }}>
+                        <View style={{marginLeft: rWidth(12)}}>
                           <Text
                             style={[
                               styles.lbrandText,
@@ -136,62 +162,63 @@ const OrderHistroy = ({orderRequests}) => {
                   ))}
               </>
 
-              {showAllProducts == item._id && (
+              {showAllProducts === item._id && (
                 <>
-                  {item.order.order_Variants
-                    .slice(1, item.order.order_Variants?.length)
-                    .map((variant, index2) => (
-                      <View
-                        key={index2}
-                        style={[
-                          styles.lproductsCon,
-                          isDarkTheme && styles.dproductsCon,
-                        ]}>
-                        <View style={styles.lproductsRowCon}>
+                  {item.order.order_Variants.slice(1).map((variant, index2) => (
+                    <View
+                      key={index2}
+                      style={[
+                        styles.lproductsCon,
+                        isDarkTheme && styles.dproductsCon,
+                      ]}>
+                      <View style={styles.lproductsRowCon}>
+                        <Text
+                          style={[
+                            styles.lqtyText,
+                            isDarkTheme && styles.dqtyText,
+                          ]}>
+                          {variant.orderQuantity}x
+                        </Text>
+                        <FastImage
+                          source={{
+                            uri: `https://gobooze-bucket.s3.eu-north-1.amazonaws.com/goboozestore/${variant.variantImage}`,
+                          }}
+                          resizeMode="contain"
+                          style={styles.product_Image}
+                        />
+                        <View style={{marginLeft: rWidth(12)}}>
                           <Text
-                            style={[styles.lqtyText, isDarkTheme && styles.dqtyText]}>
-                            {variant.orderQuantity}x
+                            style={[
+                              styles.lbrandText,
+                              isDarkTheme && styles.dbrandText,
+                            ]}>
+                            {variant.quantity}-Pack,{' '}
                           </Text>
-                          <FastImage
-                            source={{
-                              uri: `https://gobooze-bucket.s3.eu-north-1.amazonaws.com/goboozestore/${variant.variantImage}`,
-                            }}
-                            resizeMode="contain"
-                            style={styles.product_Image}
-                          />
-                          <View style={{ marginLeft: rWidth(12) }}>
-                            <Text
-                              style={[
-                                styles.lbrandText,
-                                isDarkTheme && styles.dbrandText,
-                              ]}>
-                              {variant.quantity}-Pack,{' '}
-                            </Text>
-                            <Text
-                              style={[
-                                styles.lnameText,
-                                isDarkTheme && styles.dnameText,
-                              ]}>
-                              {variant.variantName}
-                            </Text>
-                            <Text
-                              style={[
-                                styles.lpriceText,
-                                isDarkTheme && styles.dpriceText,
-                              ]}>
-                              ${variant.finalSellingPrice}
-                            </Text>
-                          </View>
+                          <Text
+                            style={[
+                              styles.lnameText,
+                              isDarkTheme && styles.dnameText,
+                            ]}>
+                            {variant.variantName}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.lpriceText,
+                              isDarkTheme && styles.dpriceText,
+                            ]}>
+                            ${variant.finalSellingPrice}
+                          </Text>
                         </View>
                       </View>
-                    ))}
+                    </View>
+                  ))}
                 </>
               )}
 
               {item.order.order_Variants.length > 1 && (
                 <TouchableOpacity
                   onPress={() => {
-                    if (item._id == showAllProducts) {
+                    if (item._id === showAllProducts) {
                       setShowAllProducts(0);
                     } else {
                       setShowAllProducts(item._id);
@@ -199,50 +226,54 @@ const OrderHistroy = ({orderRequests}) => {
                   }}
                   style={{}}>
                   <Text style={[styles.moreText]}>
-                    +{item.order.order_Variants.length - 1} items
+                    {showAllProducts === item._id
+                      ? `-${item.order.order_Variants.length - 1} items`
+                      : `+${item.order.order_Variants.length - 1} items`}
                   </Text>
                 </TouchableOpacity>
               )}
               <View
                 style={[
                   styles.dummyView,
-                  isDarkTheme && { backgroundColor: COLORS.dark_disabled_background },
+                  isDarkTheme && {
+                    backgroundColor: COLORS.dark_disabled_background,
+                  },
                 ]}
               />
               <View style={[styles.rowCon]}>
-                <Text style={[styles.lleftText, isDarkTheme && styles.dleftText]}>
+                <Text
+                  style={[styles.lleftText, isDarkTheme && styles.dleftText]}>
                   Customer Name:
                 </Text>
-                <Text style={[styles.lRightText, isDarkTheme && styles.dRightText]}>
-                  {item.order.address.first_name === item.order.address.first_name
+                <Text
+                  style={[styles.lRightText, isDarkTheme && styles.dRightText]}>
+                  {item.order.address.first_name ===
+                  item.order.address.first_name
                     ? item.order.address.first_name
                     : `${item.order.address.first_name} ${item.order.address.last_name}`}
                 </Text>
               </View>
             </View>
           ))}
-          <View style={{ height: rHeight(50) }} />
+          <View style={{height: rHeight(50)}} />
         </ScrollView>
       )}
     </View>
   );
 };
 
+export default OrderHistory;
 
-export default OrderHistroy
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffff',
-  //   position:'relative',
-  //   top:-100,
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   dark_container: {
     backgroundColor: COLORS.dark_con,
   },
@@ -280,7 +311,6 @@ const styles = StyleSheet.create({
   },
   ltext1: {
     color: COLORS.light_disabled_text,
-
     fontFamily: GRAPHIK_FONT.REGULAR,
     fontSize: rWidth(12),
   },
@@ -390,4 +420,4 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     marginLeft: rWidth(8),
   },
-})
+});
