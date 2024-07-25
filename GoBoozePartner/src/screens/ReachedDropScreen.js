@@ -5,6 +5,7 @@ import {
   FlatList,
   Image,
   Alert,
+  Linking
 } from 'react-native';
 import React, {useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -262,14 +263,19 @@ const ReachedDropScreen = ({route}) => {
                     customerDetail={{
                       name: `${OrderDetails.order.address.first_name}`,
                       mobileNum: `${OrderDetails.order.address.addressPhoneNumber}`,
-                      orderId: `#${OrderDetails.order_id.slice(
-                        0,
-                        5,
-                      )}-${OrderDetails.order_id.slice(-5)}`,
+                      // orderId: `#${OrderDetails.order_id.slice(
+                      //   0,
+                      //   5,
+                      // )}-${OrderDetails.order_id.slice(-5)}`,
+                      orderId: `${OrderDetails.order.sequence_number}`,
+
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
                     }
+                    Onpresses={()=>{
+                      Linking.openURL(`tel:${OrderDetails.order.address.addressPhoneNumber}`)
+                    }}
                   />
                 );
               } else {

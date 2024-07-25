@@ -69,10 +69,9 @@ const CollectCashView = ({
                 style={[
                   styles.orderText,
                   lightTxt,
-                ]}>{`Order: #${orderDetails.order_id.slice(
-                0,
-                5,
-              )}-${orderDetails.order_id.slice(-5)}`}</Text>
+                ]}>
+                  {`Order: ${orderDetails.order.sequence_number}`}
+              </Text>
             </View>
           </View>
           {!isPaidOnline && (

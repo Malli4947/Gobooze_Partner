@@ -16,6 +16,7 @@ const OrderDetailExpandView = ({orderDetails}) => {
   const darkTextStyle = isDarkTheme && {color: '#FFFFFFBF'};
 
   const orderItem = ({item, index}) => {
+    console.log(item.orderQuantity,'item')
     return (
       <View style={{overflow: 'hidden'}}>
         <View style={styles.orderItemCon}>
@@ -23,11 +24,11 @@ const OrderDetailExpandView = ({orderDetails}) => {
             style={[
               styles.quantity,
               darkTextStyle,
-            ]}>{`${item.orderQuantity}X`}</Text>
+            ]}>{item.orderQuantity}x</Text>
 
           <FastImage
             source={{
-              uri: `https://d12keppzk8wa17.cloudfront.net/goboozestore/${item.variantImage}`,
+              uri: `https://gobooze-bucket.s3.eu-north-1.amazonaws.com/goboozestore/${item.variantImage}`,
             }}
             resizeMode="contain"
             style={styles.whiskeyImg}
@@ -77,9 +78,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F3F9',
   },
   whiskeyImg: {
-    width: '20%',
+    width: '15%',
     height: rHeight(75),
     // backgroundColor: 'lightblue'
+    marginLeft:rWidth(20)
   },
   itemText: {
     fontFamily: GRAPHIK_FONT.REGULAR,
@@ -92,8 +94,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: rHeight(20),
-    width: '90%',
-    marginLeft: '5%',
+    // width: '90%',
+    // marginLeft: '5%',
     // backgroundColor: 'yellow',
   },
   nameTxt: {
@@ -120,7 +122,8 @@ const styles = StyleSheet.create({
   },
   quantity: {
     fontFamily: GRAPHIK_FONT.MEDIUM,
-    fontSize: rHeight(15),
-    color: '#1D2433CC',
+    fontSize: rHeight(20),
+    color: '#000',
+    marginLeft:rWidth(150)
   },
 });

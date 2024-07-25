@@ -90,10 +90,11 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
     const options = {day: '2-digit', month: 'long', year: 'numeric'};
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
+   const IMAGE_URL=`https://gobooze-bucket.s3.eu-north-1.amazonaws.com/goboozestore/`
   return (
     <>
       {orderRequests?.map((item, index) => {
-        console.log(item.order.address, '==');
+        console.log(item.order.order_Variants, '===================');
         return (
           <Pressable
             key={index}
@@ -117,7 +118,8 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                 </Text>
                 <Text
                   style={[styles.lorder_date, isDark && styles.dorder_date]}>
-                  #{item.order_id.slice(0, 5)}-{item.order_id.slice(-5)}
+                  {/* #{item.order_id.slice(0, 5)}-{item.order_id.slice(-5)} */}
+                  {item.order.sequence_number}
                 </Text>
               </View>
             </View>
@@ -139,12 +141,21 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                         {item.orderQuantity}x
                       </Text>
                       <FastImage
+                  source={{
+                    uri: `${IMAGE_URL}${item.variantImage}`,
+                   
+                  }}
+                  resizeMode="contain"
+                  style={styles.product_Image}
+                />
+                      {/* src={product?.variant.variantImage ? s3_image + product?.variant.variantImage : "/src/Assect/image/11.png"} */}
+                      {/* <FastImage
                         source={{
-                          uri: `https://d12keppzk8wa17.cloudfront.net/goboozestore/${item.variantImage}`,
+                          uri: `https://d12keppzk8wa17.cloudfront.net/goboozestore/${item.variantImage?s3_image + item?.variantImage:'/src/Assect/image/11.png'}`,
                         }}
                         resizeMode="contain"
                         style={styles.product_Image}
-                      />
+                      /> */}
                       <View style={{marginLeft: rWidth(12)}}>
                         <Text
                           style={[
@@ -191,7 +202,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                         </Text>
                         <FastImage
                           source={{
-                            uri: `https://d12keppzk8wa17.cloudfront.net/goboozestore/${item.variantImage}`,
+                            uri: `${IMAGE_URL}${item.variantImage}`,
                           }}
                           resizeMode="contain"
                           style={styles.product_Image}

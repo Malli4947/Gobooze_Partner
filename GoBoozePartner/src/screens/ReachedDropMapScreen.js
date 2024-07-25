@@ -32,7 +32,8 @@ const ReachedDropMapScreen = ({route}) => {
   const {currentLattitude, currentLongitude} = useSelector(
     state => state.location,
   );
-
+  console.log(currentLattitude,'currentLattitude================><=============drop')
+  console.log(currentLongitude,'currentLongitude================><=============drop')
   const OrderDetails = route.params.orderDetails;
   
 console.log(OrderDetails,'OrderDetails===========><====')
@@ -45,7 +46,7 @@ console.log(OrderDetails,'OrderDetails===========><====')
   // const orders = OrderDetails.order && OrderDetails.order.order_Variants ? OrderDetails.order.order_Variants : [];
   // const ordersAddress = OrderDetails.order.address;
   const storeDetails = OrderDetails.order.store;
-
+console.log(storeDetails,'storeDetails-------')
   
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
@@ -89,186 +90,59 @@ console.log(OrderDetails,'OrderDetails===========><====')
 
         
   
-  const storeLocation = {
-    latitude: storeDetails.location.coordinates[1],
-    longitude: storeDetails.location.coordinates[0],
+  const userLocation = {
+    latitude: OrderDetails.order.address.coordinates.lat,
+    longitude: OrderDetails.order.address.coordinates.lng,
   };
   // Assuming OrderDetails is your variable containing the order details JSON
  
-
+  console.log(userLocation,'userLocation=========================')
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top}}>
         <NavBarWithBackButton title={'Reach Drop'} />
       </View>
-      {/* <View
-        style={{
-          height: '50%',
-          // backgroundColor: 'lightblue',
-          marginTop: 10,
-        }}> */}
-   
-       {/* <MapView
+
+      {currentLattitude && currentLongitude && <MapView
         provider={PROVIDER_DEFAULT} // remove if not using Google Maps
         style={styles.map}
+        showsTraffic = { false }
         region={{
-          // latitude: storeDetails
-          //   ? storeDetails.location.coordinates[1]
-          //   : -37.8057853,
-          // longitude: storeDetails
-          //   ? storeDetails.location.coordinates[0]
-          //   : 144.9479622,
-          // latitudeDelta: 0.0121,
-          // longitudeDelta: 0.0121,
+          
          
-           latitude: -37.840935,
-            // ? currentLocation.latitude
-            // ? -37.5939222
-            // : -37.8057853,
-          longitude:144.9102342,
-            // ? currentLocation.longitude
-            // ?144.9102342
-            // : 144.9479622,
+           latitude:currentLattitude,
+            
+          longitude:currentLongitude,
+           
           latitudeDelta: 0.0121,
           longitudeDelta: 0.0121,
           
         }}>
-            {currentLocation && (
-    <Marker coordinate={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }}>
-     <Shop/>
-    </Marker>
-    
-  )}
-        <MapMarker coordinate={storeLocation}>
-
-<UserPin/>
-        </MapMarker>
-        <MapMarker coordinate={{latitude:-37.840935,
-      longitude:144.9102342}}>
-<Nav/>
-        </MapMarker>
-        {true &&
-        <MapViewDirections
-    origin={{  
-      latitude:-37.840935,
-      longitude:144.9102342
-    //   latitude: currentLocation
-    //   ? currentLocation.latitude
-    //   : -37.8057853,
-    // longitude: currentLocation
-    //   ? currentLocation.longitude
-    //   : 144.9479622,
-    }}
-    destination={storeLocation}
-    apikey={GOOGLE_MAPS_APIKEY}
-       strokeWidth={3}
-    strokeColor="hotpink"
-  />}
-
-      </MapView> */}
-     {/* <MapView
-  provider={PROVIDER_DEFAULT}
-  style={styles.map}
-  region={{
-    latitude: -37.840935,
-    longitude: 144.9102342,
-    latitudeDelta: 0.0121,
-    longitudeDelta: 0.0121,
-  }}
->
- 
-  {currentLocation && (
-    <Marker coordinate={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }}>
- 
-    </Marker>
-  )}
-
- 
-  
-  <Marker coordinate={{ latitude: -37.840935, longitude: 144.9102342 }}>
-  <Nav/>
-  </Marker>
-
-  {storeLocation && ( 
-    <>
-    <Marker coordinate={{ latitude: storeLocation.latitude, longitude: storeLocation.longitude }}>
-    <UserPin/>
-    </Marker> 
-   
-    <MapViewDirections
-      origin={{ latitude: -37.840935, longitude: 144.9102342 }}
-      destination={{
-        latitude: storeLocation.latitude,
-        longitude: storeLocation.longitude,
-      }}
-      apikey={GOOGLE_MAPS_APIKEY}
-      strokeWidth={3}
-      strokeColor="hotpink"
-    />
-    </>
-  )}
-</MapView> */}
-
-<MapView
-        provider={PROVIDER_DEFAULT} // remove if not using Google Maps
-        style={styles.map}
-        region={{
-          // latitude: storeDetails
-          //   ? storeDetails.location.coordinates[1]
-          //   : -37.8057853,
-          // longitude: storeDetails
-          //   ? storeDetails.location.coordinates[0]
-          //   : 144.9479622,
-          // latitudeDelta: 0.0121,
-          // longitudeDelta: 0.0121,
-         
-           latitude: -37.840935,
-            // ? currentLocation.latitude
-            // ? -37.5939222
-            // : -37.8057853,
-          longitude:144.9102342,
-            // ? currentLocation.longitude
-            // ?144.9102342
-            // : 144.9479622,
-          latitudeDelta: 0.0121,
-          longitudeDelta: 0.0121,
-          
-        }}>
-          
-          {/* {currentLattitude && currentLongitude && (
-          <Marker coordinate={{ latitude: currentLattitude, longitude: currentLongitude }}>
+            
+            {currentLattitude && currentLongitude && (
+          <MapMarker coordinate={{ latitude: currentLattitude, longitude: currentLongitude }}>
             <Nav />
-          </Marker>
-        )} */}
-    
- 
-        <MapMarker coordinate={storeLocation}>
-<UserPin/>
+          </MapMarker>
+          
+        )}
+    <MapMarker coordinate={userLocation}>
+<Shop/>
         </MapMarker>
-        <MapMarker coordinate={{latitude:-37.840935,
-      longitude:144.9102342}}>
-<Nav/>
-        </MapMarker>
-      
+
         {true &&
         <MapViewDirections
     origin={{  
-      latitude:-37.840935,
-      longitude:144.9102342
-    //   latitude: currentLocation
-    //   ? currentLocation.latitude
-    //   : -37.8057853,
-    // longitude: currentLocation
-    //   ? currentLocation.longitude
-    //   : 144.9479622,
+      latitude:currentLattitude,
+      longitude:currentLongitude
+    
     }}
-    destination={storeLocation}
+    destination={userLocation}
     apikey={GOOGLE_MAPS_APIKEY}
        strokeWidth={3}
     strokeColor="hotpink"
   />}
 
-      </MapView>
+      </MapView>}
       
       {/* </View> */}
 
@@ -281,9 +155,9 @@ console.log(OrderDetails,'OrderDetails===========><====')
           ]}
         />
        <Text style={[styles.kmText, isDarkTheme && {color: '#099A6A'}]}>
-        {`${calculateTravelTime(calculateDistance(-37.840935, 144.9102342, storeLocation.latitude, storeLocation.longitude))} min`}
+        {`${calculateTravelTime(calculateDistance(currentLattitude, currentLongitude, userLocation.latitude, userLocation.longitude))} min`}
           <Text style={[{color: COLORS.light_primary_text}, darkTextStyle]}>
-           ( {`${calculateDistance(-37.840935, 144.9102342, storeLocation.latitude, storeLocation.longitude)} km`})
+           ( {`${calculateDistance(currentLattitude, currentLongitude, userLocation.latitude, userLocation.longitude)} km`})
           </Text>
         </Text>
 
@@ -353,10 +227,11 @@ console.log(OrderDetails,'OrderDetails===========><====')
             id="0"
             image={IMAGES.BOX}
             title={'Order:'}
-            value={`   #${OrderDetails.order_id.slice(
-              0,
-              5,
-            )}-${OrderDetails.order_id.slice(-5)}`}
+            // value={`   #${OrderDetails.order_id.slice(
+            //   0,
+            //   5,
+            // )}-${OrderDetails.order_id.slice(-5)}`}
+            value={OrderDetails.order.sequence_number}
           />
           <DetailsView
             id="1"

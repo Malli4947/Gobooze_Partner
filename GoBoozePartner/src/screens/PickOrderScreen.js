@@ -6,6 +6,7 @@ import {
   ScrollView,
   FlatList,
   Alert,
+  Linking
 } from 'react-native';
 import React, {useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -102,10 +103,11 @@ console.log(OrderDetails,'OrderDetails=========================')
         <View style={[styles.seperator, darkSep]} />
         <Text style={[styles.orderidStaticText, darkTextStyle]}>ORDER ID</Text>
         <Text style={[styles.orderNumText, darkTextStyle]}>
-          {OrderDetails.order_id.slice(0, orderNumber.length - 4)}-
+        {OrderDetails.order.sequence_number}
+          {/* {OrderDetails.order_id.slice(0, orderNumber.length - 4)}-
           <Text style={{fontFamily: GRAPHIK_FONT.SEMIBOLD}}>
             {OrderDetails.order_id.slice(-5)}
-          </Text>
+          </Text> */}
         </Text>
         <View style={{paddingBottom: 20}}>
           <FlatList
@@ -130,6 +132,7 @@ console.log(OrderDetails,'OrderDetails=========================')
                 return (
                   <OrderDetailsView
                     id={1}
+                    store={true}
                     expandCustomerDetail={expandCustomerDetailView}
                     image={IMAGES.CUSTOMER}
                     title={'Customer Details'}
@@ -137,15 +140,21 @@ console.log(OrderDetails,'OrderDetails=========================')
                     customerDetail={{
                       name: `${OrderDetails.order.address.first_name}`,
                       mobileNum: `${OrderDetails.order.address.addressPhoneNumber}`,
-                      orderId: `#${OrderDetails.order_id.slice(
-                        0,
-                        5,
-                      )}-${OrderDetails.order_id.slice(-5)}`,
+                    
+                      // orderId: `#${OrderDetails.order_id.slice(
+                      //   0,
+                      //   5,
+                      // )}-${OrderDetails.order_id.slice(-5)}`,
+                      orderId:`${OrderDetails.order.sequence_number}`,
+
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
 
                     }
+                    Onpresses={()=>{
+                      Linking.openURL(`tel:${OrderDetails.order.store.phone}`)
+                    }}
                   />
                 );
               } else {

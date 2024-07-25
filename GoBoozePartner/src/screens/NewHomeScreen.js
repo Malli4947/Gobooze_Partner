@@ -111,7 +111,7 @@ const [refresh,setRefresh]=useState(false)
     getLatAndLong();
     const interval = setInterval(() => {
       getLatAndLong();
-    }, 240000);
+    }, 120000);// 900000 milliseconds = 15 minutes, 120000 milliseconds = 2 minutes
     return () => clearInterval(interval);
   }, []);
 
@@ -180,7 +180,7 @@ const [refresh,setRefresh]=useState(false)
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-
+console.log(userId,'userId')
       const checkingPendingOrders = await axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
         {
@@ -211,7 +211,7 @@ const [refresh,setRefresh]=useState(false)
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-
+console.log(userId,'userId')
       // Fetch delivered orders
       const deliveredOrdersResponse = axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,

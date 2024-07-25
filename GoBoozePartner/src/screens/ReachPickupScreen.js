@@ -27,13 +27,14 @@ const ReachPickupScreen = ({route}) => {
   const {currentLattitude, currentLongitude} = useSelector(
     state => state.location,
   );
-
+  console.log(currentLattitude,'currentLattitude================><=============')
+  console.log(currentLongitude,'currentLongitude================><=============')
   const OrderDetails = route.params.orderDetails;
   console.log(OrderDetails,'OrderDetails================><=============')
 
   // const storeDetails = route.params.orderDetails.order.store;
   const storeDetails = route.params.orderDetails?.order?.store || {};
- 
+ console.log(storeDetails,'storeDetails')
   
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
@@ -92,9 +93,10 @@ const ReachPickupScreen = ({route}) => {
  
  
   const storeLocation = {
-    latitude: storeDetails?.location?.coordinates?.[1] ,
-    longitude: storeDetails?.location?.coordinates?.[0],
+    latitude: storeDetails?.location?.coordinates?.[0] ,
+    longitude: storeDetails?.location?.coordinates?.[1],
   };
+  console.log(storeLocation,'storeLocation=====================')
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top}}>
@@ -112,23 +114,12 @@ const ReachPickupScreen = ({route}) => {
         style={styles.map}
         showsTraffic = { false }
         region={{
-          // latitude: storeDetails
-          //   ? storeDetails.location.coordinates[1]
-          //   : -37.8057853,
-          // longitude: storeDetails
-          //   ? storeDetails.location.coordinates[0]
-          //   : 144.9479622,
-          // latitudeDelta: 0.0121,
-          // longitudeDelta: 0.0121,
+          
          
-           latitude: -37.840935,
-            // ? currentLocation.latitude
-            // ? -37.5939222
-            // : -37.8057853,
-          longitude:144.9102342,
-            // ? currentLocation.longitude
-            // ?144.9102342
-            // : 144.9479622,
+           latitude:currentLattitude,
+            
+          longitude:currentLongitude,
+           
           latitudeDelta: 0.0121,
           longitudeDelta: 0.0121,
           
@@ -143,21 +134,13 @@ const ReachPickupScreen = ({route}) => {
     <MapMarker coordinate={storeLocation}>
 <Shop/>
         </MapMarker>
-        <MapMarker coordinate={{latitude:-37.840935,
-      longitude:144.9102342}}>
-<Nav/>
-        </MapMarker>
+
         {true &&
         <MapViewDirections
     origin={{  
-      latitude:-37.840935,
-      longitude:144.9102342
-    //   latitude: currentLocation
-    //   ? currentLocation.latitude
-    //   : -37.8057853,
-    // longitude: currentLocation
-    //   ? currentLocation.longitude
-    //   : 144.9479622,
+      latitude:currentLattitude,
+      longitude:currentLongitude
+    
     }}
     destination={storeLocation}
     apikey={GOOGLE_MAPS_APIKEY}
@@ -177,9 +160,9 @@ const ReachPickupScreen = ({route}) => {
           ]}
         />
         <Text style={[styles.kmText, isDarkTheme && {color: '#099A6A'}]}>
-        {`${calculateTravelTime(calculateDistance(-37.840935, 144.9102342, storeLocation.latitude, storeLocation.longitude))} min`}
+        {`${calculateTravelTime(calculateDistance(currentLattitude, currentLongitude, storeLocation.latitude, storeLocation.longitude))} min`}
           <Text style={[{color: COLORS.light_primary_text}, darkTextStyle]}>
-           ( {`${calculateDistance(-37.840935, 144.9102342, storeLocation.latitude, storeLocation.longitude)} km`})
+           ( {`${calculateDistance(currentLattitude,currentLongitude, storeLocation.latitude, storeLocation.longitude)} km`})
           </Text>
         </Text>
 

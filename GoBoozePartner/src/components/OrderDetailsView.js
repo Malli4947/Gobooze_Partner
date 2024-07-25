@@ -21,9 +21,11 @@ const OrderDetailsView = ({
   expandOrderDetail,
   expandStoreDetail,
   onPress,
+  Onpresses,
+  store
 }) => {
   console.log(
-    '💕 ~ file: OrderDetailsView.js:24 ~ orderDetails:',
+    '💕 ~ file: OrderDetailsView.js:24 ~ orderDetails:====================================================',
     orderDetails,
   );
   const colorScheme = useColorScheme();
@@ -82,11 +84,12 @@ const OrderDetailsView = ({
               orderId={customerDetail.orderId}
             />
           </View>
-          <CallButton
+          {/* <CallButton
             onPress={() => {
-              Linking.openURL(`tel:${storeDetails.phone}`);
+              // Linking.openURL(`tel:${storeDetails.Phone}`);
             }}
-          />
+          /> */}
+          <CallButton onPress={Onpresses}/>
         </View>
       )}
 

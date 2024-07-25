@@ -19,6 +19,9 @@ import LocationScreen from '../screens/LocationScreen';
 import NewHomeScreen from '../screens/NewHomeScreen';
 import ReachedDropMapScreen from '../screens/ReachedDropMapScreen';
 import ProfileScreen from '../screens/ProfileScreen'
+import OrderHistroy from '../screens/OrderHistroy';
+import Instructions from '../Instructions';
+import Support from '../screens/Support';
 const AuthNav = createNativeStackNavigator();
 const SplashNav = createNativeStackNavigator();
 
@@ -54,6 +57,10 @@ export const GBHomeNavigator = () => {
       <AuthNav.Screen name="OrderPick" component={PickOrderScreen} />
       <AuthNav.Screen name="ReachMapDrop" component={ReachedDropMapScreen} />
       <AuthNav.Screen name="ProfileScreen" component={ProfileScreen} />
+      <AuthNav.Screen name="OrderHistroy" component={OrderHistroy} />
+      <AuthNav.Screen name="Instructions" component={Instructions} />
+      <AuthNav.Screen name="Support" component={Support} />
+      
     </AuthNav.Navigator>
   );
 };
