@@ -13,6 +13,9 @@ import {useColorScheme} from '../components/ColorSchemeContext';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import Arrow from '../assets/arrowRightBlack.svg';
 import {useNavigation} from '@react-navigation/native';
+import Help from '../assets/help.svg';
+import Phone from '../assets/phone.svg';
+import Mail from '../assets/mail.svg';
 
 const Support = () => {
   const colorScheme = useColorScheme();
@@ -84,47 +87,100 @@ const Support = () => {
             Contact with us
           </Text>
         </View>
+        <View style={{alignItems: 'center', marginTop: rHeight(20)}}>
+          <Help
+            style={{
+              marginTop: rHeight(5),
+            }}
+          />
+        </View>
         <View
           style={[
             {
-              borderWidth: 1,
               margin: rWidth(16),
-              padding: rWidth(14),
+              padding: rWidth(16),
               borderRadius: rWidth(16),
-              borderColor: '#000',
+              backgroundColor: '#fff',
+              shadowColor: '#000',
+              shadowOffset: {width: 0, height: rHeight(1)},
+              shadowOpacity: 0.2,
+              shadowRadius: 1,
+              elevation: 3,
             },
             isDarkTheme && {
               borderColor: COLORS.dark_disabled_background,
             },
           ]}>
-          <Text
-            style={[
-              {fontFamily: GRAPHIK_FONT.MEDIUM, color: '#000'},
-              isDarkTheme && styles.dark_text,
-            ]}>
-            Email:
-          </Text>
-          <Text
-            style={[
-              {fontFamily: GRAPHIK_FONT.REGULAR, color: '#000'},
-              isDarkTheme && styles.dark_text,
-            ]}>
-            contactus@gobooze.com.au
-          </Text>
-          <Text
-            style={[
-              {fontFamily: GRAPHIK_FONT.MEDIUM, color: '#000'},
-              isDarkTheme && styles.dark_text,
-            ]}>
-            Contact Us:
-          </Text>
-          <Text
-            style={[
-              {fontFamily: GRAPHIK_FONT.REGULAR, color: '#000'},
-              isDarkTheme && styles.dark_text,
-            ]}>
-            +61 459216142
-          </Text>
+          <View>
+            <View style={{flexDirection: 'row'}}>
+              <View>
+                <Mail
+                  style={{
+                    marginTop: rHeight(10),
+                  }}
+                />
+              </View>
+              <View style={{paddingLeft: rWidth(12)}}>
+                <Text
+                  style={[
+                    {
+                      fontFamily: GRAPHIK_FONT.MEDIUM,
+                      color: '#000',
+                      fontSize: rWidth(14),
+                    },
+                    isDarkTheme && styles.dark_text,
+                  ]}>
+                  Email:
+                </Text>
+                <Text
+                  style={[
+                    {
+                      fontFamily: GRAPHIK_FONT.REGULAR,
+                      color: '#000',
+                      // paddingLeft: rWidth(35),
+                      color: COLORS.primary_pink,
+                    },
+                    isDarkTheme && styles.dark_text,
+                  ]}>
+                  contactus@gobooze.com.au
+                </Text>
+              </View>
+            </View>
+            <View style={{flexDirection: 'row', paddingTop: rHeight(16)}}>
+              <View>
+                <Phone
+                  style={{
+                    marginTop: rHeight(10),
+                  }}
+                />
+              </View>
+              <View style={{paddingLeft: rWidth(12)}}>
+                <Text
+                  style={[
+                    {
+                      fontFamily: GRAPHIK_FONT.MEDIUM,
+                      color: '#000',
+                      fontSize: rWidth(14),
+                    },
+                    isDarkTheme && styles.dark_text,
+                  ]}>
+                  Contact Us:
+                </Text>
+                <Text
+                  style={[
+                    {
+                      fontFamily: GRAPHIK_FONT.REGULAR,
+                      color: '#000',
+                      // paddingLeft: rWidth(35),
+                      color: COLORS.primary_pink,
+                    },
+                    isDarkTheme && styles.dark_text,
+                  ]}>
+                  +61 459216142
+                </Text>
+              </View>
+            </View>
+          </View>
         </View>
       </View>
       <View
@@ -144,7 +200,14 @@ const Support = () => {
           onPress={() => {
             handleCallNow();
           }}>
-          <Text style={{color: '#fff'}}>Call</Text>
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: rWidth(16),
+              fontFamily: GRAPHIK_FONT.MEDIUM,
+            }}>
+            Call
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

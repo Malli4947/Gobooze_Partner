@@ -6,8 +6,8 @@ import {
   Pressable,
   ActivityIndicator,
   TouchableOpacity,
-  onPress,
   Image,
+  Alert, // Import Alert component
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import COLORS from '../constants/Colors';
@@ -53,12 +53,28 @@ const ProfileScreen = () => {
         },
       );
       const data = await fetchDetails.json();
+      console.log(data, 'data.....');
+      // const store = await data.data.storeId.json();
+      // console.log(store, 'store.....');
       setProfileData(data);
     } catch (error) {
       console.log(error, 'error');
     } finally {
       setLoading(false); // Set loading to false once data is fetched
     }
+  };
+
+  const confirmLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to log out?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => LogOut(),
+      },
+    ]);
   };
 
   const LogOut = async () => {
@@ -114,7 +130,22 @@ const ProfileScreen = () => {
             },
             isDarkTheme && styles.dark_container,
           ]}>
-          <Avatar width={50} height={60} />
+          {profileData ? (
+            <Image
+              resizeMode="contain"
+              source={{
+                uri: `https://gobooze-bucket.s3.eu-north-1.amazonaws.com/goboozestore/${profileData.data.image}`,
+              }}
+              style={{
+                width: rWidth(50),
+                height: rHeight(60),
+                borderRadius: rWidth(30),
+              }}
+            />
+          ) : (
+            <Avatar width={50} height={60} />
+          )}
+
           <View style={{marginLeft: rHeight(10)}}>
             {loading ? (
               <ActivityIndicator
@@ -280,7 +311,7 @@ const ProfileScreen = () => {
             borderBottomWidth: 1,
           }}
           onPress={() => {
-            LogOut();
+            confirmLogout();
           }}>
           <Logout style={{marginTop: rHeight(5), marginLeft: rWidth(5)}} />
           <Text

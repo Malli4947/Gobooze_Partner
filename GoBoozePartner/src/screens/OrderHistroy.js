@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -12,11 +13,14 @@ import NavBarWithBackButton from '../components/NavBarWithBackButton';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import COLORS from '../constants/Colors';
 import {rWidth, rHeight} from '../constants/PixelSize';
-import {GRAPHIK_FONT} from '../constants/Constant';
+import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
+import Histroy from '../assets/Delivery history.svg';
+import {useNavigation} from '@react-navigation/native';
 
 const OrderHistory = ({orderRequests}) => {
+  const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkTextStyle = isDarkTheme && {color: COLORS.dark_primary_text};
@@ -62,8 +66,57 @@ const OrderHistory = ({orderRequests}) => {
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top}}>
-        <NavBarWithBackButton title={'Order History'} />
-        <View style={[styles.seperator, darkSep]} />
+        {/* <NavBarWithBackButton title={'Order History'} /> */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={[
+              styles.menuContainer,
+              isDarkTheme && {
+                backgroundColor: '#23272F',
+                borderColor: COLORS.dark_disabled_background,
+              },
+            ]}
+            onPress={() => navigation.goBack()}>
+            <Image
+              tintColor={isDarkTheme && '#FFF'}
+              resizeMode="contain"
+              source={IMAGES.BACK}
+              style={styles.menuImg}
+            />
+          </TouchableOpacity>
+          <Text
+            style={[
+              styles.headerText,
+              isDarkTheme && {
+                backgroundColor: '#23272F',
+                color: COLORS.light_con,
+              },
+            ]}>
+            Order History
+          </Text>
+        </View>
+
+        {/* <View style={[styles.seperator, darkSep]} /> */}
+        <View style={{alignItems: 'center'}}>
+          <Histroy
+            style={{
+              marginTop: rHeight(200),
+            }}
+          />
+          <Text
+            style={[
+              {
+                color: '#000',
+                fontSize: rWidth(16),
+                fontFamily: GRAPHIK_FONT.MEDIUM,
+                marginLeft: rWidth(10),
+                marginTop: rHeight(30),
+              },
+              darkTextStyle,
+            ]}>
+            Haven't made any deliveries yet...
+          </Text>
+        </View>
       </View>
       {loading ? (
         <View style={styles.loaderContainer}>
@@ -419,5 +472,32 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F6FF',
     borderRadius: 99,
     marginLeft: rWidth(8),
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: rWidth(16),
+    borderBottomColor: COLORS.light_disabled_background,
+    borderBottomWidth: 1,
+    paddingBottom: rHeight(16),
+  },
+  menuContainer: {
+    width: rHeight(44),
+    height: rHeight(44),
+    borderRadius: rHeight(22),
+    borderColor: COLORS.ligth_grey,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  menuImg: {
+    width: rHeight(30),
+    height: rHeight(30),
+  },
+  headerText: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    color: '#000',
+    paddingLeft: rWidth(16),
+    fontSize: rWidth(14),
   },
 });
