@@ -58,6 +58,7 @@ const AddPhotoAlert = props => {
                     : IMAGES.WRONG_PHOTO_LIGHT
                 }
               />
+              
             </View>
             <View style={{marginHorizontal: rWidth(15)}}>
               <CustomButton

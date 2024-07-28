@@ -8,7 +8,7 @@ import {
   Alert,
   Linking
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
@@ -21,7 +21,7 @@ import PickOrderNowAlert from './PickOrderNowAlert';
 import NewSlideButton from '../components/NewSlideButton';
 import {useNavigation} from '@react-navigation/native';
 import updateOrder from '../constants/statusUpdate';
-
+import { BackHandler } from 'react-native';
 // const detailsData = [{id: 0, title: 'Order Details'}]
 
 const PickOrderScreen = ({route}) => {
@@ -54,7 +54,20 @@ console.log(OrderDetails,'OrderDetails=========================')
       Alert.alert('Error', 'Failed to update order status');
     }
   };
+  useEffect(() => {
+    const backAction = () => {
+     
+      navigation.navigate('Home');
+      return true; 
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // Cleanup the event listener
+  }, [navigation]);  
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <PickOrderNowAlert modalVisible={false} />

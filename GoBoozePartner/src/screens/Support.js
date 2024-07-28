@@ -7,7 +7,7 @@ import {
   Linking,
 } from 'react-native';
 import {rHeight, rWidth} from '../constants/PixelSize';
-import React from 'react';
+import React,{useEffect} from 'react';
 import COLORS from '../constants/Colors';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
@@ -16,7 +16,9 @@ import {useNavigation} from '@react-navigation/native';
 import Help from '../assets/help.svg';
 import Phone from '../assets/phone.svg';
 import Mail from '../assets/mail.svg';
-
+import MailDark from '../assets/MailDark.svg' 
+import PhoneDark from '../assets/PhoneDark.svg'
+import { BackHandler } from 'react-native';
 const Support = () => {
   const colorScheme = useColorScheme();
 
@@ -29,6 +31,20 @@ const Support = () => {
     const url = `tel:${459216142}`;
     Linking.openURL(url);
   };
+  useEffect(() => {
+    const backAction = () => {
+     
+      navigation.navigate('ProfileScreen');
+      return true; 
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // Cleanup the event listener
+  }, [navigation]); 
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View>
@@ -108,17 +124,21 @@ const Support = () => {
               elevation: 3,
             },
             isDarkTheme && {
-              borderColor: COLORS.dark_disabled_background,
+              backgroundColor: COLORS.dark_disabled_background,
             },
           ]}>
           <View>
             <View style={{flexDirection: 'row'}}>
               <View>
-                <Mail
-                  style={{
-                    marginTop: rHeight(10),
-                  }}
-                />
+              {!isDarkTheme && <Mail
+          style={{
+            marginTop: rHeight(10),
+          }}
+        />}
+        {isDarkTheme && <MailDark 
+        style={{
+          marginTop: rHeight(10),
+        }}/>} 
               </View>
               <View style={{paddingLeft: rWidth(12)}}>
                 <Text
@@ -140,7 +160,7 @@ const Support = () => {
                       // paddingLeft: rWidth(35),
                       color: COLORS.primary_pink,
                     },
-                    isDarkTheme && styles.dark_text,
+                
                   ]}>
                   contactus@gobooze.com.au
                 </Text>
@@ -148,11 +168,16 @@ const Support = () => {
             </View>
             <View style={{flexDirection: 'row', paddingTop: rHeight(16)}}>
               <View>
-                <Phone
+              {!isDarkTheme &&<Phone
                   style={{
                     marginTop: rHeight(10),
                   }}
-                />
+                />}
+        {isDarkTheme && <PhoneDark 
+        style={{
+          marginTop: rHeight(10),
+        }}/>} 
+                
               </View>
               <View style={{paddingLeft: rWidth(12)}}>
                 <Text
@@ -174,7 +199,7 @@ const Support = () => {
                       // paddingLeft: rWidth(35),
                       color: COLORS.primary_pink,
                     },
-                    isDarkTheme && styles.dark_text,
+                    
                   ]}>
                   +61 459216142
                 </Text>

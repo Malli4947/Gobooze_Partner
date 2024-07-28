@@ -109,11 +109,11 @@ const OrderDetailsView = ({
           />
           <View style={{marginTop: 10}}>
             <View style={styles.userExpandCon}>
-              <Image
+              {/* <Image
                 tintColor={isDarkTheme && COLORS.dark_primary_text}
                 style={styles.img}
                 source={IMAGES.LOCATION}
-              />
+              /> */}
               <View>
                 <Text style={[styles.addressText, darkTextStyle]}>
                   Address:

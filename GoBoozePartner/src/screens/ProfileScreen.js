@@ -26,7 +26,7 @@ import MyProfile from '../assets/MyProfile.svg';
 import OrderHistroy from './OrderHistroy';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { BackHandler } from 'react-native';
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
@@ -39,7 +39,20 @@ const ProfileScreen = () => {
   useEffect(() => {
     FetchDetails();
   }, []);
+  useEffect(() => {
+    const backAction = () => {
+     
+      navigation.navigate('Home');
+      return true; 
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // Cleanup the event listener
+  }, [navigation]); 
   const FetchDetails = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];

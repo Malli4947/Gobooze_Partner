@@ -5,7 +5,9 @@ import {
   Text,
   Linking,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
+import { BackHandler } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
@@ -82,7 +84,20 @@ const ReachPickupScreen = ({route}) => {
     const travelTimeMinutes = travelTimeHours * 60;
     return Math.round(travelTimeMinutes); // Round to nearest whole number
   };
+  useEffect(() => {
+    const backAction = () => {
+     
+      navigation.navigate('Home');
+      return true; 
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // Cleanup the event listener
+  }, [navigation]); 
   const updateOrder = async () => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
@@ -100,7 +115,11 @@ const ReachPickupScreen = ({route}) => {
       );
     } catch (e) {}
   };
-
+  const handleOpenNow = () => {
+    Linking.openURL(`https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${storeDetails?.location?.coordinates?.[0]},${storeDetails?.location?.coordinates?.[1]}&travelmode=driving` ).catch(err =>
+      console.error('An error occurred', err),
+    );
+  }; 
   const storeLocation = {
     latitude: storeDetails?.location?.coordinates?.[0],
     longitude: storeDetails?.location?.coordinates?.[1],
@@ -117,22 +136,7 @@ const ReachPickupScreen = ({route}) => {
           title={'Reach Pickup'}
         /> */}
         <View style={styles.header}>
-          <TouchableOpacity
-            style={[
-              styles.menuContainer,
-              isDarkTheme && {
-                backgroundColor: '#23272F',
-                borderColor: COLORS.dark_disabled_background,
-              },
-            ]}
-            onPress={() => navigation.goBack()}>
-            <Image
-              tintColor={isDarkTheme && '#FFF'}
-              resizeMode="contain"
-              source={IMAGES.BACK}
-              style={styles.menuImg}
-            />
-          </TouchableOpacity>
+         
           <Text
             style={[
               styles.headerText,
@@ -232,7 +236,7 @@ const ReachPickupScreen = ({route}) => {
                   {storeDetails.storeAddress}
                 </Text>
               </View>
-              <View style={styles.logoImgView}>
+              <Pressable style={styles.logoImgView} onPress={()=>{ handleOpenNow()}}>
                 <Image
                   resizeMode="contain"
                   style={styles.logoImg}
@@ -241,7 +245,7 @@ const ReachPickupScreen = ({route}) => {
                 <View style={styles.viewText}>
                   <Text style={[styles.imgViewTxt]}>View</Text>
                 </View>
-              </View>
+              </Pressable>
             </View>
             <CallButton
               onPress={() => {

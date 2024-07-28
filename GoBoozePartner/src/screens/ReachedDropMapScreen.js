@@ -6,6 +6,7 @@ import {
   Alert,
   TouchableOpacity,
   Linking,
+  Pressable
 } from 'react-native';
 import React,{useEffect,useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -27,11 +28,14 @@ import Shop from '../assets/Shop.svg'
 import Geolocation from '@react-native-community/geolocation';
 import UserPin from '../assets/UserPin.svg'
 import { useSelector } from 'react-redux';
+import { BackHandler } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 const ReachedDropMapScreen = ({route}) => {
   const GOOGLE_MAPS_APIKEY = 'AIzaSyCtTH8DV1-h4tYTSb-geYjdn71a0Up_63k';
   const {currentLattitude, currentLongitude} = useSelector(
     state => state.location,
   );
+  const navigation = useNavigation();
   console.log(currentLattitude,'currentLattitude================><=============drop')
   console.log(currentLongitude,'currentLongitude================><=============drop')
   const OrderDetails = route.params.orderDetails;
@@ -86,9 +90,26 @@ console.log(storeDetails,'storeDetails-------')
       Alert.alert('Error', 'Failed to update order status');
     }
   };
-  ;
+  useEffect(() => {
+    const backAction = () => {
+     
+      navigation.navigate('Home');
+      return true; 
+    };
 
-        
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // Cleanup the event listener
+  }, [navigation]); 
+
+  const handleOpenNow = () => {
+    Linking.openURL(`https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${OrderDetails.order.address.coordinates.lat},${OrderDetails.order.address.coordinates.lng}&travelmode=driving` ).catch(err =>
+      console.error('An error occurred', err),
+    );
+  };     
   
   const userLocation = {
     latitude: OrderDetails.order.address.coordinates.lat,
@@ -180,7 +201,8 @@ console.log(storeDetails,'storeDetails-------')
                   {OrderDetails.order.address.state}
                 </Text>
               </View>
-              <View style={styles.logoImgView}>
+              
+              <Pressable style={styles.logoImgView} onPress={()=>{ handleOpenNow()}}>
                 <Image
                   resizeMode="contain"
                   style={styles.logoImg}
@@ -189,7 +211,7 @@ console.log(storeDetails,'storeDetails-------')
                 <View style={styles.viewText}>
                   <Text style={[styles.imgViewTxt]}>View</Text>
                 </View>
-              </View>
+              </Pressable>
             </View>
             <View
               style={[

@@ -1,63 +1,95 @@
-import * as React from 'react';
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Dimensions, Image, StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
 import COLORS from '../constants/Colors';
 import { useColorScheme } from './ColorSchemeContext';
-import { GRAPHIK_FONT, IMAGES } from '../constants/Constant';
+import { IMAGES } from '../constants/Constant';
 import { rHeight, rWidth } from '../constants/PixelSize';
 import GBSegmentControl from './GBSegmentControl';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios'; // Import axios for HTTP requests
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {connect} from 'react-redux';
+import { GRAPHIK_FONT } from '../constants/Constant';
+
 const screenWidth = Dimensions.get('screen').width * 0.6;
 
-const OrderNavigationBar = () => {
+const OrderNavigationBar = ({}) => {
   const navigation = useNavigation();
-  const [onlineOfflineIndex, setOnlineOfflineIndex] = React.useState(0);
+  const [onlineOfflineIndex, setOnlineOfflineIndex] = useState(0);
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
+  const [acceptedOrders, setAcceptedOrders] = useState([]);
 
-  // Function to handle activation based on online/offline state
-  const handleActivation = async (isActive) => {
-    const combinedData = await AsyncStorage.getItem('USER_DATA');
-    console.log( combinedData,' combinedData===============')
-    const [accessToken, userId] = combinedData?.split(':') ?? [];
+  const fetchOrders = useCallback(async () => {
     try {
-      const obj = {
-        is_active: isActive,
-      };
-  
-      console.log('Sending request with object:', obj); // Log the object being sent
-  
-      const res = await axios.patch(
-        'https://devapigobooze.codefactstech.com/admin/api/partner/update-partner-profile/663a87e2dff6fb111f5e4907',
-        obj,
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+
+      const activeOrdersResponse = await axios.post(
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        {},
         {
           headers: {
-            Authorization: `${accessToken}`, // Ensure accessToken is defined or imported
+            Authorization: `${accessToken}`,
           },
         }
       );
-  
-      console.log('Update response:', res.data); // Log the response data
+
+      setAcceptedOrders(activeOrdersResponse.data.data.reverse());
+    } catch (e) {
+      console.error('Error fetching orders:', e);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchOrders();
+      const interval = setInterval(() => {
+        fetchOrders();
+      }, 60000);
+      return () => clearInterval(interval);
+    }, [fetchOrders])
+  );
+
+  useEffect(() => {
+    if (acceptedOrders.length > 0) {
+      setOnlineOfflineIndex(0); // Force to Online if there are active orders
+    }
+  }, [acceptedOrders]);
+
+  const handleActivation = async (isActive) => {
+    const combinedData = await AsyncStorage.getItem('USER_DATA');
+    const [accessToken, userId] = combinedData?.split(':') ?? [];
+    try {
+      const obj = { is_active: isActive };
+      await axios.patch(
+        `https://devapigobooze.codefactstech.com/admin/api/partner/update-partner-profile/${userId}`,
+        obj,
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        }
+      );
     } catch (error) {
-      console.error('Error updating:', error.response || error.message || error); // Log the error
+      console.error('Error updating:', error.response || error.message || error);
     }
   };
-  
 
-  // Badge component
-  // const Badge = () => {
-  //   return (
-  //     <View style={styles.badgeView}>
-  //       <Text style={styles.badgeText}>5</Text>
-  //     </View>
-  //   );
-  // };
+  const handleValueChange = (index) => {
+    if (index === 1 && acceptedOrders.length > 0) {
+      Alert.alert(
+        'Active Orders',
+        'You have active orders. Please complete them before going offline.'
+      );
+      return;
+    }
+    setOnlineOfflineIndex(index);
+    const isActive = index === 0;
+    handleActivation(isActive);
+  };
 
   return (
     <View style={[styles.container]}>
-      {/* Menu button */}
       <TouchableOpacity
         style={[
           styles.menuContainer,
@@ -69,7 +101,6 @@ const OrderNavigationBar = () => {
         onPress={() => {
           navigation.navigate('ProfileScreen');
         }}>
-        {/* <Badge /> */}
         <Image
           tintColor={isDarkTheme ? '#FFF' : undefined}
           resizeMode="contain"
@@ -78,20 +109,15 @@ const OrderNavigationBar = () => {
         />
       </TouchableOpacity>
 
-      {/* Spacer */}
       <View style={{ width: rWidth(35) }} />
 
-      {/* Segment control for online/offline */}
       <GBSegmentControl
         width={screenWidth}
         tintColor={onlineOfflineIndex === 0 ? '#099A6A' : COLORS.red_error}
         segmentArray={['Online', 'Offline']}
         selectedIndex={onlineOfflineIndex}
-        onValueChange={(index) => {
-          setOnlineOfflineIndex(index);
-          const isActive = index === 0; // Set isActive based on index (0 for Online, 1 for Offline)
-          handleActivation(isActive); // Call function to update activation status
-        }}
+        onValueChange={handleValueChange}
+        disabledSegments={acceptedOrders.length > 0 ? [1] : []}
       />
     </View>
   );

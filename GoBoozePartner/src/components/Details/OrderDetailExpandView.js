@@ -16,10 +16,10 @@ const OrderDetailExpandView = ({orderDetails}) => {
   const darkTextStyle = isDarkTheme && {color: '#FFFFFFBF'};
 
   const orderItem = ({item, index}) => {
-    console.log(item.orderQuantity,'item')
+  
     return (
       <View style={{overflow: 'hidden'}}>
-        <View style={styles.orderItemCon}>
+       <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
           <Text
             style={[
               styles.quantity,
@@ -43,7 +43,7 @@ const OrderDetailExpandView = ({orderDetails}) => {
               {item.variantName}
             </Text>
           </View>
-        </View>
+          </View>
         <View
           style={[
             styles.seperator,
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: rHeight(20),
-    // width: '90%',
-    // marginLeft: '5%',
+    width: '80%',
+    marginLeft: '5%',
     // backgroundColor: 'yellow',
   },
   nameTxt: {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.SEMIBOLD,
     fontSize: rHeight(14),
     lineHeight: 22,
-    width: '80%',
+    width: '45%',
     color: COLORS.light_primary_text,
     paddingTop:rHeight(5),
     paddingLeft:rWidth(30)
@@ -124,6 +124,6 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rHeight(20),
     color: '#000',
-    marginLeft:rWidth(150)
+   marginLeft:rWidth(16)
   },
 });

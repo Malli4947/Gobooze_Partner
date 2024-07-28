@@ -36,6 +36,7 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {pendingOrders} from '../redux/GoboozeApi';
 import { onGettingCoordinates } from '../redux/slices/LocationSlices';
+import { BackHandler } from 'react-native';
 var Sound = require('react-native-sound');
 
 Sound.setCategory('Playback');
@@ -73,7 +74,21 @@ const [refresh,setRefresh]=useState(false)
     backgroundColor: COLORS.dark_theme_background,
   };
 
-  //   --
+  useEffect(() => {
+    const backAction = () => {
+      BackHandler.exitApp();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+ 
   useEffect(() => {
     ding.setVolume(10);
     return () => {
@@ -161,7 +176,7 @@ const [refresh,setRefresh]=useState(false)
       };
 
       const res = await axios.patch(
-        'https://devapigobooze.codefactstech.com/order/api/orders/update-driver-location/663a87e2dff6fb111f5e4907 ',
+        `https://devapigobooze.codefactstech.com/order/api/orders/update-driver-location/${userId}`,
         obj,
         {
           headers: {
@@ -256,50 +271,7 @@ console.log(userId,'userId')
     }
   };
 
-  // const fetchDelivered = async () => {
-  //   try {
-  //     const combinedData = await AsyncStorage.getItem('USER_DATA');
-  //     const [accessToken, userId] = combinedData?.split(':') ?? [];
-
-  //     const checkingPendingOrders = await axios.post(
-  //       `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
-  //       {
-  //         order_status: 'delivered',
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `${accessToken}`,
-  //         },
-  //       },
-  //     );
-
-  //     setDeliveriedOrders(checkingPendingOrders.data.data.reverse());
-
-  //     return;
-  //   } catch (e) {}
-  // };
-
-  // const activeOrders = async () => {
-  //   try {
-  //     const combinedData = await AsyncStorage.getItem('USER_DATA');
-  //     const [accessToken, userId] = combinedData?.split(':') ?? [];
-
-  //     const checkingActiveOrders = await axios.post(
-  //       `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
-  //       {},
-  //       {
-  //         headers: {
-  //           Authorization: `${accessToken}`,
-  //         },
-  //       },
-  //     );
-
-  //     setAcceptedOrders(checkingActiveOrders.data.data.reverse());
-
-  //     return;
-  //   } catch (e) {}
-  // };
-  const onRefresh = async () => {
+ const onRefresh = async () => {
     setRefresh(true);
     await   fetchOrders();
     fecthPendingOrders();
@@ -322,7 +294,18 @@ console.log(userId,'userId')
       }
     }
   };
-
+  const handleGoOffline = () => {
+    if (accepteddOrders.length > 0) {
+      Alert.alert(
+        'Pending Orders',
+        'You cannot go offline while you have active orders. Please complete them first.',
+        [{text: 'OK'}],
+      );
+    } else {
+      // Logic to go offline
+      console.log('Going offline');
+    }
+  };
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <NewOrderAlertScreen
@@ -339,7 +322,7 @@ console.log(userId,'userId')
       />
       {/* marginTop: insets.top */}
       <View style={{}}>
-        <OrderNavigationBar />
+      <OrderNavigationBar/>
         <View style={[styles.seperator, darkSeperator]} />
       </View>
       <ScrollView

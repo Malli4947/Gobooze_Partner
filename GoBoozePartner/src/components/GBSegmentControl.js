@@ -1,10 +1,10 @@
 import React from 'react';
 import COLORS from '../constants/Colors';
-import {useColorScheme} from './ColorSchemeContext';
+import { useColorScheme } from './ColorSchemeContext';
 import CustomSegmentedControl from './CustomSegmentControl';
-import {View} from 'react-native';
+import { View } from 'react-native';
 
-const GBSegmentControl = props => {
+const GBSegmentControl = (props) => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const {

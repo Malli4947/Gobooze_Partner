@@ -7,7 +7,7 @@ import {
   Alert,
   Linking
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
@@ -30,7 +30,7 @@ import axios from 'axios';
 import ImageResizer from 'react-native-image-resizer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
-
+import { BackHandler } from 'react-native';
 const orders = [
   {
     id: 0,
@@ -88,7 +88,20 @@ const ReachedDropScreen = ({route}) => {
       Alert.alert('Error', 'Failed to update order status');
     }
   };
+  useEffect(() => {
+    const backAction = () => {
+     
+      navigation.navigate('Home');
+      return true; 
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // Cleanup the event listener
+  }, [navigation]); 
   const onSuccessCancel = () => {
     navigation.navigate('Home');
   };
@@ -303,12 +316,22 @@ const ReachedDropScreen = ({route}) => {
           styles.slideBtnContainer,
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
+   {photo ? (
+      <View
+        style={[
+          styles.slideBtnContainer,
+          isDarkTheme && {backgroundColor: COLORS.dark_con},
+        ]}
+      >
         <NewSlideButton
-          title={!photo ? `Upload Photo` : `Order Delivered`}
+          title={`Order Delivered`}
           navigationScreen={'Home'}
           onComplete={handleUpdateOrder}
-          slideButoon={photo ? true : false}
+          slideButoon={true}
         />
+      </View>
+    ) : null}
+
       </View>
     </View>
   );

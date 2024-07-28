@@ -18,7 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 import Histroy from '../assets/Delivery history.svg';
 import {useNavigation} from '@react-navigation/native';
-
+import { BackHandler } from 'react-native';
 const OrderHistory = ({orderRequests}) => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
@@ -62,7 +62,20 @@ const OrderHistory = ({orderRequests}) => {
     const options = {day: '2-digit', month: 'long', year: 'numeric'};
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
+  useEffect(() => {
+    const backAction = () => {
+     
+      navigation.navigate('ProfileScreen');
+      return true; 
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove(); // Cleanup the event listener
+  }, [navigation]); 
   return (
     <View style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top}}>
@@ -97,26 +110,7 @@ const OrderHistory = ({orderRequests}) => {
         </View>
 
         {/* <View style={[styles.seperator, darkSep]} /> */}
-        <View style={{alignItems: 'center'}}>
-          <Histroy
-            style={{
-              marginTop: rHeight(200),
-            }}
-          />
-          <Text
-            style={[
-              {
-                color: '#000',
-                fontSize: rWidth(16),
-                fontFamily: GRAPHIK_FONT.MEDIUM,
-                marginLeft: rWidth(10),
-                marginTop: rHeight(30),
-              },
-              darkTextStyle,
-            ]}>
-            Haven't made any deliveries yet...
-          </Text>
-        </View>
+      
       </View>
       {loading ? (
         <View style={styles.loaderContainer}>
@@ -127,6 +121,24 @@ const OrderHistory = ({orderRequests}) => {
             }
           />
         </View>
+        ) : orderData.length === 0 ? (
+          <View style={{ alignItems: 'center' }}>
+            <Histroy style={{ marginTop: rHeight(200) }} />
+            <Text
+              style={[
+                {
+                  color: '#000',
+                  fontSize: rWidth(16),
+                  fontFamily: GRAPHIK_FONT.MEDIUM,
+                  marginLeft: rWidth(10),
+                  marginTop: rHeight(30),
+                },
+                darkTextStyle,
+              ]}
+            >
+              Haven't made any deliveries yet...
+            </Text>
+          </View>
       ) : (
         <ScrollView>
           {orderData.map((item, index) => (
