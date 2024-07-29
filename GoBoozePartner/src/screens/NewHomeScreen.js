@@ -123,6 +123,8 @@ const [refresh,setRefresh]=useState(false)
     }, []),
   );
   useEffect(() => {
+    fecthPendingOrders();
+        fetchOrders();
     getLatAndLong();
     const interval = setInterval(() => {
       getLatAndLong();
