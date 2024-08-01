@@ -132,19 +132,43 @@ const NewHomeScreen = props => {
     return () => clearInterval(interval);
   }, []);
 
+  // const getLatAndLong = async () => {
+  //   Geolocation.watchPosition(
+  //     position => {
+  //       const lat = position.coords.latitude;
+  //       const long = position.coords.longitude;
+
+  //       if (lat && long) {
+  //         postDriverLocation(lat, long);
+  //         dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
+  //       }
+  //     },
+  //     error => {
+  //       console.log(error, 'error--');
+  //     },
+  //     {
+  //       enableHighAccuracy: false,
+  //       timeout: 10000,
+  //       distanceFilter: 1,
+  //       interval: 1000,
+  //       fastestInterval: 2000,
+  //     },
+  //   );
+  // };
   const getLatAndLong = async () => {
     Geolocation.watchPosition(
       position => {
         const lat = position.coords.latitude;
         const long = position.coords.longitude;
-
+  
         if (lat && long) {
           postDriverLocation(lat, long);
-          dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
+          dispatch(onGettingCoordinates({latitude: lat, longitude: long})); // Corrected typo from lattitude to latitude
         }
       },
       error => {
         console.log(error, 'error--');
+        handleError(error); // Call handleError function to handle errors appropriately
       },
       {
         enableHighAccuracy: false,
@@ -155,7 +179,37 @@ const NewHomeScreen = props => {
       },
     );
   };
-
+  
+  const handleError = (error) => {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        Alert.alert(
+          "GPS Permission Denied",
+          "Please turn on GPS and allow access to continue.",
+          [
+            { text: "OK", onPress: () => {} }
+          ]
+        );
+        break;
+      case error.POSITION_UNAVAILABLE:
+        Alert.alert(
+          "GPS Unavailable",
+          "Your device's GPS is currently unavailable. Please check your settings.",
+          [
+            { text: "OK", onPress: () => {} }
+          ]
+        );
+        break;
+      default:
+        Alert.alert(
+          "Unknown Error",
+          "An unknown error occurred.",
+          [
+            { text: "OK", onPress: () => {} }
+          ]
+        );
+    }
+  };
   const postDriverLocation = async (lat, long) => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
@@ -174,7 +228,7 @@ const NewHomeScreen = props => {
           coordinates: [lat, long],
         },
       };
-
+console.log(obj,'obj================')
       const res = await axios.patch(
         `https://devapigobooze.codefactstech.com/order/api/orders/update-driver-location/${userId}`,
         obj,
@@ -184,7 +238,10 @@ const NewHomeScreen = props => {
           },
         },
       );
-    } catch (error) {}
+      console.log
+    } catch (error) {
+      console.log(error,'error================')
+    }
   };
 
   const fecthPendingOrders = async () => {
@@ -240,6 +297,7 @@ const NewHomeScreen = props => {
       const activeOrdersResponse = axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
+       
         {
           headers: {
             Authorization: `${accessToken}`,
@@ -248,9 +306,9 @@ const NewHomeScreen = props => {
       );
 
       const allPendingResponse = await axios.get(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId} `,
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
       );
-
+      console.log()
       setAllpendingOrders(allPendingResponse.data.data);
 
       // Await both API calls
@@ -289,18 +347,7 @@ const NewHomeScreen = props => {
       }
     }
   };
-  const handleGoOffline = () => {
-    if (accepteddOrders.length > 0) {
-      Alert.alert(
-        'Pending Orders',
-        'You cannot go offline while you have active orders. Please complete them first.',
-        [{text: 'OK'}],
-      );
-    } else {
-      // Logic to go offline
-      console.log('Going offline');
-    }
-  };
+ 
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
