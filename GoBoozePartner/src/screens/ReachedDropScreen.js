@@ -5,9 +5,10 @@ import {
   FlatList,
   Image,
   Alert,
-  Linking
+  SafeAreaView,
+  Linking,
 } from 'react-native';
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
@@ -30,7 +31,7 @@ import axios from 'axios';
 import ImageResizer from 'react-native-image-resizer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import { BackHandler } from 'react-native';
+import {BackHandler} from 'react-native';
 const orders = [
   {
     id: 0,
@@ -50,7 +51,7 @@ const orders = [
 
 const ReachedDropScreen = ({route}) => {
   const OrderDetails = route.params.orderDetails;
-  console.log(OrderDetails,'OrderDetails')
+  console.log(OrderDetails, 'OrderDetails');
   const navigation = useNavigation();
 
   const orders = OrderDetails.order.order_Variants;
@@ -90,18 +91,17 @@ const ReachedDropScreen = ({route}) => {
   };
   useEffect(() => {
     const backAction = () => {
-     
       navigation.navigate('Home');
-      return true; 
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove(); // Cleanup the event listener
-  }, [navigation]); 
+  }, [navigation]);
   const onSuccessCancel = () => {
     navigation.navigate('Home');
   };
@@ -190,7 +190,8 @@ const ReachedDropScreen = ({route}) => {
   };
 
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <PickOrderNowAlert modalVisible={false} />
       <AddPhotoAlert
         modalVisible={showPhotoModal}
@@ -268,7 +269,7 @@ const ReachedDropScreen = ({route}) => {
               if (index === 0) {
                 return (
                   <OrderDetailsView
-                  storeDetails={OrderDetails.order.address.addressPhoneNumber}
+                    storeDetails={OrderDetails.order.address.addressPhoneNumber}
                     id={1}
                     expandCustomerDetail={expandCustomerDetailView}
                     image={IMAGES.CUSTOMER}
@@ -281,13 +282,14 @@ const ReachedDropScreen = ({route}) => {
                       //   5,
                       // )}-${OrderDetails.order_id.slice(-5)}`,
                       orderId: `${OrderDetails.order.sequence_number}`,
-
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
                     }
-                    Onpresses={()=>{
-                      Linking.openURL(`tel:${OrderDetails.order.address.addressPhoneNumber}`)
+                    Onpresses={() => {
+                      Linking.openURL(
+                        `tel:${OrderDetails.order.address.addressPhoneNumber}`,
+                      );
                     }}
                   />
                 );
@@ -316,24 +318,22 @@ const ReachedDropScreen = ({route}) => {
           styles.slideBtnContainer,
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
-   {photo ? (
-      <View
-        style={[
-          styles.slideBtnContainer,
-          isDarkTheme && {backgroundColor: COLORS.dark_con},
-        ]}
-      >
-        <NewSlideButton
-          title={`Order Delivered`}
-          navigationScreen={'Home'}
-          onComplete={handleUpdateOrder}
-          slideButoon={true}
-        />
+        {photo ? (
+          <View
+            style={[
+              styles.slideBtnContainer,
+              isDarkTheme && {backgroundColor: COLORS.dark_con},
+            ]}>
+            <NewSlideButton
+              title={`Order Delivered`}
+              navigationScreen={'Home'}
+              onComplete={handleUpdateOrder}
+              slideButoon={true}
+            />
+          </View>
+        ) : null}
       </View>
-    ) : null}
-
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

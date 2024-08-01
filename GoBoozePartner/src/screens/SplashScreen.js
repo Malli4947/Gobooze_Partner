@@ -1,4 +1,10 @@
-import {View, ImageBackground, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  ImageBackground,
+  StyleSheet,
+  Image,
+  SafeAreaView,
+} from 'react-native';
 import React, {useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
@@ -42,7 +48,7 @@ const SplashScreen = props => {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={[isDarkTheme ? styles.dark_container : styles.light_container]}>
       <ImageBackground source={imagePath} style={styles.background}>
         <View style={styles.logoContainer}>
@@ -53,7 +59,7 @@ const SplashScreen = props => {
           />
         </View>
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 

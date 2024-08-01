@@ -6,29 +6,29 @@ import {
   ScrollView,
   FlatList,
   Alert,
-  Linking
+  Linking,
 } from 'react-native';
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import NavBarWithBackButton from '../components/NavBarWithBackButton';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import OrderDetailsView from '../components/OrderDetailsView';
 import PickOrderNowAlert from './PickOrderNowAlert';
 import NewSlideButton from '../components/NewSlideButton';
 import {useNavigation} from '@react-navigation/native';
 import updateOrder from '../constants/statusUpdate';
-import { BackHandler } from 'react-native';
+import {BackHandler} from 'react-native';
 // const detailsData = [{id: 0, title: 'Order Details'}]
 
 const PickOrderScreen = ({route}) => {
   const OrderDetails = route.params.orderDetails;
 
   const orders = OrderDetails.order.order_Variants;
-console.log(OrderDetails,'OrderDetails=========================')
+  console.log(OrderDetails, 'OrderDetails=========================');
   const storeDetails = route.params.orderDetails.order.store;
 
   const [isOrderReady, setIsOrderReady] = useState(false);
@@ -56,26 +56,23 @@ console.log(OrderDetails,'OrderDetails=========================')
   };
   useEffect(() => {
     const backAction = () => {
-     
       navigation.navigate('Home');
-      return true; 
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove(); // Cleanup the event listener
-  }, [navigation]);  
+  }, [navigation]);
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <PickOrderNowAlert modalVisible={false} />
       <View style={{marginTop: insets.top}}>
-        <NavBarWithBackButton
-          title={'Pickup Order'}
-         
-        />
+        <NavBarWithBackButton title={'Pickup Order'} />
         <View style={[styles.seperator, darkSep]} />
       </View>
 
@@ -116,7 +113,7 @@ console.log(OrderDetails,'OrderDetails=========================')
         <View style={[styles.seperator, darkSep]} />
         <Text style={[styles.orderidStaticText, darkTextStyle]}>ORDER ID</Text>
         <Text style={[styles.orderNumText, darkTextStyle]}>
-        {OrderDetails.order.sequence_number}
+          {OrderDetails.order.sequence_number}
           {/* {OrderDetails.order_id.slice(0, orderNumber.length - 4)}-
           <Text style={{fontFamily: GRAPHIK_FONT.SEMIBOLD}}>
             {OrderDetails.order_id.slice(-5)}
@@ -153,20 +150,18 @@ console.log(OrderDetails,'OrderDetails=========================')
                     customerDetail={{
                       name: `${OrderDetails.order.address.first_name}`,
                       mobileNum: `${OrderDetails.order.address.addressPhoneNumber}`,
-                    
+
                       // orderId: `#${OrderDetails.order_id.slice(
                       //   0,
                       //   5,
                       // )}-${OrderDetails.order_id.slice(-5)}`,
-                      orderId:`${OrderDetails.order.sequence_number}`,
-
+                      orderId: `${OrderDetails.order.sequence_number}`,
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
-
                     }
-                    Onpresses={()=>{
-                      Linking.openURL(`tel:${OrderDetails.order.store.phone}`)
+                    Onpresses={() => {
+                      Linking.openURL(`tel:${OrderDetails.order.store.phone}`);
                     }}
                   />
                 );
@@ -204,7 +199,7 @@ console.log(OrderDetails,'OrderDetails=========================')
           orderData={OrderDetails}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

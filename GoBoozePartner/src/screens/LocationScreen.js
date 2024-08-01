@@ -7,6 +7,7 @@ import {
   PermissionsAndroid,
   Platform,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import COLORS from '../constants/Colors';
@@ -68,7 +69,7 @@ const LocationScreen = () => {
   };
   //---//---//--//--//--//--//--//--
   return (
-    <View
+    <SafeAreaView
       style={[styles.light_container, isDarkTheme && styles.dark_container]}>
       <CustomStatusBar />
       <ImageBackground
@@ -82,7 +83,7 @@ const LocationScreen = () => {
           buttonStyle={[styles.button]}
         />
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 

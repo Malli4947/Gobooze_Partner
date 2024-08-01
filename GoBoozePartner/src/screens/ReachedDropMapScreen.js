@@ -6,9 +6,10 @@ import {
   Alert,
   TouchableOpacity,
   Linking,
-  Pressable
+  Pressable,
+  SafeAreaView,
 } from 'react-native';
-import React,{useEffect,useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
@@ -21,37 +22,40 @@ import DetailsView from '../components/DetailsView';
 import MapView, {MapMarker, PROVIDER_DEFAULT} from 'react-native-maps';
 import NewSlideButton from '../components/NewSlideButton';
 import updateOrder from '../constants/statusUpdate';
-import Nav from '../assets/Navi.svg'
-import { Marker } from 'react-native-svg';
+import Nav from '../assets/Navi.svg';
+import {Marker} from 'react-native-svg';
 import MapViewDirections from 'react-native-maps-directions';
-import Shop from '../assets/Shop.svg'
+import Shop from '../assets/Shop.svg';
 import Geolocation from '@react-native-community/geolocation';
-import UserPin from '../assets/UserPin.svg'
-import { useSelector } from 'react-redux';
-import { BackHandler } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import UserPin from '../assets/UserPin.svg';
+import {useSelector} from 'react-redux';
+import {BackHandler} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 const ReachedDropMapScreen = ({route}) => {
   const GOOGLE_MAPS_APIKEY = 'AIzaSyCtTH8DV1-h4tYTSb-geYjdn71a0Up_63k';
   const {currentLattitude, currentLongitude} = useSelector(
     state => state.location,
   );
   const navigation = useNavigation();
-  console.log(currentLattitude,'currentLattitude================><=============drop')
-  console.log(currentLongitude,'currentLongitude================><=============drop')
+  console.log(
+    currentLattitude,
+    'currentLattitude================><=============drop',
+  );
+  console.log(
+    currentLongitude,
+    'currentLongitude================><=============drop',
+  );
   const OrderDetails = route.params.orderDetails;
-  
-console.log(OrderDetails,'OrderDetails===========><====')
-  
 
-// Use orders.length or check for specific properties inside orders to safely access data
+  console.log(OrderDetails, 'OrderDetails===========><====');
 
- 
+  // Use orders.length or check for specific properties inside orders to safely access data
 
   // const orders = OrderDetails.order && OrderDetails.order.order_Variants ? OrderDetails.order.order_Variants : [];
   // const ordersAddress = OrderDetails.order.address;
   const storeDetails = OrderDetails.order.store;
-console.log(storeDetails,'storeDetails-------')
-  
+  console.log(storeDetails, 'storeDetails-------');
+
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
@@ -66,17 +70,19 @@ console.log(storeDetails,'storeDetails-------')
     const dLng = toRadians(endLng - startLng);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRadians(startLat)) * Math.cos(toRadians(endLat)) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      Math.cos(toRadians(startLat)) *
+        Math.cos(toRadians(endLat)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = earthRadius * c;
     return distance.toFixed(2); // Return distance rounded to 2 decimal places
   };
 
-  const toRadians = (angle) => {
+  const toRadians = angle => {
     return angle * (Math.PI / 180);
   };
-  const calculateTravelTime = (distanceInKm) => {
+  const calculateTravelTime = distanceInKm => {
     const averageSpeed = 40; // Average speed assumed in km/h
     const travelTimeHours = distanceInKm / averageSpeed;
     const travelTimeMinutes = travelTimeHours * 60;
@@ -92,79 +98,79 @@ console.log(storeDetails,'storeDetails-------')
   };
   useEffect(() => {
     const backAction = () => {
-     
       navigation.navigate('Home');
-      return true; 
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove(); // Cleanup the event listener
-  }, [navigation]); 
+  }, [navigation]);
 
   const handleOpenNow = () => {
-    Linking.openURL(`https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${OrderDetails.order.address.coordinates.lat},${OrderDetails.order.address.coordinates.lng}&travelmode=driving` ).catch(err =>
-      console.error('An error occurred', err),
-    );
-  };     
-  
+    Linking.openURL(
+      `https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${OrderDetails.order.address.coordinates.lat},${OrderDetails.order.address.coordinates.lng}&travelmode=driving`,
+    ).catch(err => console.error('An error occurred', err));
+  };
+
   const userLocation = {
     latitude: OrderDetails.order.address.coordinates.lat,
     longitude: OrderDetails.order.address.coordinates.lng,
   };
   // Assuming OrderDetails is your variable containing the order details JSON
- 
-  console.log(userLocation,'userLocation=========================')
+
+  console.log(userLocation, 'userLocation=========================');
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top}}>
         <NavBarWithBackButton title={'Reach Drop'} />
       </View>
 
-      {currentLattitude && currentLongitude && <MapView
-        provider={PROVIDER_DEFAULT} // remove if not using Google Maps
-        style={styles.map}
-        showsTraffic = { false }
-        region={{
-          
-         
-           latitude:currentLattitude,
-            
-          longitude:currentLongitude,
-           
-          latitudeDelta: 0.0121,
-          longitudeDelta: 0.0121,
-          
-        }}>
-            
-            {currentLattitude && currentLongitude && (
-          <MapMarker coordinate={{ latitude: currentLattitude, longitude: currentLongitude }}>
-            <Nav />
+      {currentLattitude && currentLongitude && (
+        <MapView
+          provider={PROVIDER_DEFAULT} // remove if not using Google Maps
+          style={styles.map}
+          showsTraffic={false}
+          region={{
+            latitude: currentLattitude,
+
+            longitude: currentLongitude,
+
+            latitudeDelta: 0.0121,
+            longitudeDelta: 0.0121,
+          }}>
+          {currentLattitude && currentLongitude && (
+            <MapMarker
+              coordinate={{
+                latitude: currentLattitude,
+                longitude: currentLongitude,
+              }}>
+              <Nav />
+            </MapMarker>
+          )}
+          <MapMarker coordinate={userLocation}>
+            <UserPin />
           </MapMarker>
-          
-        )}
-    <MapMarker coordinate={userLocation}>
-<Shop/>
-        </MapMarker>
 
-        {true &&
-        <MapViewDirections
-    origin={{  
-      latitude:currentLattitude,
-      longitude:currentLongitude
-    
-    }}
-    destination={userLocation}
-    apikey={GOOGLE_MAPS_APIKEY}
-       strokeWidth={3}
-    strokeColor="hotpink"
-  />}
+          {true && (
+            <MapViewDirections
+              origin={{
+                latitude: currentLattitude,
+                longitude: currentLongitude,
+              }}
+              destination={userLocation}
+              apikey={GOOGLE_MAPS_APIKEY}
+              strokeWidth={3}
+              strokeColor="hotpink"
+            />
+          )}
+        </MapView>
+      )}
 
-      </MapView>}
-      
       {/* </View> */}
 
       {/* ---------------- BOTTOM CONTAINER ---------------- */}
@@ -175,10 +181,24 @@ console.log(storeDetails,'storeDetails-------')
             isDarkTheme && {backgroundColor: '#FFFFFF80'},
           ]}
         />
-       <Text style={[styles.kmText, isDarkTheme && {color: '#099A6A'}]}>
-        {`${calculateTravelTime(calculateDistance(currentLattitude, currentLongitude, userLocation.latitude, userLocation.longitude))} min`}
+        <Text style={[styles.kmText, isDarkTheme && {color: '#099A6A'}]}>
+          {`${calculateTravelTime(
+            calculateDistance(
+              currentLattitude,
+              currentLongitude,
+              userLocation.latitude,
+              userLocation.longitude,
+            ),
+          )} min`}
           <Text style={[{color: COLORS.light_primary_text}, darkTextStyle]}>
-           ( {`${calculateDistance(currentLattitude, currentLongitude, userLocation.latitude, userLocation.longitude)} km`})
+            ({' '}
+            {`${calculateDistance(
+              currentLattitude,
+              currentLongitude,
+              userLocation.latitude,
+              userLocation.longitude,
+            )} km`}
+            )
           </Text>
         </Text>
 
@@ -201,8 +221,12 @@ console.log(storeDetails,'storeDetails-------')
                   {OrderDetails.order.address.state}
                 </Text>
               </View>
-              
-              <Pressable style={styles.logoImgView} onPress={()=>{ handleOpenNow()}}>
+
+              <Pressable
+                style={styles.logoImgView}
+                onPress={() => {
+                  handleOpenNow();
+                }}>
                 <Image
                   resizeMode="contain"
                   style={styles.logoImg}
@@ -281,7 +305,7 @@ console.log(storeDetails,'storeDetails-------')
           // }}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

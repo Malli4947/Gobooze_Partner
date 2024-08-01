@@ -100,78 +100,80 @@ const LoginScreen = props => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View
-        style={[
-          styles.conatiner,
-          {marginTop: !isKeyboardVisible ? 0 : -(keyboardHeight / 4)},
-          colorScheme == 'dark' && {
-            backgroundColor: COLORS.dark_theme_background,
-          },
-        ]}>
-        <Loader loading={showLoader} />
-        <CustomStatusBar />
-        <CustomTopNavBar onPress={() => props.navigation.goBack()} />
+    <SafeAreaView>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View
+          style={[
+            styles.conatiner,
+            {marginTop: !isKeyboardVisible ? 0 : -(keyboardHeight / 4)},
+            colorScheme == 'dark' && {
+              backgroundColor: COLORS.dark_theme_background,
+            },
+          ]}>
+          <Loader loading={showLoader} />
+          <CustomStatusBar />
+          <CustomTopNavBar onPress={() => props.navigation.goBack()} />
 
-        <View style={styles.con_2}>
-          <View style={styles.logo}>
-            <Image
-              source={IMAGES.GO_BOOZE}
-              resizeMode="contain"
-              style={[styles.goBoozeImg]}
+          <View style={styles.con_2}>
+            <View style={styles.logo}>
+              <Image
+                source={IMAGES.GO_BOOZE}
+                resizeMode="contain"
+                style={[styles.goBoozeImg]}
+              />
+            </View>
+            <Text
+              style={[
+                styles.number_Text_1,
+                colorScheme === 'dark' && styles.number_Text_2,
+              ]}>
+              Your Phone Number
+            </Text>
+            <Text
+              style={[
+                styles.number_hint_1,
+                colorScheme === 'dark' && styles.number_hint_2,
+              ]}>
+              Enter your phone number to get started
+            </Text>
+          </View>
+
+          {/* Phone num input field */}
+          <PhoneNumberTextInput
+            onChangePhoneNumText={onChangePhoneNumText}
+            value={mobileNumber}
+            showError={false}
+          />
+
+          <View style={[styles.bottomContainerNoKeyboard]}>
+            <Text
+              style={[
+                styles.otp_Text_1,
+                colorScheme === 'dark' && styles.otp_Text_2,
+              ]}>
+              {`Make sure you can receive SMS to this number so\nthat we can send you a code.`}
+            </Text>
+            <CustomButton
+              buttonText="Continue"
+              disabled={buttonDisabled}
+              handleClick={handleContinuePress}
+              buttonStyle={[
+                {
+                  backgroundColor:
+                    colorScheme === 'dark'
+                      ? buttonDisabled
+                        ? COLORS.dark_disabled_background
+                        : COLORS.primary_pink
+                      : buttonDisabled
+                      ? COLORS.light_disabled_background
+                      : COLORS.primary_pink,
+                },
+              ]}
             />
           </View>
-          <Text
-            style={[
-              styles.number_Text_1,
-              colorScheme === 'dark' && styles.number_Text_2,
-            ]}>
-            Your Phone Number
-          </Text>
-          <Text
-            style={[
-              styles.number_hint_1,
-              colorScheme === 'dark' && styles.number_hint_2,
-            ]}>
-            Enter your phone number to get started
-          </Text>
         </View>
-
-        {/* Phone num input field */}
-        <PhoneNumberTextInput
-          onChangePhoneNumText={onChangePhoneNumText}
-          value={mobileNumber}
-          showError={false}
-        />
-
-        <View style={[styles.bottomContainerNoKeyboard]}>
-          <Text
-            style={[
-              styles.otp_Text_1,
-              colorScheme === 'dark' && styles.otp_Text_2,
-            ]}>
-            {`Make sure you can receive SMS to this number so\nthat we can send you a code.`}
-          </Text>
-          <CustomButton
-            buttonText="Continue"
-            disabled={buttonDisabled}
-            handleClick={handleContinuePress}
-            buttonStyle={[
-              {
-                backgroundColor:
-                  colorScheme === 'dark'
-                    ? buttonDisabled
-                      ? COLORS.dark_disabled_background
-                      : COLORS.primary_pink
-                    : buttonDisabled
-                    ? COLORS.light_disabled_background
-                    : COLORS.primary_pink,
-              },
-            ]}
-          />
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 };
 

@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  SafeAreaView,
 } from 'react-native';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
@@ -101,7 +102,7 @@ const PersonalDetailsScreen = props => {
   };
 
   return (
-    <View style={[styles.container, viewBgColor]}>
+    <SafeAreaView style={[styles.container, viewBgColor]}>
       <ImagePickerOptionAlert
         modalVisible={imgPickerVisible}
         isShowRemovePhotoOption={imageObject && imageObject.uri}
@@ -214,7 +215,7 @@ const PersonalDetailsScreen = props => {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

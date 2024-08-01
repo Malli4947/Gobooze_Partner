@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import CustomButton from '../components/CustomButton';
@@ -17,7 +17,7 @@ const TripSummaryScreen = props => {
   const darkSep = isDarkTheme && {backgroundColor: '#1B1F27'};
 
   return (
-    <View style={[styles.container, isDarkTheme && styles.darkCon]}>
+    <SafeAreaView style={[styles.container, isDarkTheme && styles.darkCon]}>
       {/* <NewOrderAlertScreen modalVisible={true} /> */}
       <View style={{marginTop: insets.top}}>
         <NavBarWithBackButton title={'Trip Summary'} />
@@ -51,7 +51,7 @@ const TripSummaryScreen = props => {
           buttonStyle={isDarkTheme && {backgroundColor: COLORS.pink_light}}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

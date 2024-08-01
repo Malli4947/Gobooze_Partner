@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Alert, // Import Alert component
+  SafeAreaView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import COLORS from '../constants/Colors';
@@ -26,7 +27,7 @@ import MyProfile from '../assets/MyProfile.svg';
 import OrderHistroy from './OrderHistroy';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BackHandler } from 'react-native';
+import {BackHandler} from 'react-native';
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
@@ -41,18 +42,17 @@ const ProfileScreen = () => {
   }, []);
   useEffect(() => {
     const backAction = () => {
-     
       navigation.navigate('Home');
-      return true; 
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove(); // Cleanup the event listener
-  }, [navigation]); 
+  }, [navigation]);
   const FetchDetails = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
@@ -100,7 +100,8 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={styles.header}>
         <TouchableOpacity
           style={[
@@ -344,7 +345,7 @@ const ProfileScreen = () => {
           />
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

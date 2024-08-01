@@ -6,6 +6,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Image,
+  SafeAreaView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -18,7 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 import Histroy from '../assets/Delivery history.svg';
 import {useNavigation} from '@react-navigation/native';
-import { BackHandler } from 'react-native';
+import {BackHandler} from 'react-native';
 const OrderHistory = ({orderRequests}) => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
@@ -64,20 +65,20 @@ const OrderHistory = ({orderRequests}) => {
   };
   useEffect(() => {
     const backAction = () => {
-     
       navigation.navigate('ProfileScreen');
-      return true; 
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove(); // Cleanup the event listener
-  }, [navigation]); 
+  }, [navigation]);
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top}}>
         {/* <NavBarWithBackButton title={'Order History'} /> */}
         <View style={styles.header}>
@@ -110,7 +111,6 @@ const OrderHistory = ({orderRequests}) => {
         </View>
 
         {/* <View style={[styles.seperator, darkSep]} /> */}
-      
       </View>
       {loading ? (
         <View style={styles.loaderContainer}>
@@ -121,24 +121,23 @@ const OrderHistory = ({orderRequests}) => {
             }
           />
         </View>
-        ) : orderData.length === 0 ? (
-          <View style={{ alignItems: 'center' }}>
-            <Histroy style={{ marginTop: rHeight(200) }} />
-            <Text
-              style={[
-                {
-                  color: '#000',
-                  fontSize: rWidth(16),
-                  fontFamily: GRAPHIK_FONT.MEDIUM,
-                  marginLeft: rWidth(10),
-                  marginTop: rHeight(30),
-                },
-                darkTextStyle,
-              ]}
-            >
-              Haven't made any deliveries yet...
-            </Text>
-          </View>
+      ) : orderData.length === 0 ? (
+        <View style={{alignItems: 'center'}}>
+          <Histroy style={{marginTop: rHeight(200)}} />
+          <Text
+            style={[
+              {
+                color: '#000',
+                fontSize: rWidth(16),
+                fontFamily: GRAPHIK_FONT.MEDIUM,
+                marginLeft: rWidth(10),
+                marginTop: rHeight(30),
+              },
+              darkTextStyle,
+            ]}>
+            Haven't made any deliveries yet...
+          </Text>
+        </View>
       ) : (
         <ScrollView>
           {orderData.map((item, index) => (
@@ -323,7 +322,7 @@ const OrderHistory = ({orderRequests}) => {
           <View style={{height: rHeight(50)}} />
         </ScrollView>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

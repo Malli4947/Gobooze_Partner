@@ -8,7 +8,8 @@ import {
   Pressable,
   Alert,
   Platform,
-  RefreshControl
+  RefreshControl,
+  SafeAreaView,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
@@ -29,14 +30,14 @@ import * as appActions from '../redux/actions/appActionCreator';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NewSlideButton from '../components/NewSlideButton';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 import Song from '../assets/BearSound.mp3';
 import OrdersCard from '../components/OrdersCard';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {pendingOrders} from '../redux/GoboozeApi';
-import { onGettingCoordinates } from '../redux/slices/LocationSlices';
-import { BackHandler } from 'react-native';
+import {onGettingCoordinates} from '../redux/slices/LocationSlices';
+import {BackHandler} from 'react-native';
 var Sound = require('react-native-sound');
 
 Sound.setCategory('Playback');
@@ -64,7 +65,7 @@ const NewHomeScreen = props => {
   const [accepteddOrders, setAcceptedOrders] = useState([]);
   const [modalData, setModaldata] = useState([]);
   const [allPendingOrders, setAllpendingOrders] = useState([]);
-const [refresh,setRefresh]=useState(false)
+  const [refresh, setRefresh] = useState(false);
   const previousLengthRef = useRef(0);
 
   const socket = io('https://devapigobooze.codefactstech.com');
@@ -81,14 +82,13 @@ const [refresh,setRefresh]=useState(false)
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove();
   }, []);
 
- 
   useEffect(() => {
     ding.setVolume(10);
     return () => {
@@ -124,24 +124,23 @@ const [refresh,setRefresh]=useState(false)
   );
   useEffect(() => {
     fecthPendingOrders();
-        fetchOrders();
+    fetchOrders();
     getLatAndLong();
     const interval = setInterval(() => {
       getLatAndLong();
-    }, 120000);// 900000 milliseconds = 15 minutes, 120000 milliseconds = 2 minutes
+    }, 120000); // 900000 milliseconds = 15 minutes, 120000 milliseconds = 2 minutes
     return () => clearInterval(interval);
   }, []);
 
   const getLatAndLong = async () => {
-   
     Geolocation.watchPosition(
       position => {
         const lat = position.coords.latitude;
         const long = position.coords.longitude;
-      
+
         if (lat && long) {
           postDriverLocation(lat, long);
-          dispatch(onGettingCoordinates({ lattitude: lat, longitude: long }));
+          dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
         }
       },
       error => {
@@ -156,7 +155,6 @@ const [refresh,setRefresh]=useState(false)
       },
     );
   };
-
 
   const postDriverLocation = async (lat, long) => {
     try {
@@ -186,18 +184,14 @@ const [refresh,setRefresh]=useState(false)
           },
         },
       );
-
-      
-    } catch (error) {
-     
-    }
+    } catch (error) {}
   };
 
   const fecthPendingOrders = async () => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-console.log(userId,'userId')
+      console.log(userId, 'userId');
       const checkingPendingOrders = await axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
         {
@@ -228,7 +222,7 @@ console.log(userId,'userId')
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-console.log(userId,'userId')
+      console.log(userId, 'userId');
       // Fetch delivered orders
       const deliveredOrdersResponse = axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
@@ -257,7 +251,6 @@ console.log(userId,'userId')
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId} `,
       );
 
-    
       setAllpendingOrders(allPendingResponse.data.data);
 
       // Await both API calls
@@ -273,9 +266,9 @@ console.log(userId,'userId')
     }
   };
 
- const onRefresh = async () => {
+  const onRefresh = async () => {
     setRefresh(true);
-    await   fetchOrders();
+    await fetchOrders();
     fecthPendingOrders();
     setRefresh(false);
   };
@@ -309,7 +302,8 @@ console.log(userId,'userId')
     }
   };
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <NewOrderAlertScreen
         modalVisible={showNewOrderModal}
         dismissModal={() => setShowNewOrderModal(!showNewOrderModal)}
@@ -324,14 +318,14 @@ console.log(userId,'userId')
       />
       {/* marginTop: insets.top */}
       <View style={{}}>
-      <OrderNavigationBar/>
+        <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
       <ScrollView
         stickyHeaderIndices={[2]}
         refreshControl={
           <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
-      }
+        }
         contentContainerStyle={{paddingBottom: 30}}>
         {/* ------------- total arning and order view  ------------- */}
         <View style={styles.horizontalMargin}>
@@ -402,7 +396,7 @@ console.log(userId,'userId')
 
         <View style={{height: 100}} />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

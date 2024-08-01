@@ -5,9 +5,10 @@ import {
   StyleSheet,
   Image,
   Linking,
+  SafeAreaView,
 } from 'react-native';
 import {rHeight, rWidth} from '../constants/PixelSize';
-import React,{useEffect} from 'react';
+import React, {useEffect} from 'react';
 import COLORS from '../constants/Colors';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
@@ -16,9 +17,9 @@ import {useNavigation} from '@react-navigation/native';
 import Help from '../assets/help.svg';
 import Phone from '../assets/phone.svg';
 import Mail from '../assets/mail.svg';
-import MailDark from '../assets/MailDark.svg' 
-import PhoneDark from '../assets/PhoneDark.svg'
-import { BackHandler } from 'react-native';
+import MailDark from '../assets/MailDark.svg';
+import PhoneDark from '../assets/PhoneDark.svg';
+import {BackHandler} from 'react-native';
 const Support = () => {
   const colorScheme = useColorScheme();
 
@@ -33,20 +34,20 @@ const Support = () => {
   };
   useEffect(() => {
     const backAction = () => {
-     
       navigation.navigate('ProfileScreen');
-      return true; 
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove(); // Cleanup the event listener
-  }, [navigation]); 
+  }, [navigation]);
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View>
         <View style={styles.header}>
           <TouchableOpacity
@@ -130,15 +131,20 @@ const Support = () => {
           <View>
             <View style={{flexDirection: 'row'}}>
               <View>
-              {!isDarkTheme && <Mail
-          style={{
-            marginTop: rHeight(10),
-          }}
-        />}
-        {isDarkTheme && <MailDark 
-        style={{
-          marginTop: rHeight(10),
-        }}/>} 
+                {!isDarkTheme && (
+                  <Mail
+                    style={{
+                      marginTop: rHeight(10),
+                    }}
+                  />
+                )}
+                {isDarkTheme && (
+                  <MailDark
+                    style={{
+                      marginTop: rHeight(10),
+                    }}
+                  />
+                )}
               </View>
               <View style={{paddingLeft: rWidth(12)}}>
                 <Text
@@ -160,7 +166,6 @@ const Support = () => {
                       // paddingLeft: rWidth(35),
                       color: COLORS.primary_pink,
                     },
-                
                   ]}>
                   contactus@gobooze.com.au
                 </Text>
@@ -168,16 +173,20 @@ const Support = () => {
             </View>
             <View style={{flexDirection: 'row', paddingTop: rHeight(16)}}>
               <View>
-              {!isDarkTheme &&<Phone
-                  style={{
-                    marginTop: rHeight(10),
-                  }}
-                />}
-        {isDarkTheme && <PhoneDark 
-        style={{
-          marginTop: rHeight(10),
-        }}/>} 
-                
+                {!isDarkTheme && (
+                  <Phone
+                    style={{
+                      marginTop: rHeight(10),
+                    }}
+                  />
+                )}
+                {isDarkTheme && (
+                  <PhoneDark
+                    style={{
+                      marginTop: rHeight(10),
+                    }}
+                  />
+                )}
               </View>
               <View style={{paddingLeft: rWidth(12)}}>
                 <Text
@@ -199,7 +208,6 @@ const Support = () => {
                       // paddingLeft: rWidth(35),
                       color: COLORS.primary_pink,
                     },
-                    
                   ]}>
                   +61 459216142
                 </Text>
@@ -235,7 +243,7 @@ const Support = () => {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

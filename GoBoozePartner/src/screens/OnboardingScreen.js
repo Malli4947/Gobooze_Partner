@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, Image, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Platform,
+  SafeAreaView,
+} from 'react-native';
 import React, {useState} from 'react';
 import FastImage from 'react-native-fast-image';
 import {TouchableOpacity} from 'react-native';
@@ -15,7 +22,7 @@ const OnboardingScreen = props => {
   const isDarkTheme = colorScheme === 'dark';
 
   return (
-    <View
+    <SafeAreaView
       style={[styles.light_container, isDarkTheme && styles.dark_container]}>
       <CustomStatusBar />
       <View style={styles.logo}>
@@ -66,7 +73,7 @@ const OnboardingScreen = props => {
           Continue as guest
         </Text> */}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

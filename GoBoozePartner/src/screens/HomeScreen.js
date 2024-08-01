@@ -5,6 +5,7 @@ import {
   Text,
   Dimensions,
   Pressable,
+  SafeAreaView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -51,7 +52,8 @@ const HomeScreen = props => {
   }, []);
 
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <NewOrderAlertScreen
         modalVisible={showNewOrderModal}
         dismissModal={() => setShowNewOrderModal(!showNewOrderModal)}
@@ -142,7 +144,7 @@ const HomeScreen = props => {
 
         <ChartComponent />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

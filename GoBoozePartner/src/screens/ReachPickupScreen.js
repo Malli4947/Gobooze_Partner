@@ -7,14 +7,14 @@ import {
   TouchableOpacity,
   Pressable,
 } from 'react-native';
-import { BackHandler } from 'react-native';
+import {BackHandler} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import NavBarWithBackButton from '../components/NavBarWithBackButton';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import {CONST_STYLES} from '../constants/ConstStyles';
 import DetailsView from '../components/DetailsView';
@@ -86,18 +86,17 @@ const ReachPickupScreen = ({route}) => {
   };
   useEffect(() => {
     const backAction = () => {
-     
       navigation.navigate('Home');
-      return true; 
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove(); // Cleanup the event listener
-  }, [navigation]); 
+  }, [navigation]);
   const updateOrder = async () => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
@@ -116,17 +115,18 @@ const ReachPickupScreen = ({route}) => {
     } catch (e) {}
   };
   const handleOpenNow = () => {
-    Linking.openURL(`https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${storeDetails?.location?.coordinates?.[0]},${storeDetails?.location?.coordinates?.[1]}&travelmode=driving` ).catch(err =>
-      console.error('An error occurred', err),
-    );
-  }; 
+    Linking.openURL(
+      `https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${storeDetails?.location?.coordinates?.[0]},${storeDetails?.location?.coordinates?.[1]}&travelmode=driving`,
+    ).catch(err => console.error('An error occurred', err));
+  };
   const storeLocation = {
     latitude: storeDetails?.location?.coordinates?.[0],
     longitude: storeDetails?.location?.coordinates?.[1],
   };
   console.log(storeLocation, 'storeLocation=====================');
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top}}>
         {/* <NavBarWithBackButton
           onPress={() => {
@@ -136,7 +136,6 @@ const ReachPickupScreen = ({route}) => {
           title={'Reach Pickup'}
         /> */}
         <View style={styles.header}>
-         
           <Text
             style={[
               styles.headerText,
@@ -236,7 +235,11 @@ const ReachPickupScreen = ({route}) => {
                   {storeDetails.storeAddress}
                 </Text>
               </View>
-              <Pressable style={styles.logoImgView} onPress={()=>{ handleOpenNow()}}>
+              <Pressable
+                style={styles.logoImgView}
+                onPress={() => {
+                  handleOpenNow();
+                }}>
                 <Image
                   resizeMode="contain"
                   style={styles.logoImg}
@@ -278,7 +281,7 @@ const ReachPickupScreen = ({route}) => {
           orderData={OrderDetails}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

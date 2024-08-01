@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+} from 'react-native';
 import React from 'react';
 import COLORS from './constants/Colors';
 import {rHeight, rWidth} from './constants/PixelSize';
@@ -11,7 +18,8 @@ const Instructions = () => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   return (
-    <View style={[styles.container, isDarkTheme && styles.dark_container]}>
+    <SafeAreaView
+      style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={styles.header}>
         <TouchableOpacity
           style={[
@@ -40,7 +48,7 @@ const Instructions = () => {
           Instructions
         </Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
