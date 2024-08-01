@@ -100,7 +100,7 @@ const LoginScreen = props => {
   };
 
   return (
-    <SafeAreaView>
+   
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View
           style={[
@@ -173,7 +173,7 @@ const LoginScreen = props => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-    </SafeAreaView>
+   
   );
 };
 
