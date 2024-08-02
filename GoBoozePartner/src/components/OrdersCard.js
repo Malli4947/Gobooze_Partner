@@ -91,208 +91,183 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
    const IMAGE_URL=`https://gobooze-bucket.s3.eu-north-1.amazonaws.com/goboozestore/`
-  return (
+   return (
     <>
-      {orderRequests?.map((item, index) => {
-        console.log(item.order.order_Variants, '===================');
-        return (
-          <Pressable
-            key={index}
-            onPress={() => onOrderPress(item)}
-            style={[styles.lcardCon, isDark && styles.dcardCon]}>
-            {/* ---headerCon */}
-            <View style={[styles.lheaderCon, isDark && styles.dheaderCon]}>
-              <View>
-                <Text style={[styles.ltext1, isDark && styles.dtext1]}>
-                  ORDER PLACED
-                </Text>
-                <Text
-                  style={[styles.lorder_date, isDark && styles.dorder_date]}>
-                  {formatDate(item.createdAt)}
-                </Text>
-              </View>
-
-              <View style={{marginLeft: rWidth(32)}}>
-                <Text style={[styles.ltext1, isDark && styles.dtext1]}>
-                  ORDER ID
-                </Text>
-                <Text
-                  style={[styles.lorder_date, isDark && styles.dorder_date]}>
-                  {/* #{item.order_id.slice(0, 5)}-{item.order_id.slice(-5)} */}
-                  {item.order.sequence_number}
-                </Text>
-              </View>
+      {orderRequests?.map((item, index) => (
+        <Pressable
+          key={index}
+          onPress={() => onOrderPress(item)}
+          style={[styles.lcardCon, isDark && styles.dcardCon]}>
+          {/* ---headerCon */}
+          <View style={[styles.lheaderCon, isDark && styles.dheaderCon]}>
+            <View>
+              <Text style={[styles.ltext1, isDark && styles.dtext1]}>
+                ORDER PLACED
+              </Text>
+              <Text style={[styles.lorder_date, isDark && styles.dorder_date]}>
+                {formatDate(item.createdAt)}
+              </Text>
             </View>
 
-            {/* --ProductsListing-- */}
+            <View style={{marginLeft: rWidth(32)}}>
+              <Text style={[styles.ltext1, isDark && styles.dtext1]}>
+                ORDER ID
+              </Text>
+              <Text style={[styles.lorder_date, isDark && styles.dorder_date]}>
+                {item.order.sequence_number}
+              </Text>
+            </View>
+          </View>
+
+          {/* --ProductsListing-- */}
+          <>
+            {item.order.order_Variants.slice(0, 1).map((product, productIndex) => (
+              <View
+                key={productIndex}
+                style={[styles.lproductsCon, isDark && styles.dproductsCon]}>
+                <View style={styles.lproductsRowCon}>
+                  <Text style={[styles.lqtyText, isDark && styles.dqtyText]}>
+                    {product.orderQuantity}x
+                  </Text>
+                  <FastImage
+                    source={{
+                      uri: `${IMAGE_URL}${product.variantImage}`,
+                    }}
+                    resizeMode="contain"
+                    style={styles.product_Image}
+                  />
+                  <View style={{marginLeft: rWidth(12)}}>
+                    <Text
+                      style={[
+                        styles.lbrandText,
+                        isDark && styles.dbrandText,
+                      ]}>
+                      {product.quantity}-Pack,{' '}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.lnameText,
+                        isDark && styles.dnameText,
+                      ]}>
+                      {product.variantName}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.lpriceText,
+                        isDark && styles.dpriceText,
+                      ]}>
+                      ${product.finalSellingPrice}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </>
+          {/* hide and show more Products=== */}
+          {showAllProducts === item._id && (
             <>
-              {item.order.order_Variants
-                .slice(0, 1)
-                .map((item, poductIndex) => (
-                  <View
-                    key={poductIndex}
-                    style={[
-                      styles.lproductsCon,
-                      isDark && styles.dproductsCon,
-                    ]}>
-                    <View style={styles.lproductsRowCon}>
+              {item.order.order_Variants.slice(1).map((product, index2) => (
+                <View
+                  key={index2}
+                  style={[
+                    styles.lproductsCon,
+                    isDark && styles.dproductsCon,
+                  ]}>
+                  <View style={styles.lproductsRowCon}>
+                    <Text style={[styles.lqtyText, isDark && styles.dqtyText]}>
+                      {product.orderQuantity}x
+                    </Text>
+                    <FastImage
+                      source={{
+                        uri: `${IMAGE_URL}${product.variantImage}`,
+                      }}
+                      resizeMode="contain"
+                      style={styles.product_Image}
+                    />
+                    <View style={{marginLeft: rWidth(12)}}>
                       <Text
-                        style={[styles.lqtyText, isDark && styles.dqtyText]}>
-                        {item.orderQuantity}x
+                        style={[
+                          styles.lbrandText,
+                          isDark && styles.dbrandText,
+                        ]}>
+                        {product.quantity}-Pack,{' '}
                       </Text>
-                      <FastImage
-                  source={{
-                    uri: `${IMAGE_URL}${item.variantImage}`,
-                   
-                  }}
-                  resizeMode="contain"
-                  style={styles.product_Image}
-                />
-                      {/* src={product?.variant.variantImage ? s3_image + product?.variant.variantImage : "/src/Assect/image/11.png"} */}
-                      {/* <FastImage
-                        source={{
-                          uri: `https://d12keppzk8wa17.cloudfront.net/goboozestore/${item.variantImage?s3_image + item?.variantImage:'/src/Assect/image/11.png'}`,
-                        }}
-                        resizeMode="contain"
-                        style={styles.product_Image}
-                      /> */}
-                      <View style={{marginLeft: rWidth(12)}}>
-                        <Text
-                          style={[
-                            styles.lbrandText,
-                            isDark && styles.dbrandText,
-                          ]}>
-                          {item.quantity}-Pack,{' '}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.lnameText,
-                            isDark && styles.dnameText,
-                          ]}>
-                          {item.variantName}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.lpriceText,
-                            isDark && styles.dpriceText,
-                          ]}>
-                          ${item.finalSellingPrice}
-                        </Text>
-                      </View>
+                      <Text
+                        style={[
+                          styles.lnameText,
+                          isDark && styles.dnameText,
+                        ]}>
+                        {product.variantName}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.lpriceText,
+                          isDark && styles.dpriceText,
+                        ]}>
+                        ${product.finalSellingPrice}
+                      </Text>
                     </View>
                   </View>
-                ))}
+                </View>
+              ))}
             </>
-            {/* hide and show more Products=== */}
-            {showAllProducts == item._id && (
-              <>
-                {item.order.order_Variants
-                  .slice(1, item.order.order_Variants?.length)
-                  .map((item, index2) => (
-                    <View
-                      key={index2}
-                      style={[
-                        styles.lproductsCon,
-                        isDark && styles.dproductsCon,
-                      ]}>
-                      <View style={styles.lproductsRowCon}>
-                        <Text
-                          style={[styles.lqtyText, isDark && styles.dqtyText]}>
-                          {item.orderQuantity}x
-                        </Text>
-                        <FastImage
-                          source={{
-                            uri: `${IMAGE_URL}${item.variantImage}`,
-                          }}
-                          resizeMode="contain"
-                          style={styles.product_Image}
-                        />
-                        <View style={{marginLeft: rWidth(12)}}>
-                          <Text
-                            style={[
-                              styles.lbrandText,
-                              isDark && styles.dbrandText,
-                            ]}>
-                            {item.quantity}-Pack,{' '}
-                          </Text>
-                          <Text
-                            style={[
-                              styles.lnameText,
-                              isDark && styles.dnameText,
-                            ]}>
-                            {item.variantName}
-                          </Text>
-                          <Text
-                            style={[
-                              styles.lpriceText,
-                              isDark && styles.dpriceText,
-                            ]}>
-                            ${item.finalSellingPrice}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  ))}
-              </>
-            )}
+          )}
 
-            {/* ---More Items Text--- */}
-            {item.order.order_Variants.length > 1 && (
-              <TouchableOpacity
-                onPress={() => {
-                  if (item._id == showAllProducts) {
-                    console.log(item._id, 'item._id---');
-                    setShowAllProducts(0);
-                  } else {
-                    setShowAllProducts(item._id);
-                  }
-                }}
-                style={{}}>
-                <Text style={[styles.moreText]}>
-                  +{item.order.order_Variants.length - 1} items
-                </Text>
-              </TouchableOpacity>
-            )}
-            {/* --dummmy View---- */}
-            <View
-              style={[
-                styles.dummyView,
-                isDark && {backgroundColor: COLORS.dark_disabled_background},
-              ]}
-            />
-            {/* ---Customer Name */}
-            <View style={[styles.rowCon]}>
-              <Text style={[styles.lleftText, isDark && styles.dleftText]}>
-                Customer Name:
+          {/* ---More Items Text--- */}
+          {item.order.order_Variants.length > 1 && (
+            <TouchableOpacity
+              onPress={() => {
+                setShowAllProducts(prevId => (prevId === item._id ? null : item._id));
+              }}
+              style={{}}>
+              <Text style={[styles.moreText]}>
+                {showAllProducts === item._id
+                  ? 'see less'
+                  : `+${item.order.order_Variants.length - 1} items`}
               </Text>
-              <Text style={[styles.lRightText, isDark && styles.dRightText]}>
-                {item.order.address.first_name == item.order.address.first_name
-                  ? item.order.address.first_name
-                  : `${item.order.address.first_name} ${item.order.address.last_name}`}
+            </TouchableOpacity>
+          )}
+          {/* --dummmy View---- */}
+          <View
+            style={[
+              styles.dummyView,
+              isDark && {backgroundColor: COLORS.dark_disabled_background},
+            ]}
+          />
+          {/* ---Customer Name */}
+          <View style={[styles.rowCon]}>
+            <Text style={[styles.lleftText, isDark && styles.dleftText]}>
+              Customer Name:
+            </Text>
+            <Text style={[styles.lRightText, isDark && styles.dRightText]}>
+              {item.order.address.first_name === item.order.address.first_name
+                ? item.order.address.first_name
+                : `${item.order.address.first_name} ${item.order.address.last_name}`}
+            </Text>
+          </View>
+          {/* ---Order Status */}
+          <View style={[styles.rowCon, {marginTop: rHeight(8)}]}>
+            <Text style={[styles.lleftText, isDark && styles.dleftText]}>
+              Order Status:
+            </Text>
+            <View style={[styles.statusCon]}>
+              <Text
+                style={[
+                  styles.lRightText,
+                  isDark && styles.dRightText,
+                  {color: '#0162DD', marginLeft: 0},
+                ]}>
+                {item.order.order_status}
               </Text>
             </View>
-            {/* ---Customer Name */}
-            <View style={[styles.rowCon, {marginTop: rHeight(8)}]}>
-              <Text style={[styles.lleftText, isDark && styles.dleftText]}>
-                Order Status:
-              </Text>
-              <View style={[styles.statusCon]}>
-                <Text
-                  style={[
-                    styles.lRightText,
-                    isDark && styles.dRightText,
-                    {color: '#0162DD', marginLeft: 0},
-                  ]}>
-                  {item.order.order_status}
-                </Text>
-              </View>
-            </View>
-          </Pressable>
-        );
-      })}
+          </View>
+        </Pressable>
+      ))}
     </>
   );
 };
+
+
 
 export default OrdersCard;
 const styles = StyleSheet.create({

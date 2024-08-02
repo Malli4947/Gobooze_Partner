@@ -50,7 +50,7 @@ const OrderHistory = ({orderRequests}) => {
         },
       );
       const data = await fetchOrderDetails.json();
-      setOrderData(data?.data);
+      setOrderData(data?.data.reverse());
     } catch (error) {
       console.log(error, 'error');
     } finally {

@@ -24,13 +24,15 @@ const CustomSegmentedControl = props => {
   const translateValue = (props.segmentWidth - 4) / props?.tabs?.length;
   const [tabTranslate, setTabTranslate] = React.useState(new Animated.Value(0));
 
-  // useCallBack with an empty array as input, which will call inner lambda only once and memoize the reference for future calls
+  // useCallback with an empty array as input, which will call inner lambda only once and memoize the reference for future calls
   const memoizedTabPressCallback = React.useCallback(index => {
-    props?.onChange(index);
-  }, []);
+    if (!props.disabledSegments.includes(index)) {
+      props?.onChange(index);
+    }
+  }, [props.disabledSegments]);
 
   useEffect(() => {
-    // Animating the active index based current index
+    // Animating the active index based on the current index
     Animated.spring(tabTranslate, {
       toValue: props?.currentIndex * translateValue,
       stiffness: 180,
@@ -74,18 +76,21 @@ const CustomSegmentedControl = props => {
         ]}></Animated.View>
       {props?.tabs.map((tab, index) => {
         const isCurrentIndex = props?.currentIndex === index;
+        const isDisabled = props.disabledSegments.includes(index);
         return (
           <TouchableOpacity
             key={index}
-            style={[styles.textWrapper]}
+            style={[styles.textWrapper, isDisabled && styles.disabled]}
             onPress={() => memoizedTabPressCallback(index)}
-            activeOpacity={0.7}>
+            activeOpacity={isDisabled ? 1 : 0.7}
+            disabled={isDisabled}>
             <Text
               numberOfLines={1}
               style={[
                 styles.textStyles,
                 {color: props?.textColor},
                 isCurrentIndex && {color: props?.activeTextColor},
+                isDisabled && {color: 'gray'},
               ]}>
               {tab}
             </Text>
@@ -114,6 +119,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: GRAPHIK_FONT.MEDIUM,
   },
+  disabled: {
+    opacity: 0.5,
+  },
 });
 
 CustomSegmentedControl.propTypes = {
@@ -127,6 +135,7 @@ CustomSegmentedControl.propTypes = {
   paddingVertical: PropTypes.number,
   segmentWidth: PropTypes.number,
   segmentBorderRadius: PropTypes.number,
+  disabledSegments: PropTypes.arrayOf(PropTypes.number),
 };
 
 CustomSegmentedControl.defaultProps = {
@@ -140,6 +149,7 @@ CustomSegmentedControl.defaultProps = {
   paddingVertical: 14,
   segmentWidth: 250,
   segmentBorderRadius: 30,
+  disabledSegments: [],
 };
 
 export default CustomSegmentedControl;

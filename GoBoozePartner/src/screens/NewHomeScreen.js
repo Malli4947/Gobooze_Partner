@@ -132,43 +132,19 @@ const NewHomeScreen = props => {
     return () => clearInterval(interval);
   }, []);
 
-  // const getLatAndLong = async () => {
-  //   Geolocation.watchPosition(
-  //     position => {
-  //       const lat = position.coords.latitude;
-  //       const long = position.coords.longitude;
-
-  //       if (lat && long) {
-  //         postDriverLocation(lat, long);
-  //         dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
-  //       }
-  //     },
-  //     error => {
-  //       console.log(error, 'error--');
-  //     },
-  //     {
-  //       enableHighAccuracy: false,
-  //       timeout: 10000,
-  //       distanceFilter: 1,
-  //       interval: 1000,
-  //       fastestInterval: 2000,
-  //     },
-  //   );
-  // };
   const getLatAndLong = async () => {
     Geolocation.watchPosition(
       position => {
         const lat = position.coords.latitude;
         const long = position.coords.longitude;
-  
+
         if (lat && long) {
           postDriverLocation(lat, long);
-          dispatch(onGettingCoordinates({latitude: lat, longitude: long})); // Corrected typo from lattitude to latitude
+          dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
         }
       },
       error => {
         console.log(error, 'error--');
-        handleError(error); // Call handleError function to handle errors appropriately
       },
       {
         enableHighAccuracy: false,
@@ -179,37 +155,7 @@ const NewHomeScreen = props => {
       },
     );
   };
-  
-  const handleError = (error) => {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        Alert.alert(
-          "GPS Permission Denied",
-          "Please turn on GPS and allow access to continue.",
-          [
-            { text: "OK", onPress: () => {} }
-          ]
-        );
-        break;
-      case error.POSITION_UNAVAILABLE:
-        Alert.alert(
-          "GPS Unavailable",
-          "Your device's GPS is currently unavailable. Please check your settings.",
-          [
-            { text: "OK", onPress: () => {} }
-          ]
-        );
-        break;
-      default:
-        Alert.alert(
-          "Unknown Error",
-          "An unknown error occurred.",
-          [
-            { text: "OK", onPress: () => {} }
-          ]
-        );
-    }
-  };
+ 
   const postDriverLocation = async (lat, long) => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
@@ -238,7 +184,7 @@ console.log(obj,'obj================')
           },
         },
       );
-      console.log
+      
     } catch (error) {
       console.log(error,'error================')
     }
@@ -248,7 +194,7 @@ console.log(obj,'obj================')
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-      console.log(userId, 'userId');
+    
       const checkingPendingOrders = await axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
         {
@@ -279,7 +225,7 @@ console.log(obj,'obj================')
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-      console.log(userId, 'userId');
+   
       // Fetch delivered orders
       const deliveredOrdersResponse = axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
@@ -308,7 +254,7 @@ console.log(obj,'obj================')
       const allPendingResponse = await axios.get(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
       );
-      console.log()
+     
       setAllpendingOrders(allPendingResponse.data.data);
 
       // Await both API calls

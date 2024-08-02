@@ -4,7 +4,7 @@ import COLORS from '../constants/Colors';
 import { useColorScheme } from './ColorSchemeContext';
 import { IMAGES } from '../constants/Constant';
 import { rHeight, rWidth } from '../constants/PixelSize';
-import GBSegmentControl from './GBSegmentControl';
+import CustomSegmentedControl from './CustomSegmentControl';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,12 +12,13 @@ import { GRAPHIK_FONT } from '../constants/Constant';
 
 const screenWidth = Dimensions.get('screen').width * 0.6;
 
-const OrderNavigationBar = ({}) => {
+const OrderNavigationBar = () => {
   const navigation = useNavigation();
   const [onlineOfflineIndex, setOnlineOfflineIndex] = useState(0);
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const [acceptedOrders, setAcceptedOrders] = useState([]);
+  const [profileData, setProfileData] = useState();
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -45,16 +46,15 @@ const OrderNavigationBar = ({}) => {
       fetchOrders();
       const interval = setInterval(() => {
         fetchOrders();
-      }, 60000);
+      }, 6000);
       return () => clearInterval(interval);
     }, [fetchOrders])
   );
 
   useEffect(() => {
-    if (acceptedOrders.length > 0) {
-      setOnlineOfflineIndex(0); // Force to Online if there are active orders
-    }
-  }, [acceptedOrders]);
+    FetchDetails();
+    fetchOrders(); // Force to Online if there are active orders
+  }, []);
 
   const handleActivation = async (isActive) => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
@@ -88,6 +88,33 @@ const OrderNavigationBar = ({}) => {
     handleActivation(isActive);
   };
 
+  const FetchDetails = async () => {
+    const combinedData = await AsyncStorage.getItem('USER_DATA');
+    const [accessToken, userId] = combinedData?.split(':') ?? [];
+    try {
+      const fetchDetails = await fetch(
+        `https://devapigobooze.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        }
+      );
+      const data = await fetchDetails.json();
+      console.log(data, 'data.....');
+      setProfileData(data.data);
+
+      // Set the initial onlineOfflineIndex based on is_active status
+      if (data.data.is_active) {
+        setOnlineOfflineIndex(0);
+      } else {
+        setOnlineOfflineIndex(1);
+      }
+    } catch (error) {
+      console.log(error, 'error');
+    }
+  };
+
   return (
     <View style={[styles.container]}>
       <TouchableOpacity
@@ -100,7 +127,8 @@ const OrderNavigationBar = ({}) => {
         ]}
         onPress={() => {
           navigation.navigate('ProfileScreen');
-        }}>
+        }}
+      >
         <Image
           tintColor={isDarkTheme ? '#FFF' : undefined}
           resizeMode="contain"
@@ -110,13 +138,16 @@ const OrderNavigationBar = ({}) => {
       </TouchableOpacity>
 
       <View style={{ width: rWidth(35) }} />
-
-      <GBSegmentControl
-        width={screenWidth}
-        tintColor={onlineOfflineIndex === 0 ? '#099A6A' : COLORS.red_error}
-        segmentArray={['Online', 'Offline']}
-        selectedIndex={onlineOfflineIndex}
-        onValueChange={handleValueChange}
+      <CustomSegmentedControl
+        tabs={['Online', 'Offline']}
+        onChange={handleValueChange}
+        currentIndex={onlineOfflineIndex}
+        segmentWidth={screenWidth ? screenWidth : 250}
+        segmentBorderRadius={30}
+        segmentedControlBackgroundColor={isDarkTheme ? '#00000070' : '#00000015'}
+        activeSegmentBackgroundColor={onlineOfflineIndex === 0 ? '#099A6A' : COLORS.red_error}
+        activeTextColor={isDarkTheme ? '#FFFFFF' : '#FFF'}
+        textColor={isDarkTheme ? '#FFFFFFBF' : '#1D2433CC'}
         disabledSegments={acceptedOrders.length > 0 ? [1] : []}
       />
     </View>

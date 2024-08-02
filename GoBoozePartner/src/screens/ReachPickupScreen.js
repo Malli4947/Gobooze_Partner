@@ -175,16 +175,17 @@ const ReachPickupScreen = ({route}) => {
         </MapMarker>
 
         {true && (
+        
           <MapViewDirections
-            origin={{
-              latitude: currentLattitude,
-              longitude: currentLongitude,
-            }}
-            destination={storeLocation}
-            apikey={GOOGLE_MAPS_APIKEY}
-            strokeWidth={3}
-            strokeColor="hotpink"
-          />
+  origin={{
+    latitude: currentLattitude,
+    longitude: currentLongitude,
+  }}
+  destination={storeLocation}
+  apikey={GOOGLE_MAPS_APIKEY}
+  strokeWidth={3}
+  strokeColor="hotpink"
+/>
         )}
       </MapView>
 
