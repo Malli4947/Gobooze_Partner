@@ -8,11 +8,13 @@ import {
   Pressable,
   Alert,
   Platform,
+  PermissionsAndroid,
   RefreshControl,
   SafeAreaView,
 } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-
+import LocationPermissionModal from '../components/LocationPermissionModal';
 import Geolocation from '@react-native-community/geolocation';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
@@ -37,6 +39,7 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {pendingOrders} from '../redux/GoboozeApi';
 import {onGettingCoordinates} from '../redux/slices/LocationSlices';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {BackHandler} from 'react-native';
 var Sound = require('react-native-sound');
 
@@ -66,8 +69,10 @@ const NewHomeScreen = props => {
   const [modalData, setModaldata] = useState([]);
   const [allPendingOrders, setAllpendingOrders] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [render, rerender] = useState(false);
   const previousLengthRef = useRef(0);
-
+  const isFocus = useIsFocused();
   const socket = io('https://devapigobooze.codefactstech.com');
 
   const isDarkTheme = colorScheme === 'dark';
@@ -122,14 +127,61 @@ const NewHomeScreen = props => {
       return () => clearInterval(interval);
     }, []),
   );
+  const checkLocationPermission = async () => {
+    console.log('Executing check location permission:');
+    console.log(Platform.OS);
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        );
+        console.log(granted, 'permission android--');
+        return granted;
+      } catch (err) {
+        // console.warn(err);
+        return false;
+      }
+    } else if (Platform.OS === 'ios') {
+      try {
+        const status = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        console.log(status, 'permission ios--');
+        return status;
+      } catch (err) {
+        // console.log(err, 'error');
+        return false;
+      }
+    }
+  };
   useEffect(() => {
-    fecthPendingOrders();
-    fetchOrders();
-    getLatAndLong();
-    const interval = setInterval(() => {
-      getLatAndLong();
-    }, 120000); // 900000 milliseconds = 15 minutes, 120000 milliseconds = 2 minutes
-    return () => clearInterval(interval);
+    console.log('This is focus value: ' + isFocus);
+    const getData = async () => {
+      fecthPendingOrders();
+      fetchOrders();
+      const res = await checkLocationPermission();
+      console.log('This is res: ');
+      console.log(res);
+
+      rerender(!render);
+      if (res == true) {
+        getLatAndLong();
+        const interval = setInterval(() => {
+          getLatAndLong();
+        }, 120000); // 900000 milliseconds = 15 minutes, 120000 milliseconds = 2 minutes
+        return () => clearInterval(interval);
+      } else {
+        setModalVisible(!res);
+        const intervalId = setInterval(async () => {
+          console.log('Checking for location permission: ');
+          const res2 = await checkLocationPermission();
+          if (res2) {
+            clearInterval(intervalId);
+            console.log('This interval has been cleared: ' + intervalId);
+            setModalVisible(false);
+          }
+        }, 1000);
+      }
+    };
+    getData();
   }, []);
 
   const getLatAndLong = async () => {
@@ -155,7 +207,7 @@ const NewHomeScreen = props => {
       },
     );
   };
- 
+
   const postDriverLocation = async (lat, long) => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
@@ -174,7 +226,7 @@ const NewHomeScreen = props => {
           coordinates: [lat, long],
         },
       };
-console.log(obj,'obj================')
+      console.log(obj, 'obj================');
       const res = await axios.patch(
         `https://devapigobooze.codefactstech.com/order/api/orders/update-driver-location/${userId}`,
         obj,
@@ -184,9 +236,8 @@ console.log(obj,'obj================')
           },
         },
       );
-      
     } catch (error) {
-      console.log(error,'error================')
+      console.log(error, 'error================');
     }
   };
 
@@ -194,7 +245,7 @@ console.log(obj,'obj================')
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-    
+      console.log(userId, '----userId------');
       const checkingPendingOrders = await axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
         {
@@ -218,14 +269,17 @@ console.log(obj,'obj================')
         ding.stop();
       }, 2500);
       return;
-    } catch (e) {}
+    } catch (e) {
+      console.log('Got an error: ');
+      console.log(e);
+    }
   };
 
   const fetchOrders = async () => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-   
+
       // Fetch delivered orders
       const deliveredOrdersResponse = axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
@@ -243,7 +297,7 @@ console.log(obj,'obj================')
       const activeOrdersResponse = axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
-       
+
         {
           headers: {
             Authorization: `${accessToken}`,
@@ -254,7 +308,7 @@ console.log(obj,'obj================')
       const allPendingResponse = await axios.get(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
       );
-     
+
       setAllpendingOrders(allPendingResponse.data.data);
 
       // Await both API calls
@@ -293,10 +347,14 @@ console.log(obj,'obj================')
       }
     }
   };
- 
+
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
+      <LocationPermissionModal
+        modalVisible={modalVisible}
+        dismissModal={() => setModalVisible(false)}
+      />
       <NewOrderAlertScreen
         modalVisible={showNewOrderModal}
         dismissModal={() => setShowNewOrderModal(!showNewOrderModal)}
@@ -306,9 +364,9 @@ console.log(obj,'obj================')
           setShowNewOrderModal(false);
         }}
       />
-      <CustomStatusBar
+      {/* <CustomStatusBar
         backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
-      />
+      /> */}
       {/* marginTop: insets.top */}
       <View style={{}}>
         <OrderNavigationBar />

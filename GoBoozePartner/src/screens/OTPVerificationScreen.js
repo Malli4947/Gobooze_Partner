@@ -92,6 +92,8 @@ const OTPVerificationScreen = props => {
         );
         setHasLocationPermission(granted);
       } catch (err) {
+        console.log('This is the error: ');
+        console.log(err);
         return false;
       }
     } else if (Platform.OS === 'ios') {

@@ -126,8 +126,14 @@ const ReachedDropMapScreen = ({route}) => {
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
-      <View style={{marginTop: insets.top}}>
-        <NavBarWithBackButton title={'Reach Drop'} />
+      <View style={{marginTop: insets.top, marginTop: 0}}>
+        <NavBarWithBackButton
+          backDisabled={true}
+          onPress={() => {
+            navigation.navigate('Home');
+          }}
+          title={'Reach Drop'}
+        />
       </View>
 
       {currentLattitude && currentLongitude && (
@@ -332,7 +338,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     width: '100%',
     backgroundColor: '#FFF',
     borderTopLeftRadius: 25,

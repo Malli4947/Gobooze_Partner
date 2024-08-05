@@ -71,8 +71,14 @@ const PickOrderScreen = ({route}) => {
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
       <PickOrderNowAlert modalVisible={false} />
-      <View style={{marginTop: insets.top}}>
-        <NavBarWithBackButton title={'Pickup Order'} />
+      <View style={{marginTop: insets.top, marginTop: 0}}>
+        <NavBarWithBackButton
+          backDisabled={true}
+          onPress={() => {
+            navigation.navigate('Home');
+          }}
+          title={'Pickup Order'}
+        />
         <View style={[styles.seperator, darkSep]} />
       </View>
 

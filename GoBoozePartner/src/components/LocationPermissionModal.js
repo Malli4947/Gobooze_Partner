@@ -16,7 +16,12 @@ const LocationPermissionModal = props => {
       transparent={true}
       visible={modalVisible}
       onRequestClose={dismissModal}>
-      <View style={{flex: 1, backgroundColor: 'rgba(27, 31, 39, 0.80)', justifyContent: 'center'}}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'rgba(27, 31, 39, 0.80)',
+          justifyContent: 'center',
+        }}>
         <View
           style={[
             styles.modalView,
@@ -42,12 +47,12 @@ const LocationPermissionModal = props => {
             <Pressable
               onPress={() => {
                 Linking.openSettings();
-                setTimeout(() => {
-                  setHasPermission(true);
-                  getOneTimeLocation();
-                }, 2000);
-                dismissModal()
-                props.navigation.navigate('HomeScreen');
+                // setTimeout(() => {
+                //   setHasPermission(true);
+                //   getOneTimeLocation();
+                // }, 2000);
+                // dismissModal()
+                // props.navigation.navigate('HomeScreen');
               }}
               style={styles.modal_button}>
               <Text style={styles.modalButton_text}>Open Settings</Text>
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
     color: COLORS.light_primary_text,
     fontFamily: GRAPHIK_FONT.SEMIBOLD,
     fontSize: rWidth(22),
-    lineHeight: 30
+    lineHeight: 30,
   },
   modalText_2: {
     color: COLORS.dark_primary_text,
@@ -93,7 +98,7 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.REGULAR,
     fontSize: rWidth(12),
     marginTop: rHeight(15),
-    lineHeight: 18
+    lineHeight: 18,
   },
   modalHint_2: {
     color: COLORS.dark_disabled_text,

@@ -14,29 +14,31 @@ import {rHeight, rWidth} from '../constants/PixelSize';
 
 const screenWidth = Dimensions.get('screen').width * 0.6;
 
-const NavBarWithBackButton = ({onPress, title}) => {
+const NavBarWithBackButton = ({onPress, title, backDisabled}) => {
   const [onlineOfflineIndex, setOnlineOfflineIndex] = React.useState(0);
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
 
   return (
     <View style={[styles.container]}>
-      {/* <TouchableOpacity
-        style={[
-          styles.menuContainer,
-          isDarkTheme && {
-            backgroundColor: '#23272F',
-            borderColor: COLORS.dark_disabled_background,
-          },
-        ]}
-        onPress={onPress}>
-        <Image
-          tintColor={isDarkTheme && '#FFF'}
-          resizeMode="contain"
-          source={IMAGES.BACK}
-          style={styles.menuImg}
-        />
-      </TouchableOpacity> */}
+      {true && (
+        <TouchableOpacity
+          style={[
+            styles.menuContainer,
+            isDarkTheme && {
+              backgroundColor: '#23272F',
+              borderColor: COLORS.dark_disabled_background,
+            },
+          ]}
+          onPress={onPress}>
+          <Image
+            tintColor={isDarkTheme && '#FFF'}
+            resizeMode="contain"
+            source={IMAGES.BACK}
+            style={styles.menuImg}
+          />
+        </TouchableOpacity>
+      )}
       <View style={{width: rWidth(15)}} />
 
       <Text style={[styles.title, isDarkTheme && {color: '#FFFFFF'}]}>

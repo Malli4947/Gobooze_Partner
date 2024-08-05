@@ -51,6 +51,7 @@ const NewOrderAlertScreen = props => {
         '💕 ~ file: NewOrderAlertScreen.js:49 ~ acceptOrder ~ acceptRes:',
         acceptRes,
       );
+      dismissModal();
     } catch (e) {
       console.log('💕 ~ file: NewOrderAlertScreen.js:35 ~ acceptOrder ~ e:', e);
     }

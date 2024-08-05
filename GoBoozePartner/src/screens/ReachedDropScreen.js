@@ -7,6 +7,7 @@ import {
   Alert,
   SafeAreaView,
   Linking,
+  PermissionsIOS,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -105,7 +106,58 @@ const ReachedDropScreen = ({route}) => {
   const onSuccessCancel = () => {
     navigation.navigate('Home');
   };
+  const takePhoto1 = async () => {
+    try {
+      // Request camera permissions
+      const cameraPermission = await PermissionsIOS.requestPermission('camera');
 
+      if (cameraPermission !== 'authorized') {
+        console.log('Camera permission denied');
+        Alert.alert('Please provide camera permission to continue!');
+        return;
+      }
+
+      // Define camera options
+      let options = {
+        mediaType: 'photo',
+        saveToPhotos: true,
+        quality: 0.8,
+        includeBase64: false,
+      };
+
+      // Launch the camera
+      launchCamera(options, response => {
+        console.log('This is the response: ');
+        console.log(response);
+
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton);
+        } else {
+          // Handle the photo response (e.g., set state, upload photo, etc.)
+          console.log(
+            '💕 ~ file: ReachedDropScreen.js:114 ~ takePhoto ~ response:',
+            response,
+          );
+
+          const source = {
+            uri: response.assets[0].uri,
+            fileName: response.assets[0].fileName,
+          };
+
+          setPhoto(source);
+          setShowPhotoModal(false);
+          uploadPhoto(source);
+        }
+      });
+    } catch (e) {
+      Alert.alert('Something went wrong!');
+      console.log('Error occurred: ', e);
+    }
+  };
   const takePhoto = () => {
     try {
       let options = {
@@ -117,6 +169,8 @@ const ReachedDropScreen = ({route}) => {
       };
 
       launchCamera(options, response => {
+        console.log('This is the response: ');
+        console.log(response);
         if (response.didCancel) {
           console.log('User cancelled image picker');
         } else if (response.error) {
@@ -140,6 +194,7 @@ const ReachedDropScreen = ({route}) => {
       });
     } catch (e) {
       console.log(e);
+      Alert.alert('Something went wrong!');
     }
   };
 
@@ -219,8 +274,14 @@ const ReachedDropScreen = ({route}) => {
           setShowPhotoModal(true);
         }}
       />
-      <View style={{marginTop: insets.top}}>
-        <NavBarWithBackButton title={'Reach Drop'} />
+      <View style={{marginTop: insets.top, marginTop: 0}}>
+        <NavBarWithBackButton
+          backDisabled={true}
+          onPress={() => {
+            navigation.navigate('Home');
+          }}
+          title={'Reach Drop'}
+        />
         <View style={[styles.seperator, darkSep]} />
       </View>
 

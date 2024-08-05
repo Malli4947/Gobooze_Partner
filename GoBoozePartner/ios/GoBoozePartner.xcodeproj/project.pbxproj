@@ -569,10 +569,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = YSKJ36B8N8;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 13;
+				DEVELOPMENT_TEAM = YSKJ36B8N8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = GoBoozePartner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "GoBooze Partner";
@@ -587,10 +587,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.gobooze.user.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codefacts.goboozepartner;
 				PRODUCT_NAME = GoBoozePartner;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = GoBoozeUserDev;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -603,11 +602,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = YSKJ36B8N8;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 13;
+				DEVELOPMENT_TEAM = YSKJ36B8N8;
 				INFOPLIST_FILE = GoBoozePartner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "GoBooze Partner";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
@@ -621,10 +619,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.gobooze.user.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codefacts.goboozepartner;
 				PRODUCT_NAME = GoBoozePartner;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = GoBoozeUser_Dist;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

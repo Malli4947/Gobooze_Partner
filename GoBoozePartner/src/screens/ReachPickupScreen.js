@@ -127,15 +127,16 @@ const ReachPickupScreen = ({route}) => {
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
-      <View style={{marginTop: insets.top}}>
-        {/* <NavBarWithBackButton
+      <View style={{marginTop: insets.top, marginTop: 0}}>
+        <NavBarWithBackButton
+          backDisabled={true}
           onPress={() => {
             console.log('000');
-            navigation.goBack();
+            navigation.navigate('Home');
           }}
           title={'Reach Pickup'}
-        /> */}
-        <View style={styles.header}>
+        />
+        {/* <View style={styles.header}>
           <Text
             style={[
               styles.headerText,
@@ -146,7 +147,7 @@ const ReachPickupScreen = ({route}) => {
             ]}>
             Reach Pickup
           </Text>
-        </View>
+        </View> */}
       </View>
 
       <MapView
@@ -175,17 +176,16 @@ const ReachPickupScreen = ({route}) => {
         </MapMarker>
 
         {true && (
-        
           <MapViewDirections
-  origin={{
-    latitude: currentLattitude,
-    longitude: currentLongitude,
-  }}
-  destination={storeLocation}
-  apikey={GOOGLE_MAPS_APIKEY}
-  strokeWidth={3}
-  strokeColor="hotpink"
-/>
+            origin={{
+              latitude: currentLattitude,
+              longitude: currentLongitude,
+            }}
+            destination={storeLocation}
+            apikey={GOOGLE_MAPS_APIKEY}
+            strokeWidth={3}
+            strokeColor="hotpink"
+          />
         )}
       </MapView>
 
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     width: '100%',
     backgroundColor: '#FFF',
     borderTopLeftRadius: 25,
