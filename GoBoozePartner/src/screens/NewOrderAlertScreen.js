@@ -78,8 +78,8 @@ const NewOrderAlertScreen = props => {
               ]}>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  // flexDirection: 'row',
+                  // justifyContent: 'space-between',
                   marginHorizontal: 15,
                   alignItems: 'center',
                 }}>
@@ -87,9 +87,9 @@ const NewOrderAlertScreen = props => {
                 <Text style={[styles.newOrderText, darkTextColor]}>
                   New Order!
                 </Text>
-                <Text onPress={denyClick} style={styles.denyText}>
+                {/* <Text onPress={denyClick} style={styles.denyText}>
                   Deny
-                </Text>
+                </Text> */}
               </View>
 
               {/* total earning and pick drop kms */}

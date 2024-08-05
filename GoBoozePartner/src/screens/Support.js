@@ -115,7 +115,7 @@ const Support = () => {
           style={[
             {
               margin: rWidth(16),
-              padding: rWidth(16),
+              padding: rWidth(20),
               borderRadius: rWidth(16),
               backgroundColor: '#fff',
               shadowColor: '#000',
@@ -163,6 +163,7 @@ const Support = () => {
                     {
                       fontFamily: GRAPHIK_FONT.REGULAR,
                       color: '#000',
+                      marginTop:rHeight(2),
                       // paddingLeft: rWidth(35),
                       color: COLORS.primary_pink,
                     },
@@ -205,6 +206,7 @@ const Support = () => {
                     {
                       fontFamily: GRAPHIK_FONT.REGULAR,
                       color: '#000',
+                    marginTop:rHeight(4),
                       // paddingLeft: rWidth(35),
                       color: COLORS.primary_pink,
                     },

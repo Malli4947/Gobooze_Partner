@@ -364,9 +364,9 @@ const NewHomeScreen = props => {
           setShowNewOrderModal(false);
         }}
       />
-      {/* <CustomStatusBar
+      <CustomStatusBar
         backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
-      /> */}
+      />
       {/* marginTop: insets.top */}
       <View style={{}}>
         <OrderNavigationBar />

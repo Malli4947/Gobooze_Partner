@@ -39,7 +39,7 @@ const OrderDetailsView = ({
         CONST_STYLES.shadow,
         isDarkTheme && styles.dark_container,
       ]}>
-      <View style={styles.topView}>
+      <TouchableOpacity style={styles.topView} onPress={onPress}>
         {/* {orderDetails.map(item,index)=>{}} */}
         <View style={styles.imgTextContainer}>
           <View
@@ -66,7 +66,7 @@ const OrderDetailsView = ({
             }
           />
         </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
       {id == 1 && expandCustomerDetail && (
         <View>
           <View style={styles.expandedView}>

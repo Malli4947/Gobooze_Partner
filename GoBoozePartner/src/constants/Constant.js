@@ -82,6 +82,6 @@ export const IMAGES = {
   CAMERA_OUTLINED: require('../assets/other_pngs/camera_outlined.png'),
   RIGHT_PHOTO_LIGHT: require('../assets/other_pngs/right_photo.png'),
   WRONG_PHOTO_LIGHT: require('../assets/other_pngs/wrong_photo.png'),
-  RIGHT_PHOTO_DARK: require('../assets/other_pngs/right_photo_dark.png'),
-  WRONG_PHOTO_DARK: require('../assets/other_pngs/wrong_photo_dark.png'),
+  // RIGHT_PHOTO_DARK: require('../assets/other_pngs/right_photo_dark.png'),
+  // WRONG_PHOTO_DARK: require('../assets/other_pngs/wrong_photo_dark.png'),
 };

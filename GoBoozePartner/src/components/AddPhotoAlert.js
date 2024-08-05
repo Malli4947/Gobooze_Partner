@@ -44,30 +44,28 @@ const AddPhotoAlert = props => {
                 resizeMode="contain"
                 style={styles.photo}
                 source={
-                  isDarkTheme
-                    ? IMAGES.RIGHT_PHOTO_DARK
-                    : IMAGES.RIGHT_PHOTO_LIGHT
+                 
+                    IMAGES.RIGHT_PHOTO_LIGHT
                 }
               />
               <Image
                 resizeMode="contain"
                 style={styles.photo}
                 source={
-                  isDarkTheme
-                    ? IMAGES.WRONG_PHOTO_DARK
-                    : IMAGES.WRONG_PHOTO_LIGHT
+                 
+                     IMAGES.WRONG_PHOTO_LIGHT
                 }
               />
               
             </View>
-            <View style={{marginHorizontal: rWidth(15)}}>
+            <View style={{marginHorizontal: rWidth(15), paddingBottom: rHeight(15)}}>
               <CustomButton
                 image={IMAGES.CAMERA_OUTLINED}
                 buttonText="Click Photo"
                 buttonStyle={{height: rHeight(45)}}
                 handleClick={openCamera}
               />
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   console.log('hi---');
                 }}>
@@ -79,7 +77,7 @@ const AddPhotoAlert = props => {
                   ]}>
                   Cannot leave order at door..
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>
