@@ -92,6 +92,9 @@ const NewHomeScreen = props => {
   };
 
   //Malike Code ending
+ 
+
+  
 
   //Malika new changes -> 17-08
   const checkIsActiveStatus = async () => {
@@ -308,9 +311,13 @@ const NewHomeScreen = props => {
       ding.release();
     };
   }, []);
+  useEffect(() => {
+    fetchData()
+  }, []);
   useFocusEffect(
     useCallback(() => {
       setShowNewOrderModal(false);
+      fetchData()
     }, []),
   );
 
@@ -321,7 +328,30 @@ const NewHomeScreen = props => {
       }
     });
   };
-
+  const fetchData = async () => {
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+  
+      const response = await axios.get('your_api_endpoint', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+  
+      // Process response data
+      const data = response.data;
+  
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        // Access token has expired, navigate to login
+        navigation.navigate('Login');
+      } else {
+        // Handle other errors
+        console.error('Error fetching data:', error);
+      }
+    }
+  };
   useFocusEffect(
     useCallback(() => {
       fetchOrders();
@@ -452,88 +482,9 @@ const NewHomeScreen = props => {
     }
   };
 
-  const fecthPendingOrders1 = async () => {
-    try {
-      const combinedData = await AsyncStorage.getItem('USER_DATA');
-      const [accessToken, userId] = combinedData?.split(':') ?? [];
-      console.log(userId, '----userId------');
-      const checkingPendingOrders = await axios.post(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
-        {
-          order_status: 'pending',
-        },
-        {
-          headers: {
-            Authorization: `${accessToken}`,
-          },
-        },
-      );
+  
 
-      const newData = checkingPendingOrders.data.data.reverse();
-      if (newData.length > previousLengthRef.current) {
-        playPause();
-      }
-      previousLengthRef.current = newData.length;
-
-      setListOfRequests(newData);
-      setTimeout(() => {
-        ding.stop();
-      }, 2500);
-      return;
-    } catch (e) {
-      console.log('Got an error: ');
-      console.log(e);
-    }
-  };
-
-  const fetchOrders1 = async () => {
-    try {
-      const combinedData = await AsyncStorage.getItem('USER_DATA');
-      const [accessToken, userId] = combinedData?.split(':') ?? [];
-
-      // Fetch delivered orders
-      const deliveredOrdersResponse = axios.post(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
-        {
-          order_status: 'delivered',
-        },
-        {
-          headers: {
-            Authorization: `${accessToken}`,
-          },
-        },
-      );
-
-      // Fetch active orders
-      const activeOrdersResponse = axios.post(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
-        {},
-
-        {
-          headers: {
-            Authorization: `${accessToken}`,
-          },
-        },
-      );
-
-      const allPendingResponse = await axios.get(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
-      );
-
-      setAllpendingOrders(allPendingResponse.data.data);
-
-      // Await both API calls
-      const [deliveredOrders, activeOrders] = await Promise.all([
-        deliveredOrdersResponse,
-        activeOrdersResponse,
-      ]);
-
-      setDeliveriedOrders(deliveredOrders.data.data.reverse());
-      setAcceptedOrders(activeOrders.data.data.reverse());
-    } catch (e) {
-      console.error('Error fetching orders:', e);
-    }
-  };
+ 
 
   const onRefresh = async () => {
     setRefresh(true);
@@ -599,14 +550,15 @@ const NewHomeScreen = props => {
             Orders
           </Text>
           <View style={styles.earningOrderContainer}>
+          <TotalEarningOrderView
+              title="New Orders"
+              value={allPendingOrders.length}
+            />
             <TotalEarningOrderView
               title="Active Orders"
               value={`${accepteddOrders.length}`}
             />
-            <TotalEarningOrderView
-              title="Pending Orders"
-              value={allPendingOrders.length}
-            />
+           
           </View>
         </View>
         <View style={[styles.seperator, darkSeperator]}></View>
@@ -634,7 +586,7 @@ const NewHomeScreen = props => {
               tintColor={isDarkTheme ? '#3F444D' : '#FFF'}
               inactiveFont={isDarkTheme && '#FFFFFFBF'}
               activeFont={isDarkTheme ? '#FFF' : COLORS.light_primary_text}
-              segmentArray={['Me', 'On Going', 'Pending']}
+              segmentArray={['New Orders', 'On Going', ]}
               selectedIndex={insignSelectedIndex}
               onValueChange={index => {
                 // playPause();
@@ -645,13 +597,11 @@ const NewHomeScreen = props => {
         </View>
         <OrdersCard
           orderRequests={
-            insignSelectedIndex === 0
-              ? listOfRequests
+           insignSelectedIndex === 0
+            ? allPendingOrders
               : insignSelectedIndex === 1
               ? accepteddOrders
-              : insignSelectedIndex === 2
-              ? allPendingOrders
-              : []
+            : []
           }
           onOrderPress={item => handleOrderPress(item)}
         />
