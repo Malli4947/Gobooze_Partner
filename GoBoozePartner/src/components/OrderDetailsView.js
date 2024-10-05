@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View,Linking} from 'react-native';
+import {Image, StyleSheet, Text, View, Linking} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
@@ -22,7 +22,7 @@ const OrderDetailsView = ({
   expandStoreDetail,
   onPress,
   Onpresses,
-  store
+  store,
 }) => {
   console.log(
     '💕 ~ file: OrderDetailsView.js:24 ~ orderDetails:====================================================',
@@ -89,7 +89,7 @@ const OrderDetailsView = ({
               // Linking.openURL(`tel:${storeDetails.Phone}`);
             }}
           /> */}
-          <CallButton onPress={Onpresses}/>
+          <CallButton onPress={Onpresses} />
         </View>
       )}
 
@@ -114,14 +114,14 @@ const OrderDetailsView = ({
                 style={styles.img}
                 source={IMAGES.LOCATION}
               /> */}
-              <View>
+              <View style={{width: '100%'}}>
                 <Text style={[styles.addressText, darkTextStyle]}>
                   Address:
                 </Text>
 
                 <Text
-                  style={[styles.addressText, {width: '75%'}, darkTextStyle]}>
-                  {orderDetails.order.store.storeAddress}
+                  style={[styles.addressText, {width: '100%'}, darkTextStyle]}>
+                  {customerDetail.address}
                 </Text>
               </View>
             </View>

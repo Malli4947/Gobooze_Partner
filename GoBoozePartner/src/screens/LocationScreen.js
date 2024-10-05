@@ -70,14 +70,27 @@ const LocationScreen = () => {
   //---//---//--//--//--//--//--//--
   return (
     <SafeAreaView
-      style={[styles.light_container, isDarkTheme && styles.dark_container]}>
+      style={[
+        styles.light_container,
+        isDarkTheme && styles.dark_container,
+        {justifyContent: 'center', alignItems: 'center'},
+      ]}>
       <CustomStatusBar />
       <ImageBackground
         source={IMAGES.INTRO_DARK}
         resizeMode="contain"
         style={styles.backgroundImage}>
+        <View
+          style={{
+            flex: 1,
+          }}>
+          <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
+            We need the location permission to pin point current location for
+            easy booking.
+          </Text>
+        </View>
         <CustomButton
-          buttonText="Give Location Permission"
+          buttonText="Continue"
           disabled={false}
           handleClick={getOneTimeLocation}
           buttonStyle={[styles.button]}

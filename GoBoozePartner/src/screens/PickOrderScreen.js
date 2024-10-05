@@ -176,8 +176,11 @@ const PickOrderScreen = ({route}) => {
                   <OrderDetailsView
                     id={2}
                     image={IMAGES.SHOP}
-                    title={'Store Details'}
+                    title={'Customer Address'}
                     expandStoreDetail={expandStoreDetailsView}
+                    customerDetail={{
+                      address: `${OrderDetails.order.address.address},`,
+                    }}
                     orderDetails={OrderDetails}
                     onPress={() => {
                       setExpandStoreDetailsView(!expandStoreDetailsView);

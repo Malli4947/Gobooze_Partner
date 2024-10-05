@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Image,
   SafeAreaView,
+  TextInput,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -28,15 +29,40 @@ const OrderHistory = ({orderRequests}) => {
   const darkSep = isDarkTheme && {
     backgroundColor: COLORS.dark_theme_background,
   };
+  const [filteredOrderData, setFilteredOrderData] = useState([]);
   const insets = useSafeAreaInsets();
   const [orderData, setOrderData] = useState([]);
   const [showAllProducts, setShowAllProducts] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [orderId, setOrderId] = useState('');
 
   useEffect(() => {
     FetchOrderDetails();
   }, []);
+  useEffect(() => {
+    filterOrders();
+  }, [orderId, orderData]);
 
+  // const FetchOrderDetails = async () => {
+  //   const combinedData = await AsyncStorage.getItem('USER_DATA');
+  //   const [accessToken, userId] = combinedData?.split(':') ?? [];
+  //   try {
+  //     const fetchOrderDetails = await fetch(
+  //       `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-completed-orders/${userId}`,
+  //       {
+  //         headers: {
+  //           Authorization: `${accessToken}`,
+  //         },
+  //       },
+  //     );
+  //     const data = await fetchOrderDetails.json();
+  //     setOrderData(data?.data.reverse());
+  //   } catch (error) {
+  //     console.log(error, 'error');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const FetchOrderDetails = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
@@ -51,13 +77,23 @@ const OrderHistory = ({orderRequests}) => {
       );
       const data = await fetchOrderDetails.json();
       setOrderData(data?.data.reverse());
+      setFilteredOrderData(data?.data.reverse());
     } catch (error) {
       console.log(error, 'error');
     } finally {
       setLoading(false);
     }
   };
-
+  const filterOrders = () => {
+    if (orderId.trim() === '') {
+      setFilteredOrderData(orderData);
+    } else {
+      const filteredData = orderData.filter(item =>
+        item.order.sequence_number.includes(orderId.trim()),
+      );
+      setFilteredOrderData(filteredData);
+    }
+  };
   const formatDate = dateString => {
     const date = new Date(dateString);
     const options = {day: '2-digit', month: 'long', year: 'numeric'};
@@ -79,7 +115,7 @@ const OrderHistory = ({orderRequests}) => {
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
-      <View style={{marginTop: insets.top}}>
+      <View style={{marginTop: insets.top, marginTop: 0}}>
         {/* <NavBarWithBackButton title={'Order History'} /> */}
         <View style={styles.header}>
           <TouchableOpacity
@@ -108,9 +144,46 @@ const OrderHistory = ({orderRequests}) => {
             ]}>
             Order History
           </Text>
+          {/* <View style={styles.dateContainer}>
+            <Text   style={[
+              styles.headerText1,
+              isDarkTheme && {
+                backgroundColor: '#23272F',
+                color: COLORS.light_con,
+              },
+            ]}>Filter By:</Text>
+    <TextInput 
+      style={[
+        styles.dateInput,
+        isDarkTheme && {
+          backgroundColor: '#23272F',
+          color: COLORS.light_con,
+        },
+      ]}
+      placeholder="OrderId"
+      placeholderTextColor={isDarkTheme ? COLORS.light_con : '#999'}
+      onChangeText={(text) => setOrderId(text)}
+      value={orderId}
+    />
+   
+  </View> */}
         </View>
-
-        {/* <View style={[styles.seperator, darkSep]} /> */}
+      </View>
+      <View style={styles.dateContainer}>
+        <Text style={[styles.headerText1]}>Filter By:</Text>
+        <TextInput
+          style={[
+            styles.dateInput,
+            isDarkTheme && {
+              backgroundColor: '#23272F',
+              color: COLORS.light_con,
+            },
+          ]}
+          placeholder="OrderId"
+          placeholderTextColor={isDarkTheme ? COLORS.light_con : '#999'}
+          onChangeText={text => setOrderId(text)}
+          value={orderId}
+        />
       </View>
       {loading ? (
         <View style={styles.loaderContainer}>
@@ -121,7 +194,7 @@ const OrderHistory = ({orderRequests}) => {
             }
           />
         </View>
-      ) : orderData.length === 0 ? (
+      ) : filteredOrderData.length === 0 ? (
         <View style={{alignItems: 'center'}}>
           <Histroy style={{marginTop: rHeight(200)}} />
           <Text
@@ -140,7 +213,7 @@ const OrderHistory = ({orderRequests}) => {
         </View>
       ) : (
         <ScrollView>
-          {orderData.map((item, index) => (
+          {filteredOrderData.map((item, index) => (
             <View
               key={index}
               style={[styles.lcardCon, isDarkTheme && styles.dcardCon]}>
@@ -333,6 +406,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffff',
   },
+  dateContainer: {
+    flexDirection: 'row',
+
+    marginTop: rHeight(10),
+    alignItems: 'center',
+    marginLeft: rWidth(185),
+  },
+  dateInput: {
+    borderWidth: 1,
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    color: '#000',
+    borderColor: COLORS.ligth_grey,
+    borderRadius: 16,
+    paddingHorizontal: rHeight(8),
+    paddingVertical: rWidth(5),
+    marginLeft: rWidth(5),
+    width: rWidth(120),
+    fontSize: rWidth(12),
+  },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -506,9 +598,15 @@ const styles = StyleSheet.create({
     height: rHeight(30),
   },
   headerText: {
-    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontFamily: GRAPHIK_FONT.BOLD,
     color: '#000',
     paddingLeft: rWidth(16),
     fontSize: rWidth(14),
+  },
+  headerText1: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    color: COLORS.primary_pink,
+    paddingLeft: rWidth(1),
+    fontSize: rWidth(13),
   },
 });

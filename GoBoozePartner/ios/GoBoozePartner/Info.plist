@@ -37,15 +37,15 @@
 	</dict>
 	
 	<key>NSLocationUsageDescription</key>
-	<string>Allow Location permission to track order delivery</string>
+	<string>Allow location access to track the delivery process</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow Location permission to track order delivery</string>
+	<string>Allow location access to track the delivery process</string>
 	<key>Allow Location permission to track order delivery</key>
 	<string>Allow location permission</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow photo Library permission to save the order photos</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow Location permission to track order delivery</string>
+	<string>Allow location access to track the delivery process</string>
 	<key>NSCameraUsageDescription</key>
 <string>Access camera</string>
 	<!-- <key>NSMicrophoneUsageDescription</key>

@@ -1,17 +1,17 @@
 import {View, StyleSheet, Image, Text} from 'react-native';
 import React from 'react';
 import {useColorScheme} from './ColorSchemeContext';
-import { GRAPHIK_FONT } from '../constants/Constant';
-import { rHeight } from '../constants/PixelSize';
+import {GRAPHIK_FONT} from '../constants/Constant';
+import {rHeight} from '../constants/PixelSize';
 import COLORS from '../constants/Colors';
 
-const DetailsView = ({id, image, title, value}) => {
+const DetailsView = ({id, image, title, value, style}) => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkTextStyle = isDarkTheme && {color: COLORS.dark_primary_text};
 
   return (
-    <View style={styles.orderDetailsContainer}>
+    <View style={[styles.orderDetailsContainer]}>
       <Image
         tintColor={isDarkTheme && COLORS.dark_primary_text}
         style={styles.orderImg}
@@ -27,7 +27,7 @@ const DetailsView = ({id, image, title, value}) => {
         </Text>
       )}
       {id != 0 && (
-        <Text style={[styles.orderText, darkTextStyle]}>{value}</Text>
+        <Text style={[styles.orderText, darkTextStyle, style]}>{value}</Text>
       )}
     </View>
   );

@@ -114,15 +114,27 @@ const ReachPickupScreen = ({route}) => {
       );
     } catch (e) {}
   };
+
   const handleOpenNow = () => {
     Linking.openURL(
-      `https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${storeDetails?.location?.coordinates?.[0]},${storeDetails?.location?.coordinates?.[1]}&travelmode=driving`,
+      `https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${storeDetails?.location?.coordinates?.[1]},${storeDetails?.location?.coordinates?.[0]}&travelmode=driving`,
     ).catch(err => console.error('An error occurred', err));
   };
   const storeLocation = {
-    latitude: storeDetails?.location?.coordinates?.[0],
-    longitude: storeDetails?.location?.coordinates?.[1],
+    longitude: storeDetails?.location?.coordinates?.[0],
+    latitude: storeDetails?.location?.coordinates?.[1],
   };
+
+  // const handleOpenNow = () => {
+  //   Linking.openURL(
+  //     `https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${storeDetails?.location?.coordinates?.[0]},${storeDetails?.location?.coordinates?.[1]}&travelmode=driving`,
+  //   ).catch(err => console.error('An error occurred', err));
+  // };
+  // const storeLocation = {
+  //   latitude: storeDetails?.location?.coordinates?.[0],
+  //   longitude: storeDetails?.location?.coordinates?.[1],
+  // };
+
   console.log(storeLocation, 'storeLocation=====================');
   return (
     <SafeAreaView

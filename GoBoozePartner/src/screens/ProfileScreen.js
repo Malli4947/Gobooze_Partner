@@ -28,6 +28,7 @@ import OrderHistroy from './OrderHistroy';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BackHandler} from 'react-native';
+import Delete from '../assets/Delete.svg';
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
@@ -89,6 +90,22 @@ const ProfileScreen = () => {
       },
     ]);
   };
+  const deleteAccount = () => {
+    Alert.alert(
+      'Delete Account',
+      'Are you sure you want to delete the account?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => LogOut(),
+        },
+      ],
+    );
+  };
 
   const LogOut = async () => {
     try {
@@ -102,49 +119,78 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={[
-            styles.menuContainer,
-            isDarkTheme && {
-              backgroundColor: '#23272F',
-              borderColor: COLORS.dark_disabled_background,
-            },
-          ]}
-          onPress={() => navigation.goBack()}>
-          <Image
-            tintColor={isDarkTheme && '#FFF'}
-            resizeMode="contain"
-            source={IMAGES.BACK}
-            style={styles.menuImg}
-          />
-        </TouchableOpacity>
-        <Text
-          style={[
-            styles.headerText,
-            isDarkTheme && {
-              backgroundColor: '#23272F',
-              color: COLORS.light_con,
-            },
-          ]}>
-          Profile Info
-        </Text>
-      </View>
-      <View style={{marginTop: insets.top}}>
-        <View
-          style={[
-            {
-              backgroundColor: '#ffff',
-              padding: 16,
-              margin: 0,
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderBottomColor: COLORS.light_disabled_background,
-              borderBottomWidth: 1,
-            },
-            isDarkTheme && styles.dark_container,
-          ]}>
-          {profileData ? (
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          style={{
+            flex: 1,
+            alignSelf: 'center',
+          }}
+          color={
+            isDarkTheme ? COLORS.dark_primary_text : COLORS.light_primary_text
+          }
+        />
+      ) : (
+        <>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={[
+                styles.menuContainer,
+                isDarkTheme && {
+                  backgroundColor: '#23272F',
+                  borderColor: COLORS.dark_disabled_background,
+                },
+              ]}
+              onPress={() => navigation.goBack()}>
+              <Image
+                tintColor={isDarkTheme && '#FFF'}
+                resizeMode="contain"
+                source={IMAGES.BACK}
+                style={styles.menuImg}
+              />
+            </TouchableOpacity>
+            <Text
+              style={[
+                styles.headerText,
+                isDarkTheme && {
+                  backgroundColor: '#23272F',
+                  color: COLORS.light_con,
+                },
+              ]}>
+              Profile Info
+            </Text>
+          </View>
+          <View style={{marginTop: insets.top, marginTop: 0}}>
+            <View
+              style={[
+                {
+                  backgroundColor: '#ffff',
+                  padding: 16,
+                  //backgroundColor: 'pink',
+                  margin: 0,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderBottomColor: COLORS.light_disabled_background,
+                  borderBottomWidth: 1,
+                },
+                isDarkTheme && styles.dark_container,
+              ]}>
+              {profileData?.data && profileData.data.image ? (
+                <Image
+                  resizeMode="contain"
+                  source={{
+                    uri: `https://gobooze-bucket.s3.eu-north-1.amazonaws.com/goboozestore/${profileData.data.image}`,
+                  }}
+                  style={{
+                    width: rWidth(50),
+                    height: rHeight(60),
+                    borderRadius: rWidth(30),
+                  }}
+                />
+              ) : (
+                <Avatar width={70} height={70} />
+              )}
+              {/* {profileData ? (
             <Image
               resizeMode="contain"
               source={{
@@ -158,193 +204,223 @@ const ProfileScreen = () => {
             />
           ) : (
             <Avatar width={50} height={60} />
-          )}
+          )} */}
 
-          <View style={{marginLeft: rHeight(10)}}>
-            {loading ? (
-              <ActivityIndicator
-                size="large"
-                color={
-                  isDarkTheme
-                    ? COLORS.dark_primary_text
-                    : COLORS.light_primary_text
-                }
-              />
-            ) : (
-              <>
-                {profileData ? (
-                  <Text
-                    style={[
-                      {
-                        color: '#000',
-                        fontSize: rWidth(14),
-                        fontFamily: GRAPHIK_FONT.REGULAR,
-                        paddingLeft: rWidth(16),
-                      },
-                      isDarkTheme && styles.dark_text,
-                    ]}>
-                    {profileData.data.full_name}
-                  </Text>
+              <View style={{marginLeft: rHeight(10)}}>
+                {loading ? (
+                  <ActivityIndicator
+                    size="large"
+                    color={
+                      isDarkTheme
+                        ? COLORS.dark_primary_text
+                        : COLORS.light_primary_text
+                    }
+                  />
                 ) : (
-                  <Text style={{color: '#000'}}>Loading...</Text>
+                  <>
+                    {profileData ? (
+                      <Text
+                        style={[
+                          {
+                            color: '#000',
+                            fontSize: rWidth(14),
+                            fontFamily: GRAPHIK_FONT.REGULAR,
+                            paddingLeft: rWidth(16),
+                          },
+                          isDarkTheme && styles.dark_text,
+                        ]}>
+                        {profileData?.data?.full_name}
+                      </Text>
+                    ) : (
+                      <Text style={{color: '#000'}}>Loading...</Text>
+                    )}
+                    {profileData ? (
+                      <Text
+                        style={[
+                          {
+                            color: '#000',
+                            fontSize: rWidth(14),
+                            fontFamily: GRAPHIK_FONT.REGULAR,
+                            marginTop: rHeight(5),
+                            paddingLeft: rWidth(16),
+                          },
+                          isDarkTheme && styles.dark_text,
+                        ]}>
+                        {profileData.data.email}
+                      </Text>
+                    ) : (
+                      <Text style={{color: '#000'}}>Loading@gmail.com</Text>
+                    )}
+                    {profileData ? (
+                      <Text
+                        style={[
+                          {
+                            color: '#000',
+                            fontSize: rWidth(14),
+                            fontFamily: GRAPHIK_FONT.REGULAR,
+                            marginTop: rHeight(5),
+                            paddingLeft: rWidth(16),
+                          },
+                          isDarkTheme && styles.dark_text,
+                        ]}>
+                        {profileData.data.phone}
+                      </Text>
+                    ) : (
+                      <Text style={{color: '#000'}}>000000000</Text>
+                    )}
+                  </>
                 )}
-                {profileData ? (
-                  <Text
-                    style={[
-                      {
-                        color: '#000',
-                        fontSize: rWidth(14),
-                        fontFamily: GRAPHIK_FONT.REGULAR,
-                        marginTop: rHeight(5),
-                        paddingLeft: rWidth(16),
-                      },
-                      isDarkTheme && styles.dark_text,
-                    ]}>
-                    {profileData.data.email}
-                  </Text>
-                ) : (
-                  <Text style={{color: '#000'}}>Loading@gmail.com</Text>
-                )}
-                {profileData ? (
-                  <Text
-                    style={[
-                      {
-                        color: '#000',
-                        fontSize: rWidth(14),
-                        fontFamily: GRAPHIK_FONT.REGULAR,
-                        marginTop: rHeight(5),
-                        paddingLeft: rWidth(16),
-                      },
-                      isDarkTheme && styles.dark_text,
-                    ]}>
-                    {profileData.data.phone}
-                  </Text>
-                ) : (
-                  <Text style={{color: '#000'}}>000000000</Text>
-                )}
-              </>
-            )}
+              </View>
+            </View>
           </View>
-        </View>
-      </View>
-      <View style={{marginTop: rHeight(5)}}>
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 16,
-            borderBottomColor: COLORS.light_disabled_background,
-            borderBottomWidth: 1,
-          }}
-          onPress={() => {
-            navigation.navigate('OrderHistroy');
-          }}>
-          <Clock
-            style={{
-              marginTop: rHeight(5),
-            }}
-          />
-          <Text
-            style={[
-              {
-                color: '#000',
-                fontSize: rWidth(14),
-                fontFamily: GRAPHIK_FONT.REGULAR,
-                marginLeft: rWidth(10),
-              },
-              darkTextStyle,
-            ]}>
-            Order History
-          </Text>
-          <Arrow
-            style={{position: 'absolute', right: 16, marginTop: rHeight(6)}}
-          />
-        </Pressable>
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 16,
-            borderBottomColor: COLORS.light_disabled_background,
-            borderBottomWidth: 1,
-          }}
-          onPress={() => {
-            navigation.navigate('Instructions');
-          }}>
-          <Task style={{marginTop: rHeight(5)}} />
-          <Text
-            style={[
-              {
-                color: '#000',
-                fontSize: rWidth(14),
-                fontFamily: GRAPHIK_FONT.REGULAR,
-                marginLeft: rWidth(10),
-              },
-              darkTextStyle,
-            ]}>
-            Partner Instructions
-          </Text>
-          <Arrow
-            style={{position: 'absolute', right: 16, marginTop: rHeight(6)}}
-          />
-        </Pressable>
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 16,
-            borderBottomColor: COLORS.light_disabled_background,
-            borderBottomWidth: 1,
-          }}
-          onPress={() => {
-            navigation.navigate('Support');
-          }}>
-          <MessageBox style={{marginTop: rHeight(5)}} />
-          <Text
-            style={[
-              {
-                color: '#000',
-                fontSize: rWidth(14),
-                fontFamily: GRAPHIK_FONT.REGULAR,
-                marginLeft: rWidth(10),
-              },
-              darkTextStyle,
-            ]}>
-            Support/Help
-          </Text>
-          <Arrow
-            style={{position: 'absolute', right: 16, marginTop: rHeight(6)}}
-          />
-        </Pressable>
-        <Pressable
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 16,
-            borderBottomColor: COLORS.light_disabled_background,
-            borderBottomWidth: 1,
-          }}
-          onPress={() => {
-            confirmLogout();
-          }}>
-          <Logout style={{marginTop: rHeight(5), marginLeft: rWidth(5)}} />
-          <Text
-            style={[
-              {
-                color: '#000',
-                fontSize: rWidth(14),
-                fontFamily: GRAPHIK_FONT.REGULAR,
-                marginLeft: rWidth(10),
-              },
-              darkTextStyle,
-            ]}>
-            LogOut
-          </Text>
-          <Arrow
-            style={{position: 'absolute', right: 16, marginTop: rHeight(6)}}
-          />
-        </Pressable>
-      </View>
+          <View style={{marginTop: rHeight(5)}}>
+            <Pressable
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 16,
+                borderBottomColor: COLORS.light_disabled_background,
+                borderBottomWidth: 1,
+              }}
+              onPress={() => {
+                navigation.navigate('OrderHistroy');
+              }}>
+              <Clock
+                style={{
+                  marginTop: rHeight(5),
+                }}
+              />
+              <Text
+                style={[
+                  {
+                    color: '#000',
+                    fontSize: rWidth(14),
+                    fontFamily: GRAPHIK_FONT.REGULAR,
+                    marginLeft: rWidth(10),
+                  },
+                  darkTextStyle,
+                ]}>
+                Order History
+              </Text>
+              <Arrow
+                style={{position: 'absolute', right: 16, marginTop: rHeight(6)}}
+              />
+            </Pressable>
+            <Pressable
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 16,
+                borderBottomColor: COLORS.light_disabled_background,
+                borderBottomWidth: 1,
+              }}
+              onPress={() => {
+                navigation.navigate('Instructions');
+              }}>
+              <Task style={{marginTop: rHeight(5)}} />
+              <Text
+                style={[
+                  {
+                    color: '#000',
+                    fontSize: rWidth(14),
+                    fontFamily: GRAPHIK_FONT.REGULAR,
+                    marginLeft: rWidth(10),
+                  },
+                  darkTextStyle,
+                ]}>
+                Partner Instructions
+              </Text>
+              <Arrow
+                style={{position: 'absolute', right: 16, marginTop: rHeight(6)}}
+              />
+            </Pressable>
+            <Pressable
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 16,
+                borderBottomColor: COLORS.light_disabled_background,
+                borderBottomWidth: 1,
+              }}
+              onPress={() => {
+                navigation.navigate('Support');
+              }}>
+              <MessageBox style={{marginTop: rHeight(5)}} />
+              <Text
+                style={[
+                  {
+                    color: '#000',
+                    fontSize: rWidth(14),
+                    fontFamily: GRAPHIK_FONT.REGULAR,
+                    marginLeft: rWidth(10),
+                  },
+                  darkTextStyle,
+                ]}>
+                Support/Help
+              </Text>
+              <Arrow
+                style={{position: 'absolute', right: 16, marginTop: rHeight(6)}}
+              />
+            </Pressable>
+            <Pressable
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 16,
+                borderBottomColor: COLORS.light_disabled_background,
+                borderBottomWidth: 1,
+              }}
+              onPress={() => {
+                confirmLogout();
+              }}>
+              <Logout style={{marginTop: rHeight(5), marginLeft: rWidth(5)}} />
+              <Text
+                style={[
+                  {
+                    color: '#000',
+                    fontSize: rWidth(14),
+                    fontFamily: GRAPHIK_FONT.REGULAR,
+                    marginLeft: rWidth(10),
+                  },
+                  darkTextStyle,
+                ]}>
+                LogOut
+              </Text>
+              <Arrow
+                style={{position: 'absolute', right: 16, marginTop: rHeight(6)}}
+              />
+            </Pressable>
+            <Pressable
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 16,
+                borderBottomColor: COLORS.light_disabled_background,
+                borderBottomWidth: 1,
+              }}
+              onPress={() => {
+                deleteAccount();
+              }}>
+              <Delete style={{marginTop: rHeight(5), marginLeft: rWidth(5)}} />
+              <Text
+                style={[
+                  {
+                    color: '#000',
+                    fontSize: rWidth(14),
+                    fontFamily: GRAPHIK_FONT.REGULAR,
+                    marginLeft: rWidth(10),
+                  },
+                  darkTextStyle,
+                ]}>
+                Delete Account
+              </Text>
+              <Arrow
+                style={{position: 'absolute', right: 16, marginTop: rHeight(6)}}
+              />
+            </Pressable>
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };

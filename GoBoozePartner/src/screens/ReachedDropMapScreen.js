@@ -286,10 +286,11 @@ const ReachedDropMapScreen = ({route}) => {
             value={OrderDetails.order.sequence_number}
           />
           <DetailsView
+            style={{width: '60%'}}
             id="1"
             image={IMAGES.CUSTOMER}
-            title={'Customer:'}
-            value={`${OrderDetails.order.address.first_name} ${OrderDetails.order.address.last_name}`}
+            title={'Customer Details:'}
+            value={`${OrderDetails.order.address.first_name} ${OrderDetails.order.address.last_name}, ${OrderDetails.order.address.address}`}
           />
         </View>
 

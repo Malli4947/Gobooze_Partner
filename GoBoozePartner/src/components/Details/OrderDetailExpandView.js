@@ -16,15 +16,12 @@ const OrderDetailExpandView = ({orderDetails}) => {
   const darkTextStyle = isDarkTheme && {color: '#FFFFFFBF'};
 
   const orderItem = ({item, index}) => {
-  
     return (
       <View style={{overflow: 'hidden'}}>
-       <View style={{flexDirection:'row',alignItems:'center',padding:10}}>
-          <Text
-            style={[
-              styles.quantity,
-              darkTextStyle,
-            ]}>{item.orderQuantity}x</Text>
+        <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
+          <Text style={[styles.quantity, darkTextStyle]}>
+            {item.orderQuantity}x
+          </Text>
 
           <FastImage
             source={{
@@ -33,17 +30,21 @@ const OrderDetailExpandView = ({orderDetails}) => {
             resizeMode="contain"
             style={styles.whiskeyImg}
           />
-          <View style={{alignSelf: 'flex-start'}}>
-            <Text style={[styles.nameTxt, darkTextStyle]}>
+          <View
+            style={{
+              alignSelf: 'flex-start',
+              width: '70%',
+            }}>
+            <Text style={[styles.nameTxt, darkTextStyle, {width: '100%'}]}>
               {item.quantity}-Pack
             </Text>
             <Text
               numberOfLines={2}
-              style={[styles.descriptionTxt, darkTextStyle]}>
+              style={[styles.descriptionTxt, darkTextStyle, {width: '100%'}]}>
               {item.variantName}
             </Text>
           </View>
-          </View>
+        </View>
         <View
           style={[
             styles.seperator,
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
     width: '15%',
     height: rHeight(75),
     // backgroundColor: 'lightblue'
-    marginLeft:rWidth(20)
+    marginLeft: rWidth(20),
   },
   itemText: {
     fontFamily: GRAPHIK_FONT.REGULAR,
@@ -103,16 +104,16 @@ const styles = StyleSheet.create({
     fontSize: rHeight(12),
     color: '#1D2433CC',
     paddingTop: rHeight(5),
-    paddingLeft:rWidth(30)
+    paddingLeft: rWidth(30),
   },
   descriptionTxt: {
     fontFamily: GRAPHIK_FONT.SEMIBOLD,
     fontSize: rHeight(14),
     lineHeight: 22,
-    width: '45%',
+    width: '46%',
     color: COLORS.light_primary_text,
-    paddingTop:rHeight(5),
-    paddingLeft:rWidth(30)
+    paddingTop: rHeight(5),
+    paddingLeft: rWidth(30),
   },
   seperator: {
     width: '100%',
@@ -124,6 +125,6 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rHeight(20),
     color: '#000',
-   marginLeft:rWidth(16)
+    marginLeft: rWidth(16),
   },
 });

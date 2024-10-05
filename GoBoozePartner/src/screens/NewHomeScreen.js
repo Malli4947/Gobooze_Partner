@@ -62,7 +62,7 @@ const NewHomeScreen = props => {
   const colorScheme = useColorScheme();
   const dispatch = useDispatch();
   const [insignSelectedIndex, setInsightSelectedIndex] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [listOfRequests, setListOfRequests] = useState([]);
   const [deliveredOrders, setDeliveriedOrders] = useState([]);
   const [accepteddOrders, setAcceptedOrders] = useState([]);
@@ -72,6 +72,7 @@ const NewHomeScreen = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [render, rerender] = useState(false);
   const previousLengthRef = useRef(0);
+  const [currentCoordinates, setCurrentCoordinates] = useState(null);
   const isFocus = useIsFocused();
   const socket = io('https://devapigobooze.codefactstech.com');
 
@@ -80,6 +81,213 @@ const NewHomeScreen = props => {
     backgroundColor: COLORS.dark_theme_background,
   };
 
+  //malika code starting 15/08
+  useEffect(() => {
+    console.log('This is focus executing...');
+    onRefresh();
+  }, [isFocus]);
+  const checkLocationEnabled = async () => {
+    const locationEnabled = await checkLocationPermission(); // This function is already implemented in your code
+    return locationEnabled;
+  };
+
+  //Malike Code ending
+
+  //Malika new changes -> 17-08
+  const checkIsActiveStatus = async () => {
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+
+      const fetchDetails = await fetch(
+        `https://devapigobooze.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+      const data = await fetchDetails.json();
+
+      return data?.data?.is_active ?? false;
+    } catch (error) {
+      return false; // Return false if there's an error
+    }
+  };
+  const getLatAndLong = async () => {
+    const isActive = await checkIsActiveStatus();
+    if (!isActive) return; // Do not proceed if user is inactive
+
+    try {
+      Geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const long = position.coords.longitude;
+
+          if (lat && long) {
+            setCurrentCoordinates({lat, long});
+            postDriverLocation(lat, long);
+            dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
+            setModalVisible(false);
+          }
+        },
+        error => {
+          setModalVisible(true);
+          setCurrentCoordinates(null);
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          distanceFilter: 1,
+          interval: 1000,
+          fastestInterval: 2000,
+        },
+      );
+    } catch (error) {
+      setModalVisible(true);
+    }
+  };
+  const fecthPendingOrders = async () => {
+    const isActive = await checkIsActiveStatus();
+    if (!isActive) return;
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+
+      const checkingPendingOrders = await axios.post(
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
+        {
+          order_status: 'pending',
+        },
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+      console.log(checkingPendingOrders, 'checkingPendingOrders=======');
+      const newData = checkingPendingOrders.data.data.reverse();
+      if (newData.length > previousLengthRef.current) {
+        playPause();
+      }
+      previousLengthRef.current = newData.length;
+
+      setListOfRequests(newData);
+      setTimeout(() => {
+        ding.stop();
+      }, 2500);
+    } catch (e) {
+      // Handle error
+    }
+  };
+
+  const fetchOrders = async () => {
+    const isActive = await checkIsActiveStatus();
+    if (!isActive) return;
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+      const deliveredOrdersResponse = axios.post(
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
+        {
+          order_status: 'delivered',
+        },
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+      console.log(deliveredOrdersResponse, 'deliveredOrdersResponse=======');
+      const activeOrdersResponse = axios.post(
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+      console.log(activeOrdersResponse, 'activeOrdersResponse=======');
+      const allPendingResponse = await axios.get(
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
+      );
+      console.log(allPendingResponse, 'allPendingResponse=======');
+      setAllpendingOrders(allPendingResponse.data.data.reverse());
+
+      const [deliveredOrders, activeOrders] = await Promise.all([
+        deliveredOrdersResponse,
+        activeOrdersResponse,
+      ]);
+
+      setDeliveriedOrders(deliveredOrders.data.data.reverse());
+      setAcceptedOrders(activeOrders.data.data.reverse());
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+    }
+  };
+  const handleOrderPress = async item => {
+    try {
+      const locationEnabled = await checkLocationEnabled();
+      if (!locationEnabled) {
+        Alert.alert(
+          'Location Services Disabled',
+          'Please enable location services to proceed.',
+          [{text: 'OK'}],
+        );
+        return;
+      }
+      if (!currentCoordinates) {
+        Alert.alert(
+          'Unable to Retrieve Location',
+          'Please ensure your location services are enabled and try again.',
+          [{text: 'OK'}],
+        );
+        return;
+      }
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      const [accessToken, userId] = combinedData?.split(':') ?? [];
+
+      const fetchDetails = await fetch(
+        `https://devapigobooze.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+      const data = await fetchDetails.json();
+
+      // Check if the user is offline
+      if (data.data.is_active === false) {
+        Alert.alert(
+          'Alert: You are Currently Offline',
+          'To accept new orders, Please go Online.',
+          [{text: 'OK'}],
+        );
+        return; // Stop further execution if the user is offline
+      }
+
+      // Proceed with navigation based on the insignSelectedIndex
+      if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
+        setModaldata(item);
+        setShowNewOrderModal(true);
+      } else if (insignSelectedIndex === 1) {
+        const {order_status} = item.order;
+        if (order_status === 'accepted') {
+          navigation.navigate('ReachPickup', {orderDetails: item});
+        } else if (order_status === 'reached-pickup-location') {
+          navigation.navigate('OrderPick', {orderDetails: item});
+        } else if (order_status === 'on-the-way') {
+          navigation.navigate('ReachMapDrop', {orderDetails: item});
+        } else if (order_status === 'ready-for-delivery') {
+          navigation.navigate('CollectMoney', {orderDetails: item});
+        }
+      }
+    } catch (error) {}
+  };
+  //Malika New changes ends
   useEffect(() => {
     const backAction = () => {
       BackHandler.exitApp();
@@ -162,7 +370,7 @@ const NewHomeScreen = props => {
       console.log(res);
 
       rerender(!render);
-      if (res == true) {
+      if (res == true || res == 'granted') {
         getLatAndLong();
         const interval = setInterval(() => {
           getLatAndLong();
@@ -184,18 +392,21 @@ const NewHomeScreen = props => {
     getData();
   }, []);
 
-  const getLatAndLong = async () => {
+  const getLatAndLong1 = async () => {
     Geolocation.watchPosition(
       position => {
         const lat = position.coords.latitude;
         const long = position.coords.longitude;
-
+        console.log('These are the lat and long');
+        console.log(position);
         if (lat && long) {
+          setCurrentCoordinates({lat, long});
           postDriverLocation(lat, long);
           dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
         }
       },
       error => {
+        setCurrentCoordinates(null);
         console.log(error, 'error--');
       },
       {
@@ -241,7 +452,7 @@ const NewHomeScreen = props => {
     }
   };
 
-  const fecthPendingOrders = async () => {
+  const fecthPendingOrders1 = async () => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
@@ -275,7 +486,7 @@ const NewHomeScreen = props => {
     }
   };
 
-  const fetchOrders = async () => {
+  const fetchOrders1 = async () => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
@@ -330,7 +541,7 @@ const NewHomeScreen = props => {
     fecthPendingOrders();
     setRefresh(false);
   };
-  const handleOrderPress = item => {
+  const handleOrderPress2 = item => {
     if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
       setModaldata(item);
       setShowNewOrderModal(true);
@@ -364,9 +575,9 @@ const NewHomeScreen = props => {
           setShowNewOrderModal(false);
         }}
       />
-      <CustomStatusBar
+      {/* <CustomStatusBar
         backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
-      />
+      /> */}
       {/* marginTop: insets.top */}
       <View style={{}}>
         <OrderNavigationBar />
