@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {LogBox} from 'react-native';
 // import SplashScreen from 'react-native-splash-screen';
 import {ColorSchemeProvider} from './src/components/ColorSchemeContext';
@@ -11,11 +11,169 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
 import {err} from 'react-native-svg';
 import axios from 'axios';
+import messaging from '@react-native-firebase/messaging';
+import DeviceInfo from 'react-native-device-info';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  request,
+  PERMISSIONS,
+  RESULTS,
+  openSettings,
+  check,
+} from 'react-native-permissions';
+import NotificationController from './src/screens/NotificationController';
 
 LogBox.ignoreAllLogs();
 const store = configureStore();
 
 function App() {
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      if (Platform.OS === 'ios') {
+        enableScreens(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    if (Platform.OS === 'android') {
+      timerRef.current = setTimeout(() => {
+        permissionRequest();
+      }, 1000);
+    } else {
+      getFirebaseToken();
+    }
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log('remoteMessage', remoteMessage);
+    });
+    return () => {
+      unsubscribe();
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  const getFirebaseToken = async () => {
+    console.log('Executing getFirebasetoken: ');
+    try {
+      await messaging().registerDeviceForRemoteMessages();
+      messaging()
+        .hasPermission()
+        .then(enabled => {
+          if (enabled) {
+            getToken();
+          } else {
+            requestPermissionToken();
+          }
+        })
+        .catch(error => {
+          console.log('error checking permisions ' + error);
+        });
+    } catch (error) {
+      console.log('error getting token ' + error);
+    }
+  };
+
+  const requestPermissionToken = () => {
+    messaging()
+      .requestPermission()
+      .then(() => {
+        getToken();
+      })
+      .catch(error => {
+        console.log('permission rejected ' + error);
+      });
+  };
+
+  const getToken = () => {
+    messaging()
+      .getToken()
+      .then(async token => {
+        console.log('push token ' + token);
+        await AsyncStorage.setItem('token', token);
+      })
+      .catch(error => {
+        console.log('error getting push token ' + error);
+      });
+  };
+  const permissionRequest = async () => {
+    console.log('Executing permission request function: ');
+    let systemVersion = DeviceInfo.getSystemVersion();
+    console.log('This is the SystemVersion: ' + systemVersion);
+    if (systemVersion > 12) {
+      console.log('This is the systemversion: ' + systemVersion);
+      check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+        .then(result => {
+          switch (result) {
+            case RESULTS.UNAVAILABLE:
+              notificationPermission();
+              break;
+            case RESULTS.DENIED:
+              notificationPermission();
+              break;
+            case RESULTS.LIMITED:
+              notificationPermission();
+              break;
+            case RESULTS.GRANTED:
+              getFirebaseToken();
+              // console.log(CONSTANTS.PERMISSION_MESSGAE.GRANTED_PERMISSION);
+              break;
+            case RESULTS.BLOCKED:
+              notificationPermission();
+              break;
+          }
+        })
+        .catch(error => {
+          // …
+          console.log('Got an error: ');
+          console.log(error);
+        });
+    } else {
+      console.log('getting into else block');
+      getFirebaseToken();
+    }
+  };
+
+  const notificationPermission = async () => {
+    request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(result => {
+      // switch (result) {
+      //   case RESULTS.UNAVAILABLE:
+      //     openSettings().catch(() =>
+      //       console.warn(CONSTANTS.PERMISSION_MESSGAE.CANNOT_OPEN),
+      //     );
+      //     console.log(CONSTANTS.PERMISSION_MESSGAE.UNIAVAILABLE_PERMISSION);
+      //     break;
+      //   case RESULTS.DENIED:
+      //     openSettings().catch(() =>
+      //       console.warn(CONSTANTS.PERMISSION_MESSGAE.CANNOT_OPEN),
+      //     );
+      //     console.log(CONSTANTS.PERMISSION_MESSGAE.DENIED_PERMISSION);
+      //     break;
+      //   case RESULTS.LIMITED:
+      //     openSettings().catch(() =>
+      //       console.warn(CONSTANTS.PERMISSION_MESSGAE.CANNOT_OPEN),
+      //     );
+      //     console.log(CONSTANTS.PERMISSION_MESSGAE.LIMITED_PERMISSION);
+      //     break;
+      //   case RESULTS.GRANTED:
+      //     getFirebaseToken();
+      //     console.log(CONSTANTS.PERMISSION_MESSGAE.GRANTED_PERMISSION);
+      //     break;
+      //   case RESULTS.BLOCKED:
+      //     // Toast.show(CONSTANTS.PERMISSION_MESSGAE.PERMISSION_NOTITIFCATION_MESSAGE);
+      //     openSettings().catch(() =>
+      //       console.warn(CONSTANTS.PERMISSION_MESSGAE.CANNOT_OPEN),
+      //     );
+      //     console.log(CONSTANTS.PERMISSION_MESSGAE.BLOCKED_PERMISSION);
+      //     break;
+      // }
+    });
+  };
+
   useEffect(() => {
     // const interval = setInterval(() => {
     //   // getLatAndLong();
@@ -84,6 +242,7 @@ function App() {
     <GestureHandlerRootView style={{flex: 1}}>
       <ColorSchemeProvider>
         <Provider store={store}>
+          <NotificationController />
           <AppNavigator />
         </Provider>
       </ColorSchemeProvider>

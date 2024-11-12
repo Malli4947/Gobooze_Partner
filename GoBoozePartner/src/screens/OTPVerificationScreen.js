@@ -65,6 +65,15 @@ const OTPVerificationScreen = props => {
         phone: `+61${phoneNumber}`,
         otp: inputOtp,
       };
+      console.log('This is the jsonBody: ');
+      const token = await AsyncStorage.getItem('token');
+      if (token != '' && token) {
+        jsonBody.fbToken = {key: token, enabled: true};
+      } else {
+        jsonBody.fbToken = {key: 'token', enabled: true};
+      }
+
+      console.log(jsonBody);
       props.appActions.verifyOtp(jsonBody, response => {
         setShowLoader(false);
         if (response.status == 200) {
@@ -74,7 +83,8 @@ const OTPVerificationScreen = props => {
             props.navigation.navigate('Location');
           }
         } else {
-          Alert.alert('Invalid OTP', response.error);
+          //Alert.alert('Invalid OTP', response.error);
+          console.log(response.error);
         }
       });
     }

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Allow Location permission to track order delivery</key>
+	<string>Allow location permission</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -35,21 +37,16 @@
 			</dict>
 		</dict>
 	</dict>
-	
+	<key>NSCameraUsageDescription</key>
+	<string>Access camera</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Allow location access to track the delivery process</string>
 	<key>NSLocationUsageDescription</key>
 	<string>Allow location access to track the delivery process</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow location access to track the delivery process</string>
-	<key>Allow Location permission to track order delivery</key>
-	<string>Allow location permission</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow photo Library permission to save the order photos</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow location access to track the delivery process</string>
-	<key>NSCameraUsageDescription</key>
-<string>Access camera</string>
-	<!-- <key>NSMicrophoneUsageDescription</key>
-	<String>Allow microphone description to take video of order</String> -->
 	<key>UIAppFonts</key>
 	<array>
 		<string>GraphikBlack.otf</string>
@@ -77,6 +74,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIStatusBarStyle</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

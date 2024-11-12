@@ -158,7 +158,7 @@ const NewHomeScreen = props => {
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
       const checkingPendingOrders = await axios.post(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
+        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
         {
           order_status: 'pending',
         },
@@ -360,7 +360,7 @@ const NewHomeScreen = props => {
       const interval = setInterval(() => {
         fecthPendingOrders();
         fetchOrders();
-      }, 60000);
+      },  30000); // 30,000 milliseconds = 30 seconds
 
       return () => clearInterval(interval);
     }, []),
@@ -422,34 +422,7 @@ const NewHomeScreen = props => {
     getData();
   }, []);
 
-  const getLatAndLong1 = async () => {
-    Geolocation.watchPosition(
-      position => {
-        const lat = position.coords.latitude;
-        const long = position.coords.longitude;
-        console.log('These are the lat and long');
-        console.log(position);
-        if (lat && long) {
-          setCurrentCoordinates({lat, long});
-          postDriverLocation(lat, long);
-          dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
-        }
-      },
-      error => {
-        setCurrentCoordinates(null);
-        console.log(error, 'error--');
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        distanceFilter: 1,
-        interval: 1000,
-        fastestInterval: 2000,
-      },
-    );
-  };
-
-  const postDriverLocation = async (lat, long) => {
+ const postDriverLocation = async (lat, long) => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       if (!combinedData) {
@@ -482,33 +455,13 @@ const NewHomeScreen = props => {
     }
   };
 
-  
-
- 
-
-  const onRefresh = async () => {
+const onRefresh = async () => {
     setRefresh(true);
     await fetchOrders();
     fecthPendingOrders();
     setRefresh(false);
   };
-  const handleOrderPress2 = item => {
-    if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
-      setModaldata(item);
-      setShowNewOrderModal(true);
-    } else if (insignSelectedIndex === 1) {
-      const {order_status} = item.order;
-      if (order_status === 'accepted') {
-        navigation.navigate('ReachPickup', {orderDetails: item});
-      } else if (order_status === 'reached-pickup-location') {
-        navigation.navigate('OrderPick', {orderDetails: item});
-      } else if (order_status === 'on-the-way') {
-        navigation.navigate('ReachMapDrop', {orderDetails: item});
-      } else if (order_status === 'ready-for-delivery') {
-        navigation.navigate('CollectMoney', {orderDetails: item});
-      }
-    }
-  };
+  
 
   return (
     <SafeAreaView
@@ -551,7 +504,7 @@ const NewHomeScreen = props => {
           </Text>
           <View style={styles.earningOrderContainer}>
           <TotalEarningOrderView
-              title="New Orders"
+              title="Orders"
               value={allPendingOrders.length}
             />
             <TotalEarningOrderView
@@ -586,7 +539,7 @@ const NewHomeScreen = props => {
               tintColor={isDarkTheme ? '#3F444D' : '#FFF'}
               inactiveFont={isDarkTheme && '#FFFFFFBF'}
               activeFont={isDarkTheme ? '#FFF' : COLORS.light_primary_text}
-              segmentArray={['New Orders', 'On Going', ]}
+              segmentArray={['Orders', 'On Going', ]}
               selectedIndex={insignSelectedIndex}
               onValueChange={index => {
                 // playPause();

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "274567168046",
+    "project_id": "gobooze-5cb80",
+    "storage_bucket": "gobooze-5cb80.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274567168046:android:974ac02a67ad4327b4dfbf",
+        "android_client_info": {
+          "package_name": "com.goboozepartner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOS_xNYExgJSx0MVmo8PQxqwTumofF6OY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

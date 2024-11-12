@@ -51,7 +51,7 @@ export const IMAGES = {
   ARROW_RIGHT: require('../assets/other_pngs/arrow_right.png'),
   BACK: require('../assets/other_pngs/back.png'),
   CALL: require('../assets/other_pngs/call.png'),
-  LOC_IMG: require('../assets/other_pngs/loc_img.png'),
+  LOC_IMG: require('../assets/other_pngs/loc_img.jpg'),
   BOX: require('../assets/other_pngs/box.png'),
   CUSTOMER: require('../assets/other_pngs/customer.png'),
   COLLAPSE: require('../assets/other_pngs/collapse.png'),

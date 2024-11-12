@@ -1,50 +1,63 @@
 # Resolve react_native_pods.rb with node to allow for hoisting
-# require Pod::Executable.execute_command('node', ['-p',
-#   'require.resolve(
-#     "react-native/scripts/react_native_pods.rb",
-#     {paths: [process.argv[1]]},
-#   )', __dir__]).strip
-
 def node_require(script)
-# Resolve script with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-    "require.resolve(
-      '#{script}',
-      {paths: [process.argv[1]]},
-)", __dir__]).strip
+  # Resolve script with node to allow for hoisting
+  require Pod::Executable.execute_command(
+    'node',
+    ['-p', 
+      "require.resolve('#{script}', {paths: [process.argv[1]]})", 
+    __dir__]
+  ).strip
 end
 
 node_require('react-native/scripts/react_native_pods.rb')
 node_require('react-native-permissions/scripts/setup.rb')
+
 permissions_path = '../node_modules/react-native-permissions/ios'
-platform :ios, min_ios_version_supported
+platform :ios, '13.0'
 prepare_react_native_project!
 
 setup_permissions([
-  'LocationAccuracy','LocationAlways','LocationWhenInUse'
+  'LocationAccuracy', 'LocationAlways', 'LocationWhenInUse'
 ])
 
-# If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
-# because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
-#
-# To fix this you can also exclude `react-native-flipper` using a `react-native.config.js`
+# If you are using a `react-native-flipper`, your iOS build will fail when `NO_FLIPPER=1` is set.
+# Because `react-native-flipper` depends on FlipperKit, etc., which will be excluded.
+# To fix this, you can also exclude `react-native-flipper` using a `react-native.config.js`
+# Example for excluding Flipper in react-native.config.js:
 # ```js
 # module.exports = {
 #   dependencies: {
 #     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
+#   }
+# };
 # ```
-flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
+# flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
 
 linkage = ENV['USE_FRAMEWORKS']
-if linkage != nil
+if linkage
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
   use_frameworks! :linkage => linkage.to_sym
 end
 
 target 'GoBoozePartner' do
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
   config = use_native_modules!
 
-  # Flags change depending on the env values.
+  # Firebase Integration
+  # Ensure you include the Firebase pods you need. 
+  # Add the following Firebase dependencies:
+  pod 'Firebase/Core'           # For basic Firebase setup
+  pod 'Firebase/Analytics'      # For Firebase Analytics
+  pod 'Firebase/Firestore'      # For Firebase Firestore
+  pod 'Firebase/Auth'           # For Firebase Authentication
+  pod 'Firebase/Database'       # For Firebase Realtime Database
+  pod 'Firebase/Storage'        # For Firebase Storage
+
+  # Add any other Firebase services you plan to use (e.g., Push Notifications)
+  # pod 'Firebase/Messaging'    # For Firebase Cloud Messaging (FCM)
+
+  # Flags change depending on the environment values
   flags = get_default_flags()
 
   use_react_native!(
@@ -52,12 +65,8 @@ target 'GoBoozePartner' do
     # Hermes is now enabled by default. Disable by setting this flag to false.
     :hermes_enabled => flags[:hermes_enabled],
     :fabric_enabled => flags[:fabric_enabled],
-    # Enables Flipper.
-    #
-    # Note that if you have use_frameworks! enabled, Flipper will not work and
-    # you should disable the next line.
-    :flipper_configuration => flipper_config,
-    # An absolute path to your application root.
+    # Enables Flipper (note: Flipper doesn't work with `use_frameworks!` enabled).
+    # :flipper_configuration => flipper_config,
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
@@ -67,12 +76,14 @@ target 'GoBoozePartner' do
   end
 
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
+    # React Native post-installation tasks
+    # Refer: https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+    # Workaround for Xcode 12.5 M1-related issues
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end
