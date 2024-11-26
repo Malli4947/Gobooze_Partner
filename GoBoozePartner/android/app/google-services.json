@@ -7,9 +7,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:274567168046:android:974ac02a67ad4327b4dfbf",
+        "mobilesdk_app_id": "1:274567168046:android:dd688199bbde8ee1b4dfbf",
         "android_client_info": {
-          "package_name": "com.goboozepartner"
+          "package_name": "com.goboozepartnerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOS_xNYExgJSx0MVmo8PQxqwTumofF6OY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274567168046:android:e07ca5b61909edacb4dfbf",
+        "android_client_info": {
+          "package_name": "com.goboozeuserapp"
         }
       },
       "oauth_client": [],

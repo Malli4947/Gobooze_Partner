@@ -1,4 +1,4 @@
-package com.goboozepartner;
+package com.goboozepartnerapp;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

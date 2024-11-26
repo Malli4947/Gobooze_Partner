@@ -74,9 +74,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.goboozepartner"
+    namespace "com.goboozepartnerapp"
     defaultConfig {
-        applicationId "com.goboozepartner"
+        applicationId "com.goboozepartnerapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
