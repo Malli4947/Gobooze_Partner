@@ -25,7 +25,7 @@ const OrderDetailExpandView = ({orderDetails}) => {
 
           <FastImage
             source={{
-              uri: `https://gobooze-bucket.s3.eu-north-1.amazonaws.com/goboozestore/${item.variantImage}`,
+              uri: `https://gobooze-tst.s3.ap-southeast-2.amazonaws.com/goboozestore/${item.variantImage}`,
             }}
             resizeMode="contain"
             style={styles.whiskeyImg}

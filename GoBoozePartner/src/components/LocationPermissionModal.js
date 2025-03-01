@@ -1,5 +1,13 @@
 import * as React from 'react';
-import {View, StyleSheet, Linking, Modal, Text, Pressable} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Linking,
+  Modal,
+  Text,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT} from '../constants/Constant';
 import {rHeight, rWidth} from '../constants/PixelSize';
@@ -22,7 +30,10 @@ const LocationPermissionModal = props => {
           backgroundColor: 'rgba(27, 31, 39, 0.80)',
           justifyContent: 'center',
         }}>
-        <View
+        <TouchableOpacity
+          onPress={() => {
+            Linking.openSettings();
+          }}
           style={[
             styles.modalView,
             colorScheme === 'dark' && styles.modalView_2,
@@ -58,7 +69,7 @@ const LocationPermissionModal = props => {
               <Text style={styles.modalButton_text}>Open Settings</Text>
             </Pressable>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
     </Modal>
   );

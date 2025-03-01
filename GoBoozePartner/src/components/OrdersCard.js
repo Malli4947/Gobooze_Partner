@@ -27,7 +27,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
 
-  const IMAGE_URL = `https://gobooze-bucket.s3.eu-north-1.amazonaws.com/goboozestore/`;
+  const IMAGE_URL = `https://gobooze-tst.s3.ap-southeast-2.amazonaws.com/goboozestore/`;
 
   if (!orderRequests || orderRequests.length === 0) {
     return (

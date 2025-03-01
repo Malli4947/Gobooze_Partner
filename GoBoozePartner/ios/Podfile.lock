@@ -652,7 +652,7 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNFBApp (20.4.0):
+  - RNFBApp (20.3.0):
     - Firebase/CoreOnly (= 10.29.0)
     - React-Core
   - RNFBMessaging (20.3.0):
@@ -1011,7 +1011,7 @@ SPEC CHECKSUMS:
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNDeviceInfo: 6192a9c9167e256803e554038b22b3b2b40163dc
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
-  RNFBApp: 2f83756f4d8be2859af5e2cf54130c20e380119d
+  RNFBApp: a7aff07a7f212149539fce51a1326c6d208b03ad
   RNFBMessaging: f1fdc7ac62df96e3c8362d516caaf84fab69085d
   RNGestureHandler: 7909c50383a18f0cb10ce1db7262b9a6da504c03
   RNPermissions: a4c964f030841f35d918ab3248df9dec9db5f44d
@@ -1027,4 +1027,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: e56c43e35182540ed989976f492886bc774ddfec
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
