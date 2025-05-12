@@ -49,12 +49,12 @@ function App() {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('remoteMessage', remoteMessage);
     });
-    return () => {
-      unsubscribe();
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
+    // return () => {
+    //   unsubscribe();
+    //   if (timerRef.current) {
+    //     clearTimeout(timerRef.current);
+    //   }
+    // };
   }, []);
 
   const getFirebaseToken = async () => {

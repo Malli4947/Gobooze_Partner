@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
   Image,
+  Alert,
 } from 'react-native';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import COLORS from '../constants/Colors';
@@ -20,6 +21,7 @@ const NewSlideButton = ({
   onComplete,
   orderData,
   slideButoon = true,
+  orderAlreadyAccepted = false,
 }) => {
   const navigation = useNavigation();
   const [sliderValue, setSliderValue] = useState(0);
@@ -41,7 +43,7 @@ const NewSlideButton = ({
         knobPosition.setValue(Math.min(290, Math.max(0, moveX)));
       }
     },
-    onPanResponderRelease: () => {
+    onPanResponderRelease: async () => {
       if (slideButoon) {
         // Check slideButoon before handling release
         if (isFullySlidRef.current === false) {
@@ -59,7 +61,11 @@ const NewSlideButton = ({
             }).start();
             isFullySlidRef.current = true;
             setSliderValue(1);
-            onComplete();
+            const res = await onComplete();
+            if (!res && navigationScreen == 'ReachPickup') {
+              Alert.alert('Order is already accepted by other partner!');
+              return;
+            }
             navigation.navigate(navigationScreen, {orderDetails: orderData});
           }
         }

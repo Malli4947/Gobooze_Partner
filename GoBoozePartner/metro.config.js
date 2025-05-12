@@ -9,6 +9,24 @@ const {assetExts, sourceExts} = defaultConfig.resolver;
  * @type {import('metro-config').MetroConfig}
  */
 const config = {
+  presets: ['module:metro-react-native-babel-preset'],
+  plugins: [
+    'react-native-paper/babel',
+    '@babel/plugin-transform-private-methods',
+    '@babel/plugin-proposal-class-properties',
+  ],
+  overrides: [
+    {
+      plugins: [
+        [
+          '@babel/plugin-transform-private-methods',
+          {
+            loose: true,
+          },
+        ],
+      ],
+    },
+  ],
   transformer: {
     babelTransformerPath: require.resolve('react-native-svg-transformer'),
   },

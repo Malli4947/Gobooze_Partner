@@ -1,5 +1,5 @@
 import {BlurView} from '@react-native-community/blur';
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View, Modal, Image} from 'react-native';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import EarningPickDropDetailView from '../components/EarningPickDropDetailView';
@@ -20,7 +20,7 @@ const NewOrderAlertScreen = props => {
   const isDarkTheme = colorScheme === 'dark';
   const {modalVisible, dismissModal, onReachedToEnd, denyClick, orderDetails} =
     props;
-
+  const [orderAlreadyAccepted, setOrderAlreadyAccepted] = useState(false);
   console.log(
     '💕 ~ file: NewOrderAlertScreen.js:18 ~ NewOrderAlertScreen ~ orderDetails:',
     orderDetails.order_id,
@@ -52,8 +52,12 @@ const NewOrderAlertScreen = props => {
         acceptRes,
       );
       dismissModal();
+      return true;
     } catch (e) {
       console.log('💕 ~ file: NewOrderAlertScreen.js:35 ~ acceptOrder ~ e:', e);
+      dismissModal();
+      setOrderAlreadyAccepted(true);
+      return false;
     }
   };
 
@@ -147,6 +151,7 @@ const NewOrderAlertScreen = props => {
               </View>
 
               <NewSlideButton
+                orderAlreadyAccepted={orderAlreadyAccepted}
                 title={'Accept order'}
                 navigationScreen={'ReachPickup'}
                 onComplete={acceptOrder}

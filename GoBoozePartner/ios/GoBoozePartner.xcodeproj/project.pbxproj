@@ -19,6 +19,7 @@
 		59384A46B661C782998FD595 /* libPods-GoBoozePartner-GoBoozePartnerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 97BB65078229952950A35B31 /* libPods-GoBoozePartner-GoBoozePartnerTests.a */; };
 		5A7BB4CB2B9D45949CA56853 /* GraphikSuper.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1249C3B46A274317A5992073 /* GraphikSuper.otf */; };
 		6A0689DD818F4BB39DA1780A /* GraphikBlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = AF6D390317A24F4595C9A813 /* GraphikBlackItalic.otf */; };
+		73CBD22460DDF4EFAAE5FD05 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 06A712AAE6B0CA9796D781BC /* PrivacyInfo.xcprivacy */; };
 		74D2EC68F3E24F12A18DB924 /* GraphikLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = D33E22B78A5A41F8B9986465 /* GraphikLight.otf */; };
 		7986342EEABD4F15B2FB9D46 /* GraphikMediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF04AECDD4B14C00B10C63D0 /* GraphikMediumItalic.otf */; };
 		7BF6242165884320B45F125F /* GraphikMedium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 34EFC33D5D2C43A080029870 /* GraphikMedium.otf */; };
@@ -27,8 +28,9 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8D3BD64C3E3E4770B6F12DCD /* GraphikExtralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 75B2224C5B264EF8B4610D6C /* GraphikExtralight.otf */; };
 		A6A7D198366048C694C2687A /* GraphikBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 00D574FA631E46B4B4774124 /* GraphikBold.otf */; };
-		ABCFF4702CE3E4BE00A30D5E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABCFF46F2CE3E4BD00A30D5E /* GoogleService-Info.plist */; };
 		ABD9C2382C25848D009EB9E7 /* BearSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABD9C2372C25848D009EB9E7 /* BearSound.mp3 */; };
+		ABEB234B2DB18D6F0014FC18 /* Sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABEB234A2DB18D6F0014FC18 /* Sound.mp3 */; };
+		ABF7D85C2D9BE4ED00F0170A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABF7D85B2D9BE4ED00F0170A /* GoogleService-Info.plist */; };
 		C2515823AE5A4CD3A790A5BC /* GraphikSemibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 167D4443ADFD4E01ABE9DF0E /* GraphikSemibold.otf */; };
 		CDF1639257954B05855A546A /* GraphikBlack.otf in Resources */ = {isa = PBXBuildFile; fileRef = 74BDCFD39E9E41CDB34F2030 /* GraphikBlack.otf */; };
 		E47A893C8A7C402094055FCD /* GraphikLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 02F5E490A30246638A1C460B /* GraphikLightItalic.otf */; };
@@ -52,6 +54,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* GoBoozePartnerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoBoozePartnerTests.m; sourceTree = "<group>"; };
 		02F5E490A30246638A1C460B /* GraphikLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikLightItalic.otf; path = ../assets/fonts/GraphikLightItalic.otf; sourceTree = "<group>"; };
+		06A712AAE6B0CA9796D781BC /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = GoBoozePartner/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1249C3B46A274317A5992073 /* GraphikSuper.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSuper.otf; path = ../assets/fonts/GraphikSuper.otf; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* GoBoozePartner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoBoozePartner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = GoBoozePartner/AppDelegate.h; sourceTree = "<group>"; };
@@ -75,8 +78,10 @@
 		83A69C412874457594821B08 /* libPods-GoBoozePartner.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GoBoozePartner.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner-GoBoozePartnerTests/Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		97BB65078229952950A35B31 /* libPods-GoBoozePartner-GoBoozePartnerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GoBoozePartner-GoBoozePartnerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		ABCFF46F2CE3E4BD00A30D5E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ABD9C2372C25848D009EB9E7 /* BearSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = BearSound.mp3; path = ../src/assets/BearSound.mp3; sourceTree = "<group>"; };
+		ABEB234A2DB18D6F0014FC18 /* Sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Sound.mp3; sourceTree = "<group>"; };
+		ABF7D85B2D9BE4ED00F0170A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		ABF7F58D2D898AAF00E20BCB /* GoBoozePartner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = GoBoozePartner.entitlements; path = GoBoozePartner/GoBoozePartner.entitlements; sourceTree = "<group>"; };
 		AF6D390317A24F4595C9A813 /* GraphikBlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBlackItalic.otf; path = ../assets/fonts/GraphikBlackItalic.otf; sourceTree = "<group>"; };
 		B02FE8FF4D4740CFAE262061 /* GraphikRegular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikRegular.otf; path = ../assets/fonts/GraphikRegular.otf; sourceTree = "<group>"; };
 		BF04AECDD4B14C00B10C63D0 /* GraphikMediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikMediumItalic.otf; path = ../assets/fonts/GraphikMediumItalic.otf; sourceTree = "<group>"; };
@@ -126,12 +131,14 @@
 		13B07FAE1A68108700A75B9A /* GoBoozePartner */ = {
 			isa = PBXGroup;
 			children = (
+				ABF7F58D2D898AAF00E20BCB /* GoBoozePartner.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				06A712AAE6B0CA9796D781BC /* PrivacyInfo.xcprivacy */,
 			);
 			name = GoBoozePartner;
 			sourceTree = "<group>";
@@ -156,7 +163,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				ABCFF46F2CE3E4BD00A30D5E /* GoogleService-Info.plist */,
+				ABEB234A2DB18D6F0014FC18 /* Sound.mp3 */,
+				ABF7D85B2D9BE4ED00F0170A /* GoogleService-Info.plist */,
 				ABD9C2372C25848D009EB9E7 /* BearSound.mp3 */,
 				13B07FAE1A68108700A75B9A /* GoBoozePartner */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -314,6 +322,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				ABD9C2382C25848D009EB9E7 /* BearSound.mp3 in Resources */,
+				ABEB234B2DB18D6F0014FC18 /* Sound.mp3 in Resources */,
 				CDF1639257954B05855A546A /* GraphikBlack.otf in Resources */,
 				6A0689DD818F4BB39DA1780A /* GraphikBlackItalic.otf in Resources */,
 				A6A7D198366048C694C2687A /* GraphikBold.otf in Resources */,
@@ -330,9 +339,10 @@
 				E8D6A81473C64E6C812F6BE4 /* GraphikSemiboldItalic.otf in Resources */,
 				5A7BB4CB2B9D45949CA56853 /* GraphikSuper.otf in Resources */,
 				E60748F2B1694D91BCFC115F /* GraphikSuperItalic.otf in Resources */,
-				ABCFF4702CE3E4BE00A30D5E /* GoogleService-Info.plist in Resources */,
+				ABF7D85C2D9BE4ED00F0170A /* GoogleService-Info.plist in Resources */,
 				22E4DBAE68134713ABA49E99 /* GraphikThin.otf in Resources */,
 				3F26FEBC61D54FDCA4E243FB /* GraphikThinItalic.otf in Resources */,
+				73CBD22460DDF4EFAAE5FD05 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,10 +597,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = GoBoozePartner/GoBoozePartner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 21;
-				DEVELOPMENT_TEAM = YSKJ36B8N8;
+				DEVELOPMENT_TEAM = D5DLUY4383;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -608,7 +619,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.codefacts.goboozepartner;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codefacts.gobooze.partnerapp;
 				PRODUCT_NAME = GoBoozePartner;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -626,10 +637,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = GoBoozePartner/GoBoozePartner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 21;
-				DEVELOPMENT_TEAM = YSKJ36B8N8;
+				DEVELOPMENT_TEAM = D5DLUY4383;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				INFOPLIST_FILE = GoBoozePartner/Info.plist;
@@ -646,7 +658,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.codefacts.goboozepartner;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codefacts.gobooze.partnerapp;
 				PRODUCT_NAME = GoBoozePartner;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -661,8 +673,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CC = "";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -688,6 +701,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				CXX = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
@@ -716,6 +730,8 @@
 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD = "";
+				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -734,13 +750,10 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				USE_HERMES = true;
 			};
 			name = Debug;
 		};
@@ -748,8 +761,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CC = "";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -775,6 +789,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				CXX = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
@@ -799,6 +814,8 @@
 					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD = "";
+				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -816,13 +833,10 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

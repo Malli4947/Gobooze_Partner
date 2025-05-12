@@ -74,6 +74,7 @@ const NewHomeScreen = props => {
   const previousLengthRef = useRef(0);
   const [currentCoordinates, setCurrentCoordinates] = useState(null);
   const isFocus = useIsFocused();
+  const [orderAlreadyAccepted, setOrderAlreadyAccepted] = useState(false);
   const socket = io('https://devapigobooze.codefactstech.com');
 
   const isDarkTheme = colorScheme === 'dark';
@@ -92,9 +93,6 @@ const NewHomeScreen = props => {
   };
 
   //Malike Code ending
- 
-
-  
 
   //Malika new changes -> 17-08
   const checkIsActiveStatus = async () => {
@@ -312,12 +310,12 @@ const NewHomeScreen = props => {
     };
   }, []);
   useEffect(() => {
-    fetchData()
+    fetchData();
   }, []);
   useFocusEffect(
     useCallback(() => {
       setShowNewOrderModal(false);
-      fetchData()
+      fetchData();
     }, []),
   );
 
@@ -332,16 +330,15 @@ const NewHomeScreen = props => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-  
+
       const response = await axios.get('your_api_endpoint', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       // Process response data
       const data = response.data;
-  
     } catch (error) {
       if (error.response && error.response.status === 403) {
         // Access token has expired, navigate to login
@@ -360,7 +357,7 @@ const NewHomeScreen = props => {
       const interval = setInterval(() => {
         fecthPendingOrders();
         fetchOrders();
-      },  30000); // 30,000 milliseconds = 30 seconds
+      }, 30000); // 30,000 milliseconds = 30 seconds
 
       return () => clearInterval(interval);
     }, []),
@@ -422,7 +419,7 @@ const NewHomeScreen = props => {
     getData();
   }, []);
 
- const postDriverLocation = async (lat, long) => {
+  const postDriverLocation = async (lat, long) => {
     try {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       if (!combinedData) {
@@ -455,13 +452,12 @@ const NewHomeScreen = props => {
     }
   };
 
-const onRefresh = async () => {
+  const onRefresh = async () => {
     setRefresh(true);
     await fetchOrders();
     fecthPendingOrders();
     setRefresh(false);
   };
-  
 
   return (
     <SafeAreaView
@@ -471,6 +467,7 @@ const onRefresh = async () => {
         dismissModal={() => setModalVisible(false)}
       />
       <NewOrderAlertScreen
+        orderAlreadyAccepted={orderAlreadyAccepted}
         modalVisible={showNewOrderModal}
         dismissModal={() => setShowNewOrderModal(!showNewOrderModal)}
         onReachedToEnd={() => props.navigation.navigate('ReachPickup')}
@@ -503,7 +500,7 @@ const onRefresh = async () => {
             Orders
           </Text>
           <View style={styles.earningOrderContainer}>
-          <TotalEarningOrderView
+            <TotalEarningOrderView
               title="Orders"
               value={allPendingOrders.length}
             />
@@ -511,7 +508,6 @@ const onRefresh = async () => {
               title="Active Orders"
               value={`${accepteddOrders.length}`}
             />
-           
           </View>
         </View>
         <View style={[styles.seperator, darkSeperator]}></View>
@@ -539,7 +535,7 @@ const onRefresh = async () => {
               tintColor={isDarkTheme ? '#3F444D' : '#FFF'}
               inactiveFont={isDarkTheme && '#FFFFFFBF'}
               activeFont={isDarkTheme ? '#FFF' : COLORS.light_primary_text}
-              segmentArray={['Orders', 'On Going', ]}
+              segmentArray={['Orders', 'On Going']}
               selectedIndex={insignSelectedIndex}
               onValueChange={index => {
                 // playPause();
@@ -550,11 +546,11 @@ const onRefresh = async () => {
         </View>
         <OrdersCard
           orderRequests={
-           insignSelectedIndex === 0
-            ? allPendingOrders
+            insignSelectedIndex === 0
+              ? allPendingOrders
               : insignSelectedIndex === 1
               ? accepteddOrders
-            : []
+              : []
           }
           onOrderPress={item => handleOrderPress(item)}
         />
