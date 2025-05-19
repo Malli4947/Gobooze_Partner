@@ -41,6 +41,10 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
   }
 
   const renderItem = (item, index) => {
+    if (index == 0) {
+      console.log('This is the order item: ');
+      console.log(JSON.stringify(item, null, 2));
+    }
     return (
       <Pressable
         key={index}
@@ -182,6 +186,16 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                 .replace(/\b\w/g, char => char.toUpperCase())}
             </Text>
           </View>
+        </View>
+        <View style={[styles.rowCon, {margin: 10, overflow: 'hidden'}]}>
+          <Text style={[styles.lleftText, isDark && styles.dleftText]}>
+            Address:
+          </Text>
+          <Text
+            numberOfLines={2}
+            style={[styles.lRightText, isDark && styles.dRightText]}>
+            {item?.order?.address?.address || 'NA'}
+          </Text>
         </View>
       </Pressable>
     );

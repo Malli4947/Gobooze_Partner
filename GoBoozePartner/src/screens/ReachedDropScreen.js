@@ -343,6 +343,7 @@ const ReachedDropScreen = ({route}) => {
                       //   5,
                       // )}-${OrderDetails.order_id.slice(-5)}`,
                       orderId: `${OrderDetails.order.sequence_number}`,
+                      address: `${OrderDetails.order?.address?.address}`,
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
