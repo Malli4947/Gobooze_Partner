@@ -28,7 +28,7 @@ const SplashScreen = props => {
   useEffect(() => {
     fetchData();
   }, []);
-  console.log(props.accessToken, '---splash---');
+  // console.log(props.accessToken, '---splash---');
 
   const fetchData = async () => {
     try {

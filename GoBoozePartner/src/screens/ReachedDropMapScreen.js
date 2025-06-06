@@ -31,30 +31,32 @@ import UserPin from '../assets/UserPin.svg';
 import {useSelector} from 'react-redux';
 import {BackHandler} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import BackA from '../assets/BackA.svg';
+import RightA from '../assets/RightA.svg';
 const ReachedDropMapScreen = ({route}) => {
   const GOOGLE_MAPS_APIKEY = 'AIzaSyCtTH8DV1-h4tYTSb-geYjdn71a0Up_63k';
   const {currentLattitude, currentLongitude} = useSelector(
     state => state.location,
   );
   const navigation = useNavigation();
-  console.log(
-    currentLattitude,
-    'currentLattitude================><=============drop',
-  );
-  console.log(
-    currentLongitude,
-    'currentLongitude================><=============drop',
-  );
-  const OrderDetails = route.params.orderDetails;
+  // console.log(
+  //   currentLattitude,
+  //   'currentLattitude================><=============drop',
+  // );
+  // console.log(
+  //   currentLongitude,
+  //   'currentLongitude================><=============drop',
+  // );
+  const orderData = route.params.orderData;
 
-  console.log(OrderDetails, 'OrderDetails===========><====');
+  console.log(orderData, 'OrderDetails===========><====');
 
   // Use orders.length or check for specific properties inside orders to safely access data
 
   // const orders = OrderDetails.order && OrderDetails.order.order_Variants ? OrderDetails.order.order_Variants : [];
   // const ordersAddress = OrderDetails.order.address;
-  const storeDetails = OrderDetails.order.store;
-  console.log(storeDetails, 'storeDetails-------');
+  const storeDetails = orderData.order.store;
+  // console.log(storeDetails, 'storeDetails-------');
 
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
@@ -91,10 +93,11 @@ const ReachedDropMapScreen = ({route}) => {
 
   const handleUpdateOrder = async () => {
     try {
-      await updateOrder(OrderDetails.order_id, 'ready-for-delivery');
+      await updateOrder(orderData.order_id, 'ready-for-delivery');
     } catch (e) {
       Alert.alert('Error', 'Failed to update order status');
     }
+    navigation.navigate('CollectMoney', {orderData})
   };
   useEffect(() => {
     const backAction = () => {
@@ -112,17 +115,17 @@ const ReachedDropMapScreen = ({route}) => {
 
   const handleOpenNow = () => {
     Linking.openURL(
-      `https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${OrderDetails.order.address.coordinates.lat},${OrderDetails.order.address.coordinates.lng}&travelmode=driving`,
+      `https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${orderData.order.address.coordinates.lat},${orderData.order.address.coordinates.lng}&travelmode=driving`,
     ).catch(err => console.error('An error occurred', err));
   };
 
   const userLocation = {
-    latitude: OrderDetails.order.address.coordinates.lat,
-    longitude: OrderDetails.order.address.coordinates.lng,
+    latitude: orderData.order.address.coordinates.lat,
+    longitude: orderData.order.address.coordinates.lng,
   };
   // Assuming OrderDetails is your variable containing the order details JSON
 
-  console.log(userLocation, 'userLocation=========================');
+  // console.log(userLocation, 'userLocation=========================');
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
@@ -220,11 +223,11 @@ const ReachedDropMapScreen = ({route}) => {
             <View style={styles.addressTopView}>
               <View style={{width: '70%'}}>
                 <Text style={[styles.lightBlackText, darkTextStyle]}>
-                  {OrderDetails.order.address.first_name}
-                  {OrderDetails.order.address.last_name}
+                  {orderData.order.address.first_name}
+                  {orderData.order.address.last_name}
                 </Text>
                 <Text style={[styles.ultralightBlackText, darkTextStyle]}>
-                  {OrderDetails.order.address.state}
+                  {orderData.order.address.state}
                 </Text>
               </View>
 
@@ -251,7 +254,7 @@ const ReachedDropMapScreen = ({route}) => {
               <TouchableOpacity
                 onPress={() => {
                   Linking.openURL(
-                    `tel:${OrderDetails.order.address.addressPhoneNumber}`,
+                    `tel:${orderData.order.address.addressPhoneNumber}`,
                   );
                 }}
                 style={styles.callContainer}>
@@ -283,17 +286,28 @@ const ReachedDropMapScreen = ({route}) => {
             //   0,
             //   5,
             // )}-${OrderDetails.order_id.slice(-5)}`}
-            value={OrderDetails.order.sequence_number}
+            value={orderData.order.sequence_number}
           />
           <DetailsView
             style={{width: '60%'}}
             id="1"
             image={IMAGES.CUSTOMER}
             title={'Customer Details:'}
-            value={`${OrderDetails.order.address.first_name} ${OrderDetails.order.address.last_name}, ${OrderDetails.order.address.address}`}
+            value={`${orderData.order.address.first_name} ${orderData.order.address.last_name}, ${orderData.order.address.address}`}
           />
         </View>
-
+        <View style={styles.flexBtn}>
+          <TouchableOpacity
+            style={styles.btnNo}
+            onPress={() => navigation.goBack()}>
+            <BackA />
+            <Text style={styles.no}>No</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btnNo1} onPress={handleUpdateOrder}>
+            <Text style={styles.yes}>Yes</Text>
+            <RightA />
+          </TouchableOpacity>
+        </View>
         {/* ------------- Bottom slide button ----------- */}
         {/* <CustomSlideButton
           hideSeperator={true}
@@ -301,16 +315,16 @@ const ReachedDropMapScreen = ({route}) => {
           confirmedText="Placing your order"
           onReachedToEnd={() => props.navigation.navigate('OrderPick')}
         /> */}
-        <NewSlideButton
+        {/* <NewSlideButton
           title={'ready-for-delivery'}
           navigationScreen={'CollectMoney'}
           onComplete={handleUpdateOrder}
-          orderData={OrderDetails}
+          orderData={orderData}
 
           // onComplete={() => {
           //   navigation.navigate('ReachDrop');
           // }}
-        />
+        /> */}
       </View>
     </SafeAreaView>
   );
@@ -453,6 +467,47 @@ const styles = StyleSheet.create({
     marginBottom: rHeight(15),
     paddingVertical: rHeight(10),
     paddingHorizontal: rWidth(20),
+  },
+    no: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#000',
+    alignSelf: 'center',
+  },
+  yes: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#FFF',
+    alignSelf: 'center',
+  },
+  btnNo: {
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    marginRight: rWidth(8),
+  },
+  btnNo1: {
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    backgroundColor: '#D3178A',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    marginLeft: rWidth(8),
+  },
+  flexBtn: {
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
+    paddingTop: rHeight(16),
+    paddingBottom: rHeight(20),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

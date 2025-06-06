@@ -84,7 +84,7 @@ const NewHomeScreen = props => {
 
   //malika code starting 15/08
   useEffect(() => {
-    console.log('This is focus executing...');
+    // console.log('This is focus executing...');
     onRefresh();
   }, [isFocus]);
   const checkLocationEnabled = async () => {
@@ -166,7 +166,7 @@ const NewHomeScreen = props => {
           },
         },
       );
-      console.log(checkingPendingOrders, 'checkingPendingOrders=======');
+      // console.log(checkingPendingOrders, 'checkingPendingOrders=======');
       const newData = checkingPendingOrders.data.data.reverse();
       if (newData.length > previousLengthRef.current) {
         playPause();
@@ -199,7 +199,7 @@ const NewHomeScreen = props => {
           },
         },
       );
-      console.log(deliveredOrdersResponse, 'deliveredOrdersResponse=======');
+      // console.log(deliveredOrdersResponse, 'deliveredOrdersResponse=======');
       const activeOrdersResponse = axios.post(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
@@ -209,11 +209,11 @@ const NewHomeScreen = props => {
           },
         },
       );
-      console.log(activeOrdersResponse, 'activeOrdersResponse=======');
+      // console.log(activeOrdersResponse, 'activeOrdersResponse=======');
       const allPendingResponse = await axios.get(
         `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
       );
-      console.log(allPendingResponse, 'allPendingResponse=======');
+      // console.log(allPendingResponse.data.data, 'allPendingResponse=======');
       setAllpendingOrders(allPendingResponse.data.data.reverse());
 
       const [deliveredOrders, activeOrders] = await Promise.all([
@@ -228,50 +228,53 @@ const NewHomeScreen = props => {
       setIsLoading(false);
     }
   };
-  const handleOrderPress = async item => {
-    try {
-      const locationEnabled = await checkLocationEnabled();
-      if (!locationEnabled) {
-        Alert.alert(
-          'Location Services Disabled',
-          'Please enable location services to proceed.',
-          [{text: 'OK'}],
-        );
-        return;
-      }
-      if (!currentCoordinates) {
-        Alert.alert(
-          'Unable to Retrieve Location',
-          'Please ensure your location services are enabled and try again.',
-          [{text: 'OK'}],
-        );
-        return;
-      }
-      const combinedData = await AsyncStorage.getItem('USER_DATA');
-      const [accessToken, userId] = combinedData?.split(':') ?? [];
-
-      const fetchDetails = await fetch(
-        `https://devapigobooze.codefactstech.com/admin/api/partner/get-partner/${userId}`,
-        {
-          headers: {
-            Authorization: `${accessToken}`,
-          },
-        },
+  const handleOrderPress = async (item) => {
+  try {
+    const locationEnabled = await checkLocationEnabled();
+    if (!locationEnabled) {
+      Alert.alert(
+        'Location Services Disabled',
+        'Please enable location services to proceed.',
+        [{ text: 'OK' }]
       );
-      const data = await fetchDetails.json();
+      return;
+    }
 
-      // Check if the user is offline
-      if (data.data.is_active === false) {
-        Alert.alert(
-          'Alert: You are Currently Offline',
-          'To accept new orders, Please go Online.',
-          [{text: 'OK'}],
-        );
-        return; // Stop further execution if the user is offline
+    if (!currentCoordinates) {
+      Alert.alert(
+        'Unable to Retrieve Location',
+        'Please ensure your location services are enabled and try again.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    const combinedData = await AsyncStorage.getItem('USER_DATA');
+    const [accessToken, userId] = combinedData?.split(':') ?? [];
+
+    const fetchDetails = await fetch(
+      `https://devapigobooze.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+      {
+        headers: {
+          Authorization: `${accessToken}`,
+        },
       }
+    );
 
-      // Proceed with navigation based on the insignSelectedIndex
-      if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
+    const data = await fetchDetails.json();
+
+    // Check if the user is offline
+    if (data.data.is_active === false) {
+      Alert.alert(
+        'Alert: You are Currently Offline',
+        'To accept new orders, Please go Online.',
+        [{ text: 'OK' }]
+      );
+      return; // Stop further execution if the user is offline
+    }
+
+    // Check the order status
+    if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
         setModaldata(item);
         setShowNewOrderModal(true);
       } else if (insignSelectedIndex === 1) {
@@ -288,6 +291,8 @@ const NewHomeScreen = props => {
       }
     } catch (error) {}
   };
+
+
   //Malika New changes ends
   useEffect(() => {
     const backAction = () => {
@@ -363,14 +368,14 @@ const NewHomeScreen = props => {
     }, []),
   );
   const checkLocationPermission = async () => {
-    console.log('Executing check location permission:');
-    console.log(Platform.OS);
+    // console.log('Executing check location permission:');
+    // console.log(Platform.OS);
     if (Platform.OS === 'android') {
       try {
         const granted = await PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         );
-        console.log(granted, 'permission android--');
+        // console.log(granted, 'permission android--');
         return granted;
       } catch (err) {
         // console.warn(err);
@@ -379,7 +384,7 @@ const NewHomeScreen = props => {
     } else if (Platform.OS === 'ios') {
       try {
         const status = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-        console.log(status, 'permission ios--');
+        // console.log(status, 'permission ios--');
         return status;
       } catch (err) {
         // console.log(err, 'error');
@@ -388,13 +393,13 @@ const NewHomeScreen = props => {
     }
   };
   useEffect(() => {
-    console.log('This is focus value: ' + isFocus);
+    // console.log('This is focus value: ' + isFocus);
     const getData = async () => {
       fecthPendingOrders();
       fetchOrders();
       const res = await checkLocationPermission();
-      console.log('This is res: ');
-      console.log(res);
+      // console.log('This is res: ');
+      // console.log(res);
 
       rerender(!render);
       if (res == true || res == 'granted') {
@@ -406,11 +411,11 @@ const NewHomeScreen = props => {
       } else {
         setModalVisible(!res);
         const intervalId = setInterval(async () => {
-          console.log('Checking for location permission: ');
+          // console.log('Checking for location permission: ');
           const res2 = await checkLocationPermission();
           if (res2) {
             clearInterval(intervalId);
-            console.log('This interval has been cleared: ' + intervalId);
+            // console.log('This interval has been cleared: ' + intervalId);
             setModalVisible(false);
           }
         }, 1000);
@@ -437,7 +442,7 @@ const NewHomeScreen = props => {
           coordinates: [lat, long],
         },
       };
-      console.log(obj, 'obj================');
+      // console.log(obj, 'obj================');
       const res = await axios.patch(
         `https://devapigobooze.codefactstech.com/order/api/orders/update-driver-location/${userId}`,
         obj,

@@ -8,7 +8,7 @@ const NotificationController = props => {
   PushNotification.configure({
     onNotification: notification => {
       if (notification) {
-        console.log(notification);
+        // console.log(notification);
       }
     },
   });
@@ -16,12 +16,12 @@ const NotificationController = props => {
   PushNotification.configure({
     // (optional) Called when Token is generated (iOS and Android)
     onRegister: function (token) {
-      console.log('TOKEN:', token);
+      // console.log('TOKEN:', token);
     },
 
     // (required) Called when a remote is received or opened, or local notification is opened
     onNotification: function (notification) {
-      console.log('NOTIFICATION:', notification);
+      // console.log('NOTIFICATION:', notification);
 
       // process the notification
 
@@ -31,8 +31,8 @@ const NotificationController = props => {
 
     // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
     onAction: function (notification) {
-      console.log('ACTION:', notification.action);
-      console.log('NOTIFICATION:', notification);
+      // console.log('ACTION:', notification.action);
+      // console.log('NOTIFICATION:', notification);
 
       // process the action
     },
@@ -65,8 +65,8 @@ const NotificationController = props => {
       created => console.log(`CreateChannel returned '${created}'`),
     );
     messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Message handled in the background!', remoteMessage);
-      console.log(remoteMessage);
+      // console.log('Message handled in the background!', remoteMessage);
+      // console.log(remoteMessage);
       // const {notification, messageId} = remoteMessage;
       // if (Platform.OS === 'ios') {
       //   PushNotificationIoS.addNotificationRequest({
@@ -92,8 +92,8 @@ const NotificationController = props => {
       // }
     });
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('This is the remote message: ');
-      console.log(remoteMessage);
+      // console.log('This is the remote message: ');
+      // console.log(remoteMessage);
       const {notification, messageId} = remoteMessage;
       if (Platform.OS === 'ios') {
         PushNotificationIoS.addNotificationRequest({
@@ -105,7 +105,7 @@ const NotificationController = props => {
         // notification = remoteMessage;
         // onNotification(notification);
       } else {
-        console.log('About to send the local notification: ');
+        // console.log('About to send the local notification: ');
         PushNotification.localNotification({
           channelId: 'your-channel-id', // Use the channel ID here
           message: remoteMessage.notification.body,

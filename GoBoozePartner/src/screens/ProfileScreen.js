@@ -67,7 +67,7 @@ const ProfileScreen = () => {
         },
       );
       const data = await fetchDetails.json();
-      console.log(data, 'data.....');
+      // console.log(data, 'data.....');
       // const store = await data.data.storeId.json();
       // console.log(store, 'store.....');
       setProfileData(data);

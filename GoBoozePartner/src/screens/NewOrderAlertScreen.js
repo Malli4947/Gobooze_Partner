@@ -1,6 +1,13 @@
 import {BlurView} from '@react-native-community/blur';
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, Modal, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import EarningPickDropDetailView from '../components/EarningPickDropDetailView';
 import ModalCancelButton from '../components/ModalCancelButton';
@@ -11,7 +18,8 @@ import {rHeight, rWidth} from '../constants/PixelSize';
 import NewSlideButton from '../components/NewSlideButton';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-
+import BackA from '../assets/BackA.svg';
+import RightA from '../assets/RightA.svg';
 import {API_BASE_URL, MAIN_BASE_URL} from '../constants/Constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,10 +29,10 @@ const NewOrderAlertScreen = props => {
   const {modalVisible, dismissModal, onReachedToEnd, denyClick, orderDetails} =
     props;
   const [orderAlreadyAccepted, setOrderAlreadyAccepted] = useState(false);
-  console.log(
-    '💕 ~ file: NewOrderAlertScreen.js:18 ~ NewOrderAlertScreen ~ orderDetails:',
-    orderDetails.order_id,
-  );
+  // console.log(
+  //   '💕 ~ file: NewOrderAlertScreen.js:18 ~ NewOrderAlertScreen ~ orderDetails:',
+  //   orderDetails.order_id,
+  // );
 
   const navigation = useNavigation();
 
@@ -47,14 +55,14 @@ const NewOrderAlertScreen = props => {
           },
         },
       );
-      console.log(
-        '💕 ~ file: NewOrderAlertScreen.js:49 ~ acceptOrder ~ acceptRes:',
-        acceptRes,
-      );
+      // console.log(
+      //   '💕 ~ file: NewOrderAlertScreen.js:49 ~ acceptOrder ~ acceptRes:',
+      //   acceptRes,
+      // );
       dismissModal();
       return true;
     } catch (e) {
-      console.log('💕 ~ file: NewOrderAlertScreen.js:35 ~ acceptOrder ~ e:', e);
+      // console.log('💕 ~ file: NewOrderAlertScreen.js:35 ~ acceptOrder ~ e:', e);
       dismissModal();
       setOrderAlreadyAccepted(true);
       return false;
@@ -149,14 +157,35 @@ const NewOrderAlertScreen = props => {
                   </View>
                 </View>
               </View>
+              <View style={styles.flexBtn}>
+                <TouchableOpacity
+                  style={styles.btnNo}
+                  onPress={() => navigation.goBack()}>
+                  <BackA />
+                  <Text style={styles.no}>No</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnNo1}
+                  onPress={async () => {
+                    const isAccepted = await acceptOrder(); // Call the function
+                    if (isAccepted) {
+                      navigation.navigate('ReachPickup', {
+                        orderData: orderDetails,
+                      }); // Navigate if accepted
+                    }
+                  }}>
+                  <Text style={styles.yes}>Yes</Text>
+                  <RightA />
+                </TouchableOpacity>
+              </View>
 
-              <NewSlideButton
+              {/* <NewSlideButton
                 orderAlreadyAccepted={orderAlreadyAccepted}
                 title={'Accept order'}
                 navigationScreen={'ReachPickup'}
                 onComplete={acceptOrder}
                 orderData={orderDetails}
-              />
+              /> */}
             </View>
           </View>
         </View>
@@ -279,6 +308,46 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 3,
+  },
+  no: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#000',
+    alignSelf: 'center',
+  },
+  yes: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#FFF',
+    alignSelf: 'center',
+  },
+  btnNo: {
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    marginRight: rWidth(8),
+  },
+  btnNo1: {
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    backgroundColor: '#D3178A',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    marginLeft: rWidth(8),
+  },
+ flexBtn: {
+    // backgroundColor:'#FFF',
+    flexDirection: 'row',
+    paddingVertical:rHeight(16),
+    alignItems:'center',
+    justifyContent:'center'
   },
 });
 

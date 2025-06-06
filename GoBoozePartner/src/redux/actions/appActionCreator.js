@@ -33,7 +33,7 @@ export const sendOtp = (mobileNumber, callback) => {
         }
       })
       .catch(error => {
-        console.log('error login api---', error && error.response);
+        // console.log('error login api---', error && error.response);
         callback &&
           callback({error: error && error.response && error.response.data});
       });
@@ -47,21 +47,21 @@ export const verifyOtp = (params, callback) => {
       .then(response => {
         if (response.status == 200) {
           const accessToken = response.data.data.token;
-          console.log(
-            '💕 ~ file: appActionCreator.js:49 ~ return ~ accessToken:',
-            accessToken,
-          );
+          // console.log(
+          //   '💕 ~ file: appActionCreator.js:49 ~ return ~ accessToken:',
+          //   accessToken,
+          // );
           const userId = response.data.data.userId;
-          console.log(
-            '💕 ~ file: appActionCreator.js:50 ~ return ~ userId:',
-            userId,
-          );
+          // console.log(
+          //   '💕 ~ file: appActionCreator.js:50 ~ return ~ userId:',
+          //   userId,
+          // );
           const combinedData = `${accessToken}:${userId}`;
 
-          console.log(
-            '💕 ~ file: appActionCreator.js:61 ~ return ~ combinedData:',
-            combinedData,
-          );
+          // console.log(
+          //   '💕 ~ file: appActionCreator.js:61 ~ return ~ combinedData:',
+          //   combinedData,
+          // );
           AsyncStorage.setItem('USER_DATA', combinedData);
 
           dispatch(saveAccessToken(accessToken));
@@ -79,10 +79,10 @@ export const verifyOtp = (params, callback) => {
 export const fecthDeliveryOrders = callback => {
   return async (dispatch, getState) => {
     const accessToken = getState().auth.bearerAccessToken;
-    console.log(
-      '💕 ~ file: appActionCreator.js:66 ~ return ~ accessToken:',
-      accessToken,
-    );
+    // console.log(
+    //   '💕 ~ file: appActionCreator.js:66 ~ return ~ accessToken:',
+    //   accessToken,
+    // );
 
     return GoboozeAPI.deliveryOrders(accessToken)
       .then(response => {

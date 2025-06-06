@@ -13,7 +13,7 @@ const Loader = ({loading}) => {
       animationType={"none"}
       visible={loading}
       onRequestClose={() => {
-        console.log("close modal");
+        // console.log("close modal");
       }}
     >
       <View style={[styles.modalBackground, isDarkTheme && {backgroundColor:  "#00000095"}]}>

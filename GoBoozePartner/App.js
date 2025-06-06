@@ -58,7 +58,7 @@ function App() {
   }, []);
 
   const getFirebaseToken = async () => {
-    console.log('Executing getFirebasetoken: ');
+    // console.log('Executing getFirebasetoken: ');
     try {
       await messaging().registerDeviceForRemoteMessages();
       messaging()
@@ -93,7 +93,7 @@ function App() {
     messaging()
       .getToken()
       .then(async token => {
-        console.log('push token ' + token);
+        // console.log('push token ' + token);
         await AsyncStorage.setItem('token', token);
       })
       .catch(error => {
@@ -101,11 +101,11 @@ function App() {
       });
   };
   const permissionRequest = async () => {
-    console.log('Executing permission request function: ');
+    // console.log('Executing permission request function: ');
     let systemVersion = DeviceInfo.getSystemVersion();
-    console.log('This is the SystemVersion: ' + systemVersion);
+    // console.log('This is the SystemVersion: ' + systemVersion);
     if (systemVersion > 12) {
-      console.log('This is the systemversion: ' + systemVersion);
+      // console.log('This is the systemversion: ' + systemVersion);
       check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
         .then(result => {
           switch (result) {

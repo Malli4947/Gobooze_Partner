@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Pressable,
   FlatList,
+  Clipboard,
+  Alert,
 } from 'react-native';
 import {useColorScheme} from './ColorSchemeContext';
 import COLORS from '../constants/Colors';
@@ -17,6 +19,7 @@ const FastImage = React.lazy(() => import('react-native-fast-image'));
 const NoOrder = React.lazy(() => import('../assets/NoOrders1.svg'));
 
 const OrdersCard = ({onOrderPress, orderRequests}) => {
+  console.log(orderRequests,'ordersssss')
   const colorScheme = useColorScheme();
   const isDark = colorScheme == 'dark';
   const [showAllProducts, setShowAllProducts] = useState(0);
@@ -25,6 +28,28 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
     const date = new Date(dateString);
     const options = {day: '2-digit', month: 'long', year: 'numeric'};
     return new Intl.DateTimeFormat('en-US', options).format(date);
+  };
+  const formatDateTime = dateString => {
+    const date = new Date(dateString);
+    const options = {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false, // This ensures the use of 24-hour format
+    };
+
+    // Format the date and time
+    let formattedDateTime = new Intl.DateTimeFormat('en-AU', options).format(
+      date,
+    );
+
+    // Remove 'at' from the formatted string
+    formattedDateTime = formattedDateTime.replace(/ at /, ' ');
+
+    return formattedDateTime;
   };
 
   const IMAGE_URL = `https://gobooze-tst.s3.ap-southeast-2.amazonaws.com/goboozestore/`;
@@ -39,11 +64,22 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
       </View>
     );
   }
+  const copyToClipboard = item => {
+    const address = item.order?.address?.address;
+    if (!address) {
+      console.log('Address is undefined for item:', address);
+      Alert.alert('Error', 'Address is not available for this item.');
+      return;
+    }
+    console.log(address, 'address');
+    Clipboard.setString(address);
+    Alert.alert('Copied!', 'Address has been copied to clipboard.');
+  };
 
   const renderItem = (item, index) => {
     if (index == 0) {
-      console.log('This is the order item: ');
-      console.log(JSON.stringify(item, null, 2));
+      // console.log(JSON.stringify(item, null, 2));
+      // console.log('This is the order item: ', item);
     }
     return (
       <Pressable
@@ -180,7 +216,6 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                 isDark && styles.dRightText,
                 {color: '#0162DD', marginLeft: 0},
               ]}>
-              {/* {item.order.order_status} */}
               {item.order.order_status
                 .replace(/-/g, ' ')
                 .replace(/\b\w/g, char => char.toUpperCase())}
@@ -192,9 +227,30 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
             Address:
           </Text>
           <Text
+            numberOfLines={1}
+            style={[
+              styles.lRightText,
+              isDark && styles.dRightText,
+              {width: rWidth(230)},
+            ]}>
+            {item?.order?.address?.address || 'NA'}
+          </Text>
+          <TouchableOpacity onPress={copyToClipboard}>
+            <Text>Copy</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* ORDER PLACED TIME */}
+        <View style={[styles.rowCon, {overflow: 'hidden'}]}>
+          <Text style={[styles.lleftText, isDark && styles.dleftText]}>
+            Order Placed:
+          </Text>
+          <Text
             numberOfLines={2}
             style={[styles.lRightText, isDark && styles.dRightText]}>
-            {item?.order?.address?.address || 'NA'}
+            {item?.order?.createdAt
+              ? formatDateTime(item.order.createdAt)
+              : 'NA'}
           </Text>
         </View>
       </Pressable>

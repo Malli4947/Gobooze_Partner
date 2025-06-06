@@ -65,7 +65,7 @@ const OTPVerificationScreen = props => {
         phone: `+61${phoneNumber}`,
         otp: inputOtp,
       };
-      console.log('This is the jsonBody: ');
+      // console.log('This is the jsonBody: ');
       const token = await AsyncStorage.getItem('token');
       if (token != '' && token) {
         jsonBody.fbToken = {key: token, enabled: true};
@@ -73,7 +73,7 @@ const OTPVerificationScreen = props => {
         jsonBody.fbToken = {key: 'token', enabled: true};
       }
 
-      console.log(jsonBody);
+      // console.log(jsonBody);
       props.appActions.verifyOtp(jsonBody, response => {
         setShowLoader(false);
         if (response.status == 200) {
@@ -84,7 +84,7 @@ const OTPVerificationScreen = props => {
           }
         } else {
           //Alert.alert('Invalid OTP', response.error);
-          console.log(response.error);
+          // console.log(response.error);
         }
       });
     }
@@ -102,8 +102,8 @@ const OTPVerificationScreen = props => {
         );
         setHasLocationPermission(granted);
       } catch (err) {
-        console.log('This is the error: ');
-        console.log(err);
+        // console.log('This is the error: ');
+        // console.log(err);
         return false;
       }
     } else if (Platform.OS === 'ios') {
@@ -121,7 +121,7 @@ const OTPVerificationScreen = props => {
   };
 
   useEffect(() => {
-    console.log('text change---', inputOtp.length);
+    // console.log('text change---', inputOtp.length);
     if (inputOtp.length != 4) {
       setButtonDisabled(true);
     } else {
@@ -141,7 +141,7 @@ const OTPVerificationScreen = props => {
       showListener.remove();
     };
   }, []);
-  console.log(keyboardHeight);
+  // console.log(keyboardHeight);
   return (
     <ScrollView
       contentContainerStyle={{

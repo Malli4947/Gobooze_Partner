@@ -61,7 +61,7 @@ const PersonalDetailsScreen = props => {
       {mediaType: 'photo', includeBase64: false, maxHeight: 200, maxWidth: 200},
       response => {
         if (response && response.assets) {
-          console.log('DEBUG: response: ', response.assets[0].fileName);
+          // console.log('DEBUG: response: ', response.assets[0].fileName);
           setImageObject(response.assets[0]);
         }
       },
@@ -80,7 +80,7 @@ const PersonalDetailsScreen = props => {
       },
       response => {
         if (response && response.assets) {
-          console.log('DEBUG: response: ', response.assets[0].fileName);
+          // console.log('DEBUG: response: ', response.assets[0].fileName);
           setImageObject(response.assets[0]);
         }
       },

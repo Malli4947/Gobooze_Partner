@@ -8,12 +8,14 @@ import {
   SafeAreaView,
   Linking,
   PermissionsIOS,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
-import {IMAGES} from '../constants/Constant';
+import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import NavBarWithBackButton from '../components/NavBarWithBackButton';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
@@ -33,6 +35,8 @@ import ImageResizer from 'react-native-image-resizer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {BackHandler} from 'react-native';
+import BackA from '../assets/BackA.svg';
+import RightA from '../assets/RightA.svg';
 const orders = [
   {
     id: 0,
@@ -51,13 +55,13 @@ const orders = [
 ];
 
 const ReachedDropScreen = ({route}) => {
-  const OrderDetails = route.params.orderDetails;
-  console.log(OrderDetails, 'OrderDetails');
+  const orderData = route.params.orderData;
+  // console.log(orderData, 'orderData');
   const navigation = useNavigation();
 
-  const orders = OrderDetails.order.order_Variants;
+  const orders = orderData.order.order_Variants;
 
-  const storeDetails = route.params.orderDetails.order.store;
+  const storeDetails = route.params.orderData.order.store;
   const [isOrderReady, setIsOrderReady] = useState(false);
   const [isPaidOnline, setIsPaidOnline] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
@@ -74,21 +78,22 @@ const ReachedDropScreen = ({route}) => {
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showCancelOrder, setShowCancelOrder] = useState(false);
   const [photo, setPhoto] = useState();
-  console.log(
-    '💕 ~ file: ReachedDropScreen.js:73 ~ ReachedDropScreen ~ photo:',
-    photo,
-  );
+  // console.log(
+  //   '💕 ~ file: ReachedDropScreen.js:73 ~ ReachedDropScreen ~ photo:',
+  //   photo,
+  // );
 
   const handleUpdateOrder = async () => {
     try {
       if (photo) {
-        await updateOrder(OrderDetails.order_id, 'delivered');
+        await updateOrder(orderData.order_id, 'delivered');
       } else {
         Alert.alert('', 'Please upload the image');
       }
     } catch (e) {
       Alert.alert('Error', 'Failed to update order status');
     }
+    navigation.navigate('Home');
   };
   useEffect(() => {
     const backAction = () => {
@@ -112,7 +117,7 @@ const ReachedDropScreen = ({route}) => {
       const cameraPermission = await PermissionsIOS.requestPermission('camera');
 
       if (cameraPermission !== 'authorized') {
-        console.log('Camera permission denied');
+        // console.log('Camera permission denied');
         Alert.alert('Please provide camera permission to continue!');
         return;
       }
@@ -127,21 +132,21 @@ const ReachedDropScreen = ({route}) => {
 
       // Launch the camera
       launchCamera(options, response => {
-        console.log('This is the response: ');
-        console.log(response);
+        // console.log('This is the response: ');
+        // console.log(response);
 
         if (response.didCancel) {
-          console.log('User cancelled image picker');
+          // console.log('User cancelled image picker');
         } else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
+          // console.log('ImagePicker Error: ', response.error);
         } else if (response.customButton) {
-          console.log('User tapped custom button: ', response.customButton);
+          // console.log('User tapped custom button: ', response.customButton);
         } else {
           // Handle the photo response (e.g., set state, upload photo, etc.)
-          console.log(
-            '💕 ~ file: ReachedDropScreen.js:114 ~ takePhoto ~ response:',
-            response,
-          );
+          // console.log(
+          //   '💕 ~ file: ReachedDropScreen.js:114 ~ takePhoto ~ response:',
+          //   response,
+          // );
 
           const source = {
             uri: response.assets[0].uri,
@@ -164,36 +169,36 @@ const ReachedDropScreen = ({route}) => {
         mediaType: 'photo',
         saveToPhotos: true,
         quality: 0.8,
-
         includeBase64: false,
       };
 
       launchCamera(options, response => {
-        console.log('This is the response: ');
-        console.log(response);
+        console.log('This is the response:', response);
+
         if (response.didCancel) {
           console.log('User cancelled image picker');
         } else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
+          console.log('ImagePicker Error:', response.error);
         } else if (response.customButton) {
-          console.log('User tapped custom button: ', response.customButton);
+          console.log('User tapped custom button:', response.customButton);
+        } else if (response.assets && response.assets.length > 0) {
+          // Check if response.assets exists and has at least one element
+          const source = {
+            uri: response.assets[0].uri,
+            fileName: response.assets[0].fileName,
+          };
+
+          console.log('Image source:', source);
+
+          setPhoto(source);
+          setShowPhotoModal(false);
+          uploadPhoto(source);
+        } else {
+          console.log('No assets found in the response');
         }
-        console.log(
-          '💕 ~ file: ReachedDropScreen.js:114 ~ takePhoto ~ response:',
-          response,
-        );
-
-        const source = {
-          uri: response.assets[0].uri,
-          fileName: response.assets[0].fileName,
-        };
-
-        setPhoto(source);
-        setShowPhotoModal(false);
-        uploadPhoto(source);
       });
     } catch (e) {
-      console.log(e);
+      console.log('Exception:', e);
       Alert.alert('Something went wrong!');
     }
   };
@@ -217,7 +222,7 @@ const ReachedDropScreen = ({route}) => {
 
     try {
       const response = await fetch(
-        `https://devapigobooze.codefactstech.com/order/api/orders/upload-delivery-images/${OrderDetails.order_id}`,
+        `https://devapigobooze.codefactstech.com/order/api/orders/upload-delivery-images/${orderData.order_id}`,
         {
           method: 'POST',
           body: formData,
@@ -227,17 +232,17 @@ const ReachedDropScreen = ({route}) => {
         },
       );
 
-      console.log(
-        '💕 ~ file: ReachedDropScreen.js:166 ~ uploadPhoto ~ response:',
-        response,
-      );
+      // console.log(
+      //   '💕 ~ file: ReachedDropScreen.js:166 ~ uploadPhoto ~ response:',
+      //   response,
+      // );
 
       if (response.ok) {
         const responseData = await response.json();
-        console.log('Upload Success', responseData);
+        // console.log('Upload Success', responseData);
       } else {
         const errorData = await response.json();
-        console.log('Upload Error', errorData);
+        // console.log('Upload Error', errorData);
       }
     } catch (error) {
       console.log('Upload Error', error);
@@ -263,7 +268,7 @@ const ReachedDropScreen = ({route}) => {
       />
       <CannotLeaveOrderAlert
         modalVisible={showCancelOrder}
-        orderId={OrderDetails.order_id}
+        orderId={orderData.order_id}
         onGoback={() => {
           setShowCancelOrder(false);
           setShowPhotoModal(true);
@@ -294,7 +299,7 @@ const ReachedDropScreen = ({route}) => {
                 buttonText="Add Photo"
                 showView={false}
                 handleClick={() => {
-                  console.log('h99------');
+                  // console.log('h99------');
                   setShowPhotoModal(true);
 
                   if (photo) {
@@ -317,7 +322,7 @@ const ReachedDropScreen = ({route}) => {
         <CollectCashView
           isPaidOnline={isPaidOnline}
           isChecked={isChecked}
-          orderDetails={OrderDetails}
+          orderDetails={orderData}
           onCheckboxPress={() => setIsChecked(!isChecked)}
         />
 
@@ -330,27 +335,27 @@ const ReachedDropScreen = ({route}) => {
               if (index === 0) {
                 return (
                   <OrderDetailsView
-                    storeDetails={OrderDetails.order.address.addressPhoneNumber}
+                    storeDetails={orderData.order.address.addressPhoneNumber}
                     id={1}
                     expandCustomerDetail={expandCustomerDetailView}
                     image={IMAGES.CUSTOMER}
-                    title={`${OrderDetails.order.address.first_name}`}
+                    title={`${orderData.order.address.first_name}`}
                     customerDetail={{
-                      name: `${OrderDetails.order.address.first_name}`,
-                      mobileNum: `${OrderDetails.order.address.addressPhoneNumber}`,
+                      name: `${orderData.order.address.first_name}`,
+                      mobileNum: `${orderData.order.address.addressPhoneNumber}`,
                       // orderId: `#${OrderDetails.order_id.slice(
                       //   0,
                       //   5,
                       // )}-${OrderDetails.order_id.slice(-5)}`,
-                      orderId: `${OrderDetails.order.sequence_number}`,
-                      address: `${OrderDetails.order?.address?.address}`,
+                      orderId: `${orderData.order.sequence_number}`,
+                      address: `${orderData.order?.address?.address}`,
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
                     }
                     Onpresses={() => {
                       Linking.openURL(
-                        `tel:${OrderDetails.order.address.addressPhoneNumber}`,
+                        `tel:${orderData.order.address.addressPhoneNumber}`,
                       );
                     }}
                   />
@@ -381,17 +386,17 @@ const ReachedDropScreen = ({route}) => {
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
         {photo ? (
-          <View
-            style={[
-              styles.slideBtnContainer,
-              isDarkTheme && {backgroundColor: COLORS.dark_con},
-            ]}>
-            <NewSlideButton
-              title={`Order Delivered`}
-              navigationScreen={'Home'}
-              onComplete={handleUpdateOrder}
-              slideButoon={true}
-            />
+          <View style={styles.flexBtn}>
+            <TouchableOpacity
+              style={styles.btnNo}
+              onPress={() => navigation.goBack()}>
+              <BackA />
+              <Text style={styles.no}>No</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btnNo1} onPress={handleUpdateOrder}>
+              <Text style={styles.yes}>Yes</Text>
+              <RightA />
+            </TouchableOpacity>
           </View>
         ) : null}
       </View>
@@ -423,6 +428,47 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignSelf: 'center',
     marginTop: rHeight(20),
+  },
+  no: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#000',
+    alignSelf: 'center',
+  },
+  yes: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#FFF',
+    alignSelf: 'center',
+  },
+  btnNo: {
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    marginRight: rWidth(8),
+  },
+  btnNo1: {
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    backgroundColor: '#D3178A',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    marginLeft: rWidth(8),
+  },
+  flexBtn: {
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
+    paddingTop: rHeight(16),
+    paddingBottom: rHeight(20),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

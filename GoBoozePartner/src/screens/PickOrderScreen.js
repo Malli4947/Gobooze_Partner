@@ -7,6 +7,7 @@ import {
   FlatList,
   Alert,
   Linking,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
@@ -22,13 +23,15 @@ import NewSlideButton from '../components/NewSlideButton';
 import {useNavigation} from '@react-navigation/native';
 import updateOrder from '../constants/statusUpdate';
 import {BackHandler} from 'react-native';
+import BackA from '../assets/BackA.svg';
+import RightA from '../assets/RightA.svg';
 // const detailsData = [{id: 0, title: 'Order Details'}]
 
 const PickOrderScreen = ({route}) => {
-  const OrderDetails = route.params.orderDetails;
+  const OrderDetails = route?.params?.orderDetails;
 
-  const orders = OrderDetails.order.order_Variants;
-  console.log(OrderDetails, 'OrderDetails=========================');
+  const orders = OrderDetails?.order?.order_Variants;
+  // console.log(OrderDetails, 'OrderDetails=========================');
   const storeDetails = route.params.orderDetails.order.store;
 
   const [isOrderReady, setIsOrderReady] = useState(false);
@@ -53,6 +56,7 @@ const PickOrderScreen = ({route}) => {
     } catch (e) {
       Alert.alert('Error', 'Failed to update order status');
     }
+    navigation.navigate('ReachMapDrop', {orderData: OrderDetails});
   };
   useEffect(() => {
     const backAction = () => {
@@ -185,7 +189,7 @@ const PickOrderScreen = ({route}) => {
                     onPress={() => {
                       setExpandStoreDetailsView(!expandStoreDetailsView);
 
-                      console.log('-----2-----');
+                      // console.log('-----2-----');
                     }}
                   />
                 );
@@ -194,9 +198,20 @@ const PickOrderScreen = ({route}) => {
           />
         </View>
       </ScrollView>
-
+      <View style={styles.flexBtn}>
+        <TouchableOpacity
+          style={styles.btnNo}
+          onPress={() => navigation.goBack()}>
+          <BackA />
+          <Text style={styles.no}>No</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnNo1} onPress={handleUpdateOrder}>
+          <Text style={styles.yes}>Yes</Text>
+          <RightA />
+        </TouchableOpacity>
+      </View>
       {/* ------------- Bottom slide button ----------- */}
-      <View
+      {/* <View
         style={[
           styles.slideBtnContainer,
           isDarkTheme && {backgroundColor: COLORS.dark_con},
@@ -207,7 +222,7 @@ const PickOrderScreen = ({route}) => {
           onComplete={handleUpdateOrder}
           orderData={OrderDetails}
         />
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };
@@ -271,6 +286,47 @@ const styles = StyleSheet.create({
     paddingVertical: rHeight(5),
     paddingHorizontal: rWidth(8),
     borderRadius: 13,
+  },
+  no: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#000',
+    alignSelf: 'center',
+  },
+  yes: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#FFF',
+    alignSelf: 'center',
+  },
+  btnNo: {
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    marginRight: rWidth(8),
+  },
+  btnNo1: {
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    backgroundColor: '#D3178A',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    marginLeft: rWidth(8),
+  },
+  flexBtn: {
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
+    paddingTop: rHeight(16),
+    paddingBottom: rHeight(20),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

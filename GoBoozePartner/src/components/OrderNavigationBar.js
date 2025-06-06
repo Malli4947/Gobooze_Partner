@@ -101,7 +101,7 @@ const OrderNavigationBar = () => {
         }
       );
       const data = await fetchDetails.json();
-      console.log(data, 'data.....');
+      // console.log(data, 'data.....');
       setProfileData(data.data);
 
       // Set the initial onlineOfflineIndex based on is_active status

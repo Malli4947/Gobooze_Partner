@@ -7,10 +7,10 @@ import {useColorScheme} from '../ColorSchemeContext';
 import FastImage from 'react-native-fast-image';
 
 const OrderDetailExpandView = ({orderDetails}) => {
-  console.log(
-    '💕 ~ file: OrderDetailExpandView.js:9 ~ OrderDetailExpandView ~ orderDetails:',
-    orderDetails,
-  );
+  // console.log(
+  //   '💕 ~ file: OrderDetailExpandView.js:9 ~ OrderDetailExpandView ~ orderDetails:',
+  //   orderDetails,
+  // );
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkTextStyle = isDarkTheme && {color: '#FFFFFFBF'};

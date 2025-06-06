@@ -32,10 +32,10 @@ const CannotLeaveOrderAlert = props => {
   const isDarkTheme = colorScheme === 'dark';
   const {modalVisible, dismissModal, onGoback, onSuccessCancel, orderId} =
     props;
-  console.log(
-    '💕 ~ file: CannotLeaveOrderAlert.js:34 ~ CannotLeaveOrderAlert ~ orderId:',
-    orderId,
-  );
+  // console.log(
+  //   '💕 ~ file: CannotLeaveOrderAlert.js:34 ~ CannotLeaveOrderAlert ~ orderId:',
+  //   orderId,
+  // );
 
   const darkTextColor = isDarkTheme && {color: '#FFF'};
   const checked = isDarkTheme ? IMAGES.CHECKED_DARK : IMAGES.CHECKED_LIGHT;
@@ -98,10 +98,10 @@ const CannotLeaveOrderAlert = props => {
         },
       );
 
-      console.log(
-        '💕 ~ file: CannotLeaveOrderAlert.js:102 ~ cancelOrder ~ orderCancelRes:',
-        orderCancelRes,
-      );
+      // console.log(
+      //   '💕 ~ file: CannotLeaveOrderAlert.js:102 ~ cancelOrder ~ orderCancelRes:',
+      //   orderCancelRes,
+      // );
 
       if (orderCancelRes.status == 200) {
         onSuccessCancel();
@@ -146,7 +146,7 @@ const CannotLeaveOrderAlert = props => {
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() => {
-                    console.log('hi---');
+                    // console.log('hi---');
                     setSelectedOption(item);
                   }}
                   style={styles.optionContainer}>

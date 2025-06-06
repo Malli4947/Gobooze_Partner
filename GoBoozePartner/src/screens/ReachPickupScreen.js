@@ -31,25 +31,27 @@ import {Marker} from 'react-native-svg';
 import MapViewDirections from 'react-native-maps-directions';
 import Shop from '../assets/Shop.svg';
 import {useSelector, useDispatch} from 'react-redux';
+import BackA from '../assets/BackA.svg';
+import RightA from '../assets/RightA.svg';
 const ReachPickupScreen = ({route}) => {
   const GOOGLE_MAPS_APIKEY = 'AIzaSyCtTH8DV1-h4tYTSb-geYjdn71a0Up_63k';
   const {currentLattitude, currentLongitude} = useSelector(
     state => state.location,
   );
-  console.log(
-    currentLattitude,
-    'currentLattitude================><=============',
-  );
-  console.log(
-    currentLongitude,
-    'currentLongitude================><=============',
-  );
-  const OrderDetails = route.params.orderDetails;
-  console.log(OrderDetails, 'OrderDetails================><=============');
+  // console.log(
+  //   currentLattitude,
+  //   'currentLattitude================><=============',
+  // );
+  // console.log(
+  //   currentLongitude,
+  //   'currentLongitude================><=============',
+  // );
+  const orderData = route?.params?.orderData;
+  console.log(orderData, 'OrderDetails');
 
   // const storeDetails = route.params.orderDetails.order.store;
-  const storeDetails = route.params.orderDetails?.order?.store || {};
-  console.log(storeDetails, 'storeDetails');
+  const storeDetails = route.params.orderData?.order?.store || {};
+  // console.logs(storeDetails, 'storeDetails');
 
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
@@ -102,9 +104,9 @@ const ReachPickupScreen = ({route}) => {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
       const acceptRes = await axios.patch(
-        `${MAIN_BASE_URL}order/api/orders/update-order-status/${OrderDetails.order_id}`,
+        `${MAIN_BASE_URL}order/api/orders/update-order-status/${orderData.order_id}`,
         {
-          order_status: 'reached-pickup-location',
+          order_status: 'reached-pickup-location....',
         },
         {
           headers: {
@@ -112,6 +114,7 @@ const ReachPickupScreen = ({route}) => {
           },
         },
       );
+      navigation.navigate('OrderPick', {orderDetails: orderData});
     } catch (e) {}
   };
 
@@ -120,11 +123,14 @@ const ReachPickupScreen = ({route}) => {
       `https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${storeDetails?.location?.coordinates?.[1]},${storeDetails?.location?.coordinates?.[0]}&travelmode=driving`,
     ).catch(err => console.error('An error occurred', err));
   };
-  const storeLocation = {
-    longitude: storeDetails?.location?.coordinates?.[0],
-    latitude: storeDetails?.location?.coordinates?.[1],
-  };
-
+  // Validate store coordinates
+  const coordinates = storeDetails?.location?.coordinates;
+  const storeLocation =
+    coordinates?.length === 2 &&
+    typeof coordinates[0] === 'number' &&
+    typeof coordinates[1] === 'number'
+      ? {longitude: coordinates[0], latitude: coordinates[1]}
+      : null;
   // const handleOpenNow = () => {
   //   Linking.openURL(
   //     `https://www.google.com/maps/dir/?api=1&origin=${currentLattitude},${currentLongitude}&destination=${storeDetails?.location?.coordinates?.[0]},${storeDetails?.location?.coordinates?.[1]}&travelmode=driving`,
@@ -135,7 +141,7 @@ const ReachPickupScreen = ({route}) => {
   //   longitude: storeDetails?.location?.coordinates?.[1],
   // };
 
-  console.log(storeLocation, 'storeLocation=====================');
+  // console.log(storeLocation, 'storeLocation=====================');
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
@@ -143,7 +149,7 @@ const ReachPickupScreen = ({route}) => {
         <NavBarWithBackButton
           backDisabled={true}
           onPress={() => {
-            console.log('000');
+            // console.log('000');
             navigation.navigate('Home');
           }}
           title={'Reach Pickup'}
@@ -163,17 +169,16 @@ const ReachPickupScreen = ({route}) => {
       </View>
 
       <MapView
-        provider={PROVIDER_DEFAULT} // remove if not using Google Maps
+        provider={PROVIDER_DEFAULT}
         style={styles.map}
         showsTraffic={false}
         region={{
           latitude: currentLattitude,
-
           longitude: currentLongitude,
-
           latitudeDelta: 0.0121,
           longitudeDelta: 0.0121,
         }}>
+        {/* Current Location Marker */}
         {currentLattitude && currentLongitude && (
           <MapMarker
             coordinate={{
@@ -183,11 +188,16 @@ const ReachPickupScreen = ({route}) => {
             <Nav />
           </MapMarker>
         )}
-        <MapMarker coordinate={storeLocation}>
-          <Shop />
-        </MapMarker>
 
-        {true && (
+        {/* Store Marker */}
+        {storeLocation && (
+          <MapMarker coordinate={storeLocation}>
+            <Shop />
+          </MapMarker>
+        )}
+
+        {/* Directions */}
+        {storeLocation && currentLattitude && currentLongitude && (
           <MapViewDirections
             origin={{
               latitude: currentLattitude,
@@ -214,8 +224,8 @@ const ReachPickupScreen = ({route}) => {
             calculateDistance(
               currentLattitude,
               currentLongitude,
-              storeLocation.latitude,
-              storeLocation.longitude,
+              storeLocation?.latitude,
+              storeLocation?.longitude,
             ),
           )} min`}
           <Text style={[{color: COLORS.light_primary_text}, darkTextStyle]}>
@@ -223,8 +233,8 @@ const ReachPickupScreen = ({route}) => {
             {`${calculateDistance(
               currentLattitude,
               currentLongitude,
-              storeLocation.latitude,
-              storeLocation.longitude,
+              storeLocation?.latitude,
+              storeLocation?.longitude,
             )} km`}
             )
           </Text>
@@ -277,22 +287,33 @@ const ReachPickupScreen = ({route}) => {
             id="0"
             image={IMAGES.BOX}
             title={'Order:'}
-            value={OrderDetails.order.sequence_number}
+            value={orderData?.order?.sequence_number}
           />
           <DetailsView
             id="1"
             image={IMAGES.CUSTOMER}
             title={'Customer:'}
-            value={OrderDetails.order.address.first_name}
+            value={orderData?.order?.address?.first_name}
           />
         </View>
-
-        <NewSlideButton
+        <View style={styles.flexBtn}>
+          <TouchableOpacity
+            style={styles.btnNo}
+            onPress={() => navigation.goBack()}>
+            <BackA />
+            <Text style={styles.no}>No</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btnNo1} onPress={updateOrder}>
+            <Text style={styles.yes}>Yes</Text>
+            <RightA />
+          </TouchableOpacity>
+        </View>
+        {/* <NewSlideButton
           title={'reached-pickup-location'}
           navigationScreen={'OrderPick'}
           onComplete={updateOrder}
           orderData={OrderDetails}
-        />
+        /> */}
       </View>
     </SafeAreaView>
   );
@@ -335,7 +356,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     paddingTop: 20,
-    height: '50%',
+    height: '45%',
   },
   topSeperator: {
     height: 4,
@@ -433,6 +454,46 @@ const styles = StyleSheet.create({
     color: '#000',
     paddingLeft: rWidth(16),
     fontSize: rWidth(14),
+  },
+  no: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#000',
+    alignSelf: 'center',
+  },
+  yes: {
+    fontFamily: GRAPHIK_FONT.MEDIUM,
+    fontSize: rWidth(12),
+    color: '#FFF',
+    alignSelf: 'center',
+  },
+  btnNo: {
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    marginRight: rWidth(8),
+  },
+  btnNo1: {
+    paddingVertical: rHeight(8),
+    borderRadius: 16,
+    backgroundColor: '#D3178A',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rWidth(30),
+    borderWidth: 1,
+    borderColor: '#D3178A',
+    marginLeft: rWidth(8),
+  },
+  flexBtn: {
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
+    paddingTop: rHeight(16),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

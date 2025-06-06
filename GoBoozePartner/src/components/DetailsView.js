@@ -9,6 +9,7 @@ const DetailsView = ({id, image, title, value, style}) => {
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkTextStyle = isDarkTheme && {color: COLORS.dark_primary_text};
+  const safeValue = value ?? ''; // or some default string
 
   return (
     <View style={[styles.orderDetailsContainer]}>
@@ -18,14 +19,16 @@ const DetailsView = ({id, image, title, value, style}) => {
         source={image}
       />
       <Text style={[styles.orderText, darkTextStyle]}>{title}</Text>
+
       {id == 0 && (
         <Text style={[styles.orderText, darkTextStyle]}>
-          {value.slice(0, value.length - 4)}
+          {safeValue.slice(0, safeValue.length - 4)}
           <Text style={{fontFamily: GRAPHIK_FONT.SEMIBOLD}}>
-            {value.slice(-4)}
+            {safeValue.slice(-4)}
           </Text>
         </Text>
       )}
+
       {id != 0 && (
         <Text
           numberOfLines={1}
