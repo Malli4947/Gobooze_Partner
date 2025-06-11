@@ -6,20 +6,20 @@ import {
   TouchableOpacity,
   Pressable,
   FlatList,
-  Clipboard,
   Alert,
 } from 'react-native';
 import {useColorScheme} from './ColorSchemeContext';
 import COLORS from '../constants/Colors';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import {GRAPHIK_FONT} from '../constants/Constant';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 // Lazy load FastImage and NoOrder components
 const FastImage = React.lazy(() => import('react-native-fast-image'));
 const NoOrder = React.lazy(() => import('../assets/NoOrders1.svg'));
 
 const OrdersCard = ({onOrderPress, orderRequests}) => {
-  console.log(orderRequests,'ordersssss')
+  // console.log(orderRequests, 'ordersssss');
   const colorScheme = useColorScheme();
   const isDark = colorScheme == 'dark';
   const [showAllProducts, setShowAllProducts] = useState(0);
@@ -29,24 +29,29 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
     const options = {day: '2-digit', month: 'long', year: 'numeric'};
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
-  const formatDateTime = dateString => {
+  const formatDateTime = (dateString, showOnlyTime = false) => {
     const date = new Date(dateString);
-    const options = {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false, // This ensures the use of 24-hour format
-    };
+    let options = {};
 
-    // Format the date and time
+    if (showOnlyTime) {
+      options = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false, 
+      };
+    } else {
+      options = {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false, 
+      };
+    }
     let formattedDateTime = new Intl.DateTimeFormat('en-AU', options).format(
       date,
     );
-
-    // Remove 'at' from the formatted string
     formattedDateTime = formattedDateTime.replace(/ at /, ' ');
 
     return formattedDateTime;
@@ -205,41 +210,31 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
               : `${item.order.address.first_name} ${item.order.address.last_name}`}
           </Text>
         </View>
-        <View style={[styles.rowCon, {marginTop: rHeight(8)}]}>
-          <Text style={[styles.lleftText, isDark && styles.dleftText]}>
-            Order Status:
+        <View style={[styles.rowCon, {margin: 10, overflow: 'hidden'}]}>
+          <Text style={[styles.lleftText, isDark && styles.dleftText, {marginTop: rHeight(-16)}]}>
+            Address:
           </Text>
-          <View style={[styles.statusCon]}>
+          <TouchableOpacity
+            style={{flexDirection: 'row'}}
+            onPress={() => {
+              const address = item?.order?.address?.address || 'NA';
+              Clipboard.setString(address);
+            }}
+            activeOpacity={0.7}>
             <Text
+              numberOfLines={2}
               style={[
                 styles.lRightText,
                 isDark && styles.dRightText,
-                {color: '#0162DD', marginLeft: 0},
+                {width: '70%'},
               ]}>
-              {item.order.order_status
-                .replace(/-/g, ' ')
-                .replace(/\b\w/g, char => char.toUpperCase())}
+              {item?.order?.address?.address || 'NA'}
             </Text>
-          </View>
-        </View>
-        <View style={[styles.rowCon, {margin: 10, overflow: 'hidden'}]}>
-          <Text style={[styles.lleftText, isDark && styles.dleftText]}>
-            Address:
-          </Text>
-          <Text
-            numberOfLines={1}
-            style={[
-              styles.lRightText,
-              isDark && styles.dRightText,
-              {width: rWidth(230)},
-            ]}>
-            {item?.order?.address?.address || 'NA'}
-          </Text>
-          <TouchableOpacity onPress={copyToClipboard}>
-            <Text>Copy</Text>
+            <Text style={[styles.lRightText1, isDark && styles.dRightText]}>
+              Copy
+            </Text>
           </TouchableOpacity>
         </View>
-
         {/* ORDER PLACED TIME */}
         <View style={[styles.rowCon, {overflow: 'hidden'}]}>
           <Text style={[styles.lleftText, isDark && styles.dleftText]}>
@@ -412,6 +407,12 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rWidth(14),
     marginLeft: rWidth(8),
+  },
+  lRightText1: {
+    color: '#D3178A',
+    fontFamily: GRAPHIK_FONT.BOLD,
+    fontSize: rWidth(14),
+    marginLeft: rWidth(12),
   },
   dRightText: {
     color: COLORS.dark_primary_text,

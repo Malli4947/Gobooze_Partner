@@ -84,7 +84,7 @@ const ReachPickupScreen = ({route}) => {
     const averageSpeed = 40; // Average speed assumed in km/h
     const travelTimeHours = distanceInKm / averageSpeed;
     const travelTimeMinutes = travelTimeHours * 60;
-    return Math.round(travelTimeMinutes); // Round to nearest whole number
+    return Math.round(travelTimeMinutes); 
   };
   useEffect(() => {
     const backAction = () => {

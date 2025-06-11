@@ -42,32 +42,27 @@ const NewOrderAlertScreen = props => {
   };
   const darkBg = isDarkTheme && {backgroundColor: COLORS.dark_con};
 
-  const acceptOrder = async () => {
-    try {
-      const combinedData = await AsyncStorage.getItem('USER_DATA');
-      const [accessToken, userId] = combinedData?.split(':') ?? [];
-      const acceptRes = await axios.post(
-        `${MAIN_BASE_URL}order/api/orders/accept-order?orderId=${orderDetails.order_id}&userId=${userId}`,
-        {},
-        {
-          headers: {
-            Authorization: `${accessToken}`, // Include the access token in the headers
-          },
+const acceptOrder = async () => {
+  try {
+    const combinedData = await AsyncStorage.getItem('USER_DATA');
+    const [accessToken, userId] = combinedData?.split(':') ?? [];
+    const acceptRes = await axios.post(
+      `${MAIN_BASE_URL}order/api/orders/accept-order?orderId=${orderDetails.order_id}&userId=${userId}`,
+      {},
+      {
+        headers: {
+          Authorization: `${accessToken}`,
         },
-      );
-      // console.log(
-      //   '💕 ~ file: NewOrderAlertScreen.js:49 ~ acceptOrder ~ acceptRes:',
-      //   acceptRes,
-      // );
-      dismissModal();
-      return true;
-    } catch (e) {
-      // console.log('💕 ~ file: NewOrderAlertScreen.js:35 ~ acceptOrder ~ e:', e);
-      dismissModal();
-      setOrderAlreadyAccepted(true);
-      return false;
-    }
-  };
+      },
+    );
+    dismissModal();
+    return true;
+  } catch (e) {
+    dismissModal();
+    setOrderAlreadyAccepted(true);
+    return false;
+  }
+};
 
   return (
     <Modal visible={modalVisible} transparent={true} animationType={'fade'}>
@@ -164,19 +159,19 @@ const NewOrderAlertScreen = props => {
                   <BackA />
                   <Text style={styles.no}>No</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.btnNo1}
-                  onPress={async () => {
-                    const isAccepted = await acceptOrder(); // Call the function
-                    if (isAccepted) {
-                      navigation.navigate('ReachPickup', {
-                        orderData: orderDetails,
-                      }); // Navigate if accepted
-                    }
-                  }}>
-                  <Text style={styles.yes}>Yes</Text>
-                  <RightA />
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.btnNo1}
+                onPress={async () => {
+                  const isAccepted = await acceptOrder();
+                  if (isAccepted) {
+                    navigation.navigate('ReachMapDrop', {
+                      orderData: orderDetails,
+                    });
+                  }
+                }}>
+                <Text style={styles.yes}>Yes</Text>
+                <RightA />
+              </TouchableOpacity>
               </View>
 
               {/* <NewSlideButton
