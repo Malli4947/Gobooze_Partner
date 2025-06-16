@@ -68,9 +68,9 @@ const CollectCashView = ({
               <Text
                 style={[
                   styles.orderText,
-                  lightTxt,
+                  // lightTxt,
                 ]}>
-                  {`Order: ${orderDetails.order.sequence_number}`}
+                  {`Order: ${orderDetails?.order?.sequence_number}`}
               </Text>
             </View>
           </View>
@@ -232,3 +232,4 @@ const styles = StyleSheet.create({
     marginBottom: rHeight(5),
   },
 });
+

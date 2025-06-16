@@ -228,7 +228,7 @@ const NewHomeScreen = props => {
       setIsLoading(false);
     }
   };
-  const handleOrderPress = async (item) => {
+const handleOrderPress = async (item) => {
   try {
     const locationEnabled = await checkLocationEnabled();
     if (!locationEnabled) {
@@ -270,29 +270,23 @@ const NewHomeScreen = props => {
         'To accept new orders, Please go Online.',
         [{ text: 'OK' }]
       );
-      return; // Stop further execution if the user is offline
+      return;
     }
 
     // Check the order status
     if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
-        setModaldata(item);
-        setShowNewOrderModal(true);
-      } else if (insignSelectedIndex === 1) {
-        const {order_status} = item.order;
-        if (order_status === 'accepted') {
-          navigation.navigate('ReachPickup', {orderDetails: item});
-        } else if (order_status === 'reached-pickup-location') {
-          navigation.navigate('OrderPick', {orderDetails: item});
-        } else if (order_status === 'on-the-way') {
-          navigation.navigate('ReachMapDrop', {orderDetails: item});
-        } else if (order_status === 'ready-for-delivery') {
-          navigation.navigate('CollectMoney', {orderDetails: item});
-        }
-      }
-    } catch (error) {}
-  };
-
-
+      setModaldata(item);
+      setShowNewOrderModal(true);
+    } else if (insignSelectedIndex === 1) {
+      // Always navigate to ReachMapDrop regardless of order status
+      navigation.navigate('ReachMapDrop', {
+        orderData: item  // Changed from orderDetails to item to match your variable
+      });
+    }
+  } catch (error) {
+    console.error('Error in handleOrderPress:', error);
+  }
+};
   //Malika New changes ends
   useEffect(() => {
     const backAction = () => {
@@ -615,3 +609,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F3F9',
   },
 });
+

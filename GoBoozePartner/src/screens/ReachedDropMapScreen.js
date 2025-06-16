@@ -55,7 +55,7 @@ const ReachedDropMapScreen = ({route}) => {
 
   // const orders = OrderDetails.order && OrderDetails.order.order_Variants ? OrderDetails.order.order_Variants : [];
   // const ordersAddress = OrderDetails.order.address;
-  const storeDetails = orderData.order.store;
+  const storeDetails = orderData?.order?.store;
   // console.log(storeDetails, 'storeDetails-------');
 
   const insets = useSafeAreaInsets();
@@ -120,8 +120,8 @@ const ReachedDropMapScreen = ({route}) => {
   };
 
   const userLocation = {
-    latitude: orderData.order.address.coordinates.lat,
-    longitude: orderData.order.address.coordinates.lng,
+    latitude: orderData?.order?.address?.coordinates?.lat,
+    longitude: orderData?.order?.address?.coordinates?.lng,
   };
   // Assuming OrderDetails is your variable containing the order details JSON
 
@@ -223,11 +223,11 @@ const ReachedDropMapScreen = ({route}) => {
             <View style={styles.addressTopView}>
               <View style={{width: '70%'}}>
                 <Text style={[styles.lightBlackText, darkTextStyle]}>
-                  {orderData.order.address.first_name}
-                  {orderData.order.address.last_name}
+                  {orderData?.order?.address?.first_name}
+                  {orderData?.order?.address?.last_name}
                 </Text>
                 <Text style={[styles.ultralightBlackText, darkTextStyle]}>
-                  {orderData.order.address.state}
+                  {orderData?.order?.address?.state}
                 </Text>
               </View>
 
@@ -254,7 +254,7 @@ const ReachedDropMapScreen = ({route}) => {
               <TouchableOpacity
                 onPress={() => {
                   Linking.openURL(
-                    `tel:${orderData.order.address.addressPhoneNumber}`,
+                    `tel:${orderData?.order?.user?.phoneNumber}`,
                   );
                 }}
                 style={styles.callContainer}>
@@ -286,14 +286,14 @@ const ReachedDropMapScreen = ({route}) => {
             //   0,
             //   5,
             // )}-${OrderDetails.order_id.slice(-5)}`}
-            value={orderData.order.sequence_number}
+            value={orderData?.order?.sequence_number}
           />
           <DetailsView
             style={{width: '60%'}}
             id="1"
             image={IMAGES.CUSTOMER}
             title={'Customer Details:'}
-            value={`${orderData.order.address.first_name} ${orderData.order.address.last_name}, ${orderData.order.address.address}`}
+            value={`${orderData?.order?.address?.first_name} ${orderData?.order?.address?.last_name}, ${orderData?.order?.address?.address}`}
           />
         </View>
         <View style={styles.flexBtn}>
@@ -512,3 +512,4 @@ const styles = StyleSheet.create({
 });
 
 export default ReachedDropMapScreen;
+

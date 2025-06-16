@@ -55,13 +55,13 @@ const orders = [
 ];
 
 const ReachedDropScreen = ({route}) => {
-  const orderData = route.params.orderData;
+  const orderData = route?.params?.orderData;
   // console.log(orderData, 'orderData');
   const navigation = useNavigation();
 
-  const orders = orderData.order.order_Variants;
+  const orders = orderData?.order?.order_Variants;
 
-  const storeDetails = route.params.orderData.order.store;
+  const storeDetails = route?.params?.orderData?.order?.store;
   const [isOrderReady, setIsOrderReady] = useState(false);
   const [isPaidOnline, setIsPaidOnline] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
@@ -268,7 +268,7 @@ const ReachedDropScreen = ({route}) => {
       />
       <CannotLeaveOrderAlert
         modalVisible={showCancelOrder}
-        orderId={orderData.order_id}
+        orderId={orderData?.order_id}
         onGoback={() => {
           setShowCancelOrder(false);
           setShowPhotoModal(true);
@@ -335,27 +335,27 @@ const ReachedDropScreen = ({route}) => {
               if (index === 0) {
                 return (
                   <OrderDetailsView
-                    storeDetails={orderData.order.address.addressPhoneNumber}
+                    storeDetails={orderData?.order?.address?.addressPhoneNumber}
                     id={1}
                     expandCustomerDetail={expandCustomerDetailView}
                     image={IMAGES.CUSTOMER}
-                    title={`${orderData.order.address.first_name}`}
+                    title={`${orderData?.order?.address?.first_name}`}
                     customerDetail={{
-                      name: `${orderData.order.address.first_name}`,
-                      mobileNum: `${orderData.order.address.addressPhoneNumber}`,
+                      name: `${orderData?.order?.address?.first_name}`,
+                      mobileNum: `${orderData?.order?.address?.addressPhoneNumber}`,
                       // orderId: `#${OrderDetails.order_id.slice(
                       //   0,
                       //   5,
                       // )}-${OrderDetails.order_id.slice(-5)}`,
-                      orderId: `${orderData.order.sequence_number}`,
-                      address: `${orderData.order?.address?.address}`,
+                      orderId: `${orderData?.order?.sequence_number}`,
+                      address: `${orderData?.order?.address?.address}`,
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
                     }
                     Onpresses={() => {
                       Linking.openURL(
-                        `tel:${orderData.order.address.addressPhoneNumber}`,
+                        `tel:${orderData?.order?.address?.addressPhoneNumber}`,
                       );
                     }}
                   />
@@ -473,3 +473,4 @@ const styles = StyleSheet.create({
 });
 
 export default ReachedDropScreen;
+
