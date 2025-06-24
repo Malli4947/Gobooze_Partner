@@ -57,49 +57,52 @@ function App() {
     // };
   }, []);
 
-  const getFirebaseToken = async () => {
-    // console.log('Executing getFirebasetoken: ');
-    try {
-      await messaging().registerDeviceForRemoteMessages();
-      messaging()
-        .hasPermission()
-        .then(enabled => {
-          if (enabled) {
-            getToken();
-          } else {
-            requestPermissionToken();
-          }
-        })
-        .catch(error => {
-          console.log('error checking permisions ' + error);
-        });
-    } catch (error) {
-      console.log('error getting token ' + error);
-    }
-  };
+const getFirebaseToken = async () => {
+if (Platform.OS === 'ios') {
+  messaging()
+    .requestPermission()
+    .then(authStatus => {
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  const requestPermissionToken = () => {
-    messaging()
-      .requestPermission()
-      .then(() => {
-        getToken();
-      })
-      .catch(error => {
-        console.log('permission rejected ' + error);
-      });
-  };
+      if (enabled) {
+        // console.log('Authorization status:', authStatus);
+        getFirebaseToken();
+      }
+    })
+    .catch(error => {
+      console.log('iOS permission error:', error);
+    });
+}
+  await messaging().registerDeviceForRemoteMessages();
+  const token = await messaging().getToken();
+  console.log('Firebase Token:', token);
+  await AsyncStorage.setItem('token', token);
+};
 
-  const getToken = () => {
-    messaging()
-      .getToken()
-      .then(async token => {
-        // console.log('push token ' + token);
-        await AsyncStorage.setItem('token', token);
-      })
-      .catch(error => {
-        console.log('error getting push token ' + error);
-      });
-  };
+  // const requestPermissionToken = () => {
+  //   messaging()
+  //     .requestPermission()
+  //     .then(() => {
+  //       getToken();
+  //     })
+  //     .catch(error => {
+  //       console.log('permission rejected ' + error);
+  //     });
+  // };
+
+  // const getToken = () => {
+  //   messaging()
+  //     .getToken()
+  //     .then(async token => {
+  //       console.log('push token ' + token);
+  //       await AsyncStorage.setItem('token', token);
+  //     })
+  //     .catch(error => {
+  //       console.log('error getting push token ' + error);
+  //     });
+  // };
   const permissionRequest = async () => {
     // console.log('Executing permission request function: ');
     let systemVersion = DeviceInfo.getSystemVersion();
@@ -251,3 +254,4 @@ function App() {
 }
 
 export default App;
+

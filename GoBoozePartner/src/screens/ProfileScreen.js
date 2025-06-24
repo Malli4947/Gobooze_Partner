@@ -36,6 +36,7 @@ const ProfileScreen = () => {
   const darkTextStyle = isDarkTheme && {color: COLORS.dark_primary_text};
   const insets = useSafeAreaInsets();
   const [profileData, setProfileData] = useState();
+  console.log('userDtaaa',profileData);
   const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
@@ -66,8 +67,9 @@ const ProfileScreen = () => {
           },
         },
       );
+      console.log('fetchDta',fetchDetails);
       const data = await fetchDetails.json();
-      // console.log(data, 'data.....');
+      console.log(data, 'data.....');
       // const store = await data.data.storeId.json();
       // console.log(store, 'store.....');
       setProfileData(data);
@@ -107,14 +109,23 @@ const ProfileScreen = () => {
     );
   };
 
-  const LogOut = async () => {
-    try {
-      await AsyncStorage.removeItem('USER_DATA');
-      navigation.navigate('Onboarding');
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ const LogOut = async () => {
+  try {
+    const userData = await AsyncStorage.getItem('USER_DATA');
+    const token = await AsyncStorage.getItem('token');
+
+    console.log('USER_DATA to remove:', userData);
+    console.log('Token to remove:', token);
+
+    await AsyncStorage.removeItem('USER_DATA');
+    await AsyncStorage.removeItem('token');
+
+    navigation.navigate('Onboarding');
+  } catch (error) {
+    console.log('Error during logout:', error);
+  }
+};
+
 
   return (
     <SafeAreaView

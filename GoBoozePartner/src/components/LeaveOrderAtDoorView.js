@@ -18,17 +18,17 @@ const LeaveOrderAtDoorView = ({Children}) => {
         styles.container,
         isDarkTheme && styles.containerDark,
       ]}>
-      <View style={styles.topCon}>
+      <View style={[styles.topCon, {width: '80%'}]}>
         <Image
           style={styles.binImg}
           source={isDarkTheme ? IMAGES.BIN_DARK : IMAGES.BIN_LIGHT}
         />
         <View style={{marginLeft: rWidth(15)}}>
           <Text style={[styles.leaveText, isDarkTheme && {color: '#FFFFFF'}]}>
-            Leave order at door
+            Hand the order to customer.
           </Text>
           <Text style={[styles.desc, isDarkTheme && {color: '#FFFFFFBF'}]}>
-            click a clear photo of the order
+            Note: Do not deliver order if the customer is not present
           </Text>
         </View>
       </View>
@@ -72,3 +72,4 @@ const styles = StyleSheet.create({
 });
 
 export default LeaveOrderAtDoorView;
+

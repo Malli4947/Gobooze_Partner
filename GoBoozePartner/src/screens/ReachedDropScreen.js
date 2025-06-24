@@ -285,7 +285,7 @@ const ReachedDropScreen = ({route}) => {
           onPress={() => {
             navigation.navigate('Home');
           }}
-          title={'Reach Drop'}
+          title={'Reached'}
         />
         <View style={[styles.seperator, darkSep]} />
       </View>
@@ -391,10 +391,10 @@ const ReachedDropScreen = ({route}) => {
               style={styles.btnNo}
               onPress={() => navigation.goBack()}>
               <BackA />
-              <Text style={styles.no}>No</Text>
+             <Text style={[styles.no, isDarkTheme && {color: '#fff'}]}>No</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnNo1} onPress={handleUpdateOrder}>
-              <Text style={styles.yes}>Yes</Text>
+              <Text style={styles.yes}>Deliver Order</Text>
               <RightA />
             </TouchableOpacity>
           </View>
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     marginLeft: rWidth(8),
   },
   flexBtn: {
-    backgroundColor: '#FFF',
+    backgroundColor: 'transparent',
     flexDirection: 'row',
     paddingTop: rHeight(16),
     paddingBottom: rHeight(20),
@@ -473,4 +473,5 @@ const styles = StyleSheet.create({
 });
 
 export default ReachedDropScreen;
+
 

@@ -157,7 +157,7 @@ const acceptOrder = async () => {
                   style={styles.btnNo}
                   onPress={() => navigation.goBack()}>
                   <BackA />
-                  <Text style={styles.no}>No</Text>
+                  <Text style={[styles.no, isDarkTheme && {color: '#fff'}]}>No</Text>
                 </TouchableOpacity>
               <TouchableOpacity
                 style={styles.btnNo1}
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     marginLeft: rWidth(8),
   },
  flexBtn: {
-    // backgroundColor:'#FFF',
+    backgroundColor: 'transparent',
     flexDirection: 'row',
     paddingVertical:rHeight(16),
     alignItems:'center',

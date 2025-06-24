@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1858806C2E09772B00508F54 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1858806B2E09772B00508F54 /* GoogleService-Info.plist */; };
 		22E4DBAE68134713ABA49E99 /* GraphikThin.otf in Resources */ = {isa = PBXBuildFile; fileRef = CFCC3FC79D4048BDADD99E7F /* GraphikThin.otf */; };
 		2310C781C5B94B57B4E7169F /* GraphikExtralightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6AA54B126F114EE3937B8FB5 /* GraphikExtralightItalic.otf */; };
 		286F6B6CF0EB4E3188049B7F /* GraphikRegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5ABABE649FE84A9086D6CA40 /* GraphikRegularItalic.otf */; };
@@ -29,7 +30,6 @@
 		A6A7D198366048C694C2687A /* GraphikBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 00D574FA631E46B4B4774124 /* GraphikBold.otf */; };
 		ABD9C2382C25848D009EB9E7 /* BearSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABD9C2372C25848D009EB9E7 /* BearSound.mp3 */; };
 		ABEB234B2DB18D6F0014FC18 /* Sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = ABEB234A2DB18D6F0014FC18 /* Sound.mp3 */; };
-		ABF7D85C2D9BE4ED00F0170A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABF7D85B2D9BE4ED00F0170A /* GoogleService-Info.plist */; };
 		B0CB624ACC6174068625E7F5 /* libPods-GoBoozePartner-GoBoozePartnerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03DB024CDA2D33FED94525DF /* libPods-GoBoozePartner-GoBoozePartnerTests.a */; };
 		C2515823AE5A4CD3A790A5BC /* GraphikSemibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 167D4443ADFD4E01ABE9DF0E /* GraphikSemibold.otf */; };
 		CDF1639257954B05855A546A /* GraphikBlack.otf in Resources */ = {isa = PBXBuildFile; fileRef = 74BDCFD39E9E41CDB34F2030 /* GraphikBlack.otf */; };
@@ -64,6 +64,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = GoBoozePartner/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = GoBoozePartner/main.m; sourceTree = "<group>"; };
 		167D4443ADFD4E01ABE9DF0E /* GraphikSemibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSemibold.otf; path = ../assets/fonts/GraphikSemibold.otf; sourceTree = "<group>"; };
+		1858806B2E09772B00508F54 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "/Users/apple/Downloads/GoogleService-Info.plist"; sourceTree = "<absolute>"; };
 		2AA535A3F5BA392BDF774F82 /* Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner-GoBoozePartnerTests/Pods-GoBoozePartner-GoBoozePartnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		34EFC33D5D2C43A080029870 /* GraphikMedium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikMedium.otf; path = ../assets/fonts/GraphikMedium.otf; sourceTree = "<group>"; };
 		378DD8878FE249D4B07EF6FA /* GraphikSuperItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikSuperItalic.otf; path = ../assets/fonts/GraphikSuperItalic.otf; sourceTree = "<group>"; };
@@ -78,7 +79,6 @@
 		92529D9F2B858A5615F2DF04 /* Pods-GoBoozePartner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoBoozePartner.debug.xcconfig"; path = "Target Support Files/Pods-GoBoozePartner/Pods-GoBoozePartner.debug.xcconfig"; sourceTree = "<group>"; };
 		ABD9C2372C25848D009EB9E7 /* BearSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = BearSound.mp3; path = ../src/assets/BearSound.mp3; sourceTree = "<group>"; };
 		ABEB234A2DB18D6F0014FC18 /* Sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Sound.mp3; sourceTree = "<group>"; };
-		ABF7D85B2D9BE4ED00F0170A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ABF7F58D2D898AAF00E20BCB /* GoBoozePartner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = GoBoozePartner.entitlements; path = GoBoozePartner/GoBoozePartner.entitlements; sourceTree = "<group>"; };
 		AF6D390317A24F4595C9A813 /* GraphikBlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikBlackItalic.otf; path = ../assets/fonts/GraphikBlackItalic.otf; sourceTree = "<group>"; };
 		B02FE8FF4D4740CFAE262061 /* GraphikRegular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = GraphikRegular.otf; path = ../assets/fonts/GraphikRegular.otf; sourceTree = "<group>"; };
@@ -164,7 +164,6 @@
 			isa = PBXGroup;
 			children = (
 				ABEB234A2DB18D6F0014FC18 /* Sound.mp3 */,
-				ABF7D85B2D9BE4ED00F0170A /* GoogleService-Info.plist */,
 				ABD9C2372C25848D009EB9E7 /* BearSound.mp3 */,
 				13B07FAE1A68108700A75B9A /* GoBoozePartner */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -173,6 +172,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				E181F8D83603423C9E683954 /* Resources */,
+				1858806B2E09772B00508F54 /* GoogleService-Info.plist */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -336,10 +336,10 @@
 				7E0CED87FC7949648C356BE6 /* GraphikRegular.otf in Resources */,
 				286F6B6CF0EB4E3188049B7F /* GraphikRegularItalic.otf in Resources */,
 				C2515823AE5A4CD3A790A5BC /* GraphikSemibold.otf in Resources */,
+				1858806C2E09772B00508F54 /* GoogleService-Info.plist in Resources */,
 				E8D6A81473C64E6C812F6BE4 /* GraphikSemiboldItalic.otf in Resources */,
 				5A7BB4CB2B9D45949CA56853 /* GraphikSuper.otf in Resources */,
 				E60748F2B1694D91BCFC115F /* GraphikSuperItalic.otf in Resources */,
-				ABF7D85C2D9BE4ED00F0170A /* GoogleService-Info.plist in Resources */,
 				22E4DBAE68134713ABA49E99 /* GraphikThin.otf in Resources */,
 				3F26FEBC61D54FDCA4E243FB /* GraphikThinItalic.otf in Resources */,
 				73CBD22460DDF4EFAAE5FD05 /* PrivacyInfo.xcprivacy in Resources */,

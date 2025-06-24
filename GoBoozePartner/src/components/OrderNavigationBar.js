@@ -136,7 +136,6 @@ const OrderNavigationBar = () => {
           style={styles.menuImg}
         />
       </TouchableOpacity>
-
       <View style={{ width: rWidth(35) }} />
       <CustomSegmentedControl
         tabs={['Online', 'Offline']}
@@ -148,7 +147,6 @@ const OrderNavigationBar = () => {
         activeSegmentBackgroundColor={onlineOfflineIndex === 0 ? '#099A6A' : COLORS.red_error}
         activeTextColor={isDarkTheme ? '#FFFFFF' : '#FFF'}
         textColor={isDarkTheme ? '#FFFFFFBF' : '#1D2433CC'}
-        disabledSegments={acceptedOrders.length > 0 ? [1] : []}
       />
     </View>
   );
@@ -193,3 +191,4 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
 });
+

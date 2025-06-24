@@ -301,7 +301,7 @@ const ReachPickupScreen = ({route}) => {
             style={styles.btnNo}
             onPress={() => navigation.goBack()}>
             <BackA />
-            <Text style={styles.no}>No</Text>
+            <Text style={[styles.no, isDarkTheme && {color: '#fff'}]}>No</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.btnNo1} onPress={updateOrder}>
             <Text style={styles.yes}>Yes</Text>
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     marginLeft: rWidth(8),
   },
   flexBtn: {
-    backgroundColor: '#FFF',
+    backgroundColor: 'transparent',
     flexDirection: 'row',
     paddingTop: rHeight(16),
     alignItems: 'center',

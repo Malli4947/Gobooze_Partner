@@ -213,7 +213,7 @@ const OrderHistory = ({orderRequests}) => {
         </View>
       ) : (
         <ScrollView>
-          {filteredOrderData.map((item, index) => (
+          {filteredOrderData.reverse().map((item, index) => (
             <View
               key={index}
               style={[styles.lcardCon, isDarkTheme && styles.dcardCon]}>
