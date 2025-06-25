@@ -223,12 +223,14 @@ const NewHomeScreen = props => {
 
       setDeliveriedOrders(deliveredOrders.data.data.reverse());
       setAcceptedOrders(activeOrders.data.data.reverse());
-      setIsLoading(false);
+      // setIsLoading(false);
     } catch (e) {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 const handleOrderPress = async (item) => {
+  if (showNewOrderModal) return; // Already open — do nothing
+
   try {
     const locationEnabled = await checkLocationEnabled();
     if (!locationEnabled) {
@@ -263,7 +265,6 @@ const handleOrderPress = async (item) => {
 
     const data = await fetchDetails.json();
 
-    // Check if the user is offline
     if (data.data.is_active === false) {
       Alert.alert(
         'Alert: You are Currently Offline',
@@ -273,20 +274,20 @@ const handleOrderPress = async (item) => {
       return;
     }
 
-    // Check the order status
+    // ✅ Open only one modal
     if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
       setModaldata(item);
       setShowNewOrderModal(true);
     } else if (insignSelectedIndex === 1) {
-      // Always navigate to ReachMapDrop regardless of order status
       navigation.navigate('ReachMapDrop', {
-        orderData: item  // Changed from orderDetails to item to match your variable
+        orderData: item,
       });
     }
   } catch (error) {
     console.error('Error in handleOrderPress:', error);
   }
 };
+
   //Malika New changes ends
   useEffect(() => {
     const backAction = () => {
@@ -458,6 +459,7 @@ const handleOrderPress = async (item) => {
     setRefresh(false);
   };
 
+
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
@@ -485,9 +487,9 @@ const handleOrderPress = async (item) => {
       </View>
       <ScrollView
         stickyHeaderIndices={[2]}
-        refreshControl={
-          <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
-        }
+        // refreshControl={
+        //   <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+        // }
         contentContainerStyle={{paddingBottom: 30}}>
         {/* ------------- total arning and order view  ------------- */}
         <View style={styles.horizontalMargin}>
