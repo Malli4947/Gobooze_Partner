@@ -48,7 +48,7 @@ const OrderHistory = ({orderRequests}) => {
   //   const [accessToken, userId] = combinedData?.split(':') ?? [];
   //   try {
   //     const fetchOrderDetails = await fetch(
-  //       `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-completed-orders/${userId}`,
+  //       `https://api.gobooze.com.au/order/api/orders/get-delivery-user-completed-orders/${userId}`,
   //       {
   //         headers: {
   //           Authorization: `${accessToken}`,
@@ -68,7 +68,7 @@ const OrderHistory = ({orderRequests}) => {
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchOrderDetails = await fetch(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-completed-orders/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-completed-orders/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
@@ -266,7 +266,8 @@ const OrderHistory = ({orderRequests}) => {
                         </Text>
                         <FastImage
                           source={{
-                            uri: `https://gobooze-tst.s3.ap-southeast-2.amazonaws.com/goboozestore/${variant.variantImage}`,
+                            uri: `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/
+${variant.variantImage}`,
                           }}
                           resizeMode="contain"
                           style={styles.product_Image}
@@ -318,7 +319,8 @@ const OrderHistory = ({orderRequests}) => {
                         </Text>
                         <FastImage
                           source={{
-                            uri: `https://gobooze-tst.s3.ap-southeast-2.amazonaws.com/goboozestore/${variant.variantImage}`,
+                            uri: `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/
+${variant.variantImage}`,
                           }}
                           resizeMode="contain"
                           style={styles.product_Image}

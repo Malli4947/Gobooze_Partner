@@ -226,7 +226,7 @@ if (Platform.OS === 'ios') {
       };
 
       const res = await axios.patch(
-        'https://devapigobooze.codefactstech.com/order/api/orders/update-driver-location/6658508a5f9586ce68675dc9 ',
+        'https://api.gobooze.com.au/order/api/orders/update-driver-location/6658508a5f9586ce68675dc9 ',
         obj,
         {
           headers: {

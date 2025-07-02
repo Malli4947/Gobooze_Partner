@@ -222,7 +222,7 @@ const ReachedDropScreen = ({route}) => {
 
     try {
       const response = await fetch(
-        `https://devapigobooze.codefactstech.com/order/api/orders/upload-delivery-images/${orderData.order_id}`,
+        `https://api.gobooze.com.au/order/api/orders/upload-delivery-images/${orderData.order_id}`,
         {
           method: 'POST',
           body: formData,

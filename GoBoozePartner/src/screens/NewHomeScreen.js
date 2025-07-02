@@ -75,7 +75,7 @@ const NewHomeScreen = props => {
   const [currentCoordinates, setCurrentCoordinates] = useState(null);
   const isFocus = useIsFocused();
   const [orderAlreadyAccepted, setOrderAlreadyAccepted] = useState(false);
-  const socket = io('https://devapigobooze.codefactstech.com');
+  const socket = io('https://api.gobooze.com.au');
 
   const isDarkTheme = colorScheme === 'dark';
   const darkSeperator = isDarkTheme && {
@@ -101,7 +101,7 @@ const NewHomeScreen = props => {
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
       const fetchDetails = await fetch(
-        `https://devapigobooze.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
@@ -156,7 +156,7 @@ const NewHomeScreen = props => {
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
       const checkingPendingOrders = await axios.post(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
         {
           order_status: 'pending',
         },
@@ -189,7 +189,7 @@ const NewHomeScreen = props => {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
       const deliveredOrdersResponse = axios.post(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-order-by-status/${userId}`,
         {
           order_status: 'delivered',
         },
@@ -201,7 +201,7 @@ const NewHomeScreen = props => {
       );
       // console.log(deliveredOrdersResponse, 'deliveredOrdersResponse=======');
       const activeOrdersResponse = axios.post(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
         {
           headers: {
@@ -211,7 +211,7 @@ const NewHomeScreen = props => {
       );
       // console.log(activeOrdersResponse, 'activeOrdersResponse=======');
       const allPendingResponse = await axios.get(
-        `https://devapigobooze.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
       );
       // console.log(allPendingResponse.data.data, 'allPendingResponse=======');
       setAllpendingOrders(allPendingResponse.data.data.reverse());
@@ -255,7 +255,7 @@ const handleOrderPress = async (item) => {
     const [accessToken, userId] = combinedData?.split(':') ?? [];
 
     const fetchDetails = await fetch(
-      `https://devapigobooze.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+      `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
       {
         headers: {
           Authorization: `${accessToken}`,
@@ -439,7 +439,7 @@ const handleOrderPress = async (item) => {
       };
       // console.log(obj, 'obj================');
       const res = await axios.patch(
-        `https://devapigobooze.codefactstech.com/order/api/orders/update-driver-location/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/update-driver-location/${userId}`,
         obj,
         {
           headers: {

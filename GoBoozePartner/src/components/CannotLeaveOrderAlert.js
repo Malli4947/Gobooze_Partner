@@ -86,7 +86,7 @@ const CannotLeaveOrderAlert = props => {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
       const orderCancelRes = await axios.patch(
-        `https://devapigobooze.codefactstech.com/order/api/orders/update-order-status/${orderId}`,
+        `https://api.gobooze.com.au/order/api/orders/update-order-status/${orderId}`,
         {
           order_status: 'cancelled',
           cancel_reason: `${selectedOption}`,

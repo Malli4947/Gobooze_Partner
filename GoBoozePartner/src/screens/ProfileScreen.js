@@ -60,7 +60,7 @@ const ProfileScreen = () => {
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchDetails = await fetch(
-        `https://devapigobooze.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
