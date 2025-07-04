@@ -56,37 +56,50 @@ const OTPVerificationScreen = props => {
   );
 
   const handleContinuePress = async () => {
-    if (inputOtp.length != 4) {
+    if (inputOtp.length !== 4) {
       setShowOtpErrorMessage(true);
-    } else {
-      setShowLoader(true);
-      const phoneNumber = props.route.params.mobileNumber;
-      const jsonBody = {
-        phone: `+61${phoneNumber}`,
-        otp: inputOtp,
-      };
-      // console.log('This is the jsonBody: ');
+      return;
+    }
+
+    setShowLoader(true);
+    const phoneNumber = props.route.params.mobileNumber;
+    const jsonBody = {
+      phone: `+61${phoneNumber}`,
+      otp: inputOtp,
+    };
+
+    try {
       const token = await AsyncStorage.getItem('token');
-      if (token != '' && token) {
-        jsonBody.fbToken = {key: token, enabled: true};
+      console.log('Retrieved Firebase token:', token);
+
+      if (token && token !== 'token') {
+        jsonBody.fbToken = {
+          key: token,
+          enabled: true,
+        };
       } else {
-        jsonBody.fbToken = {key: 'token', enabled: true};
+        console.warn('Invalid or missing Firebase token');
+        jsonBody.fbToken = {
+          key: '',
+          enabled: false,
+        };
       }
 
-      // console.log(jsonBody);
       props.appActions.verifyOtp(jsonBody, response => {
         setShowLoader(false);
-        if (response.status == 200) {
-          if (hasLocationPermission == true) {
+        if (response.status === 200) {
+          if (hasLocationPermission === true) {
             props.navigation.navigate('DashBoard');
           } else {
             props.navigation.navigate('Location');
           }
         } else {
-          //Alert.alert('Invalid OTP', response.error);
-          // console.log(response.error);
+          console.warn('OTP Verification failed:', response.error);
         }
       });
+    } catch (err) {
+      setShowLoader(false);
+      console.error('Error reading token from AsyncStorage:', err);
     }
   };
 

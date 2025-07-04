@@ -57,29 +57,29 @@ function App() {
     // };
   }, []);
 
-const getFirebaseToken = async () => {
-if (Platform.OS === 'ios') {
-  messaging()
-    .requestPermission()
-    .then(authStatus => {
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  const getFirebaseToken = async () => {
+    if (Platform.OS === 'ios') {
+      messaging()
+        .requestPermission()
+        .then(authStatus => {
+          const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-      if (enabled) {
-        // console.log('Authorization status:', authStatus);
-        getFirebaseToken();
-      }
-    })
-    .catch(error => {
-      console.log('iOS permission error:', error);
-    });
-}
-  await messaging().registerDeviceForRemoteMessages();
-  const token = await messaging().getToken();
-  console.log('Firebase Token:', token);
-  await AsyncStorage.setItem('token', token);
-};
+          if (enabled) {
+            // console.log('Authorization status:', authStatus);
+            getFirebaseToken();
+          }
+        })
+        .catch(error => {
+          console.log('iOS permission error:', error);
+        });
+    }
+    await messaging().registerDeviceForRemoteMessages();
+    const firebaseToken = await messaging().getToken();
+    console.log('firebaseToken', firebaseToken);
+    await AsyncStorage.setItem('token', firebaseToken);
+  };
 
   // const requestPermissionToken = () => {
   //   messaging()
@@ -254,4 +254,3 @@ if (Platform.OS === 'ios') {
 }
 
 export default App;
-
