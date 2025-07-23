@@ -55,53 +55,63 @@ const OTPVerificationScreen = props => {
       : '000000000',
   );
 
-  const handleContinuePress = async () => {
-    if (inputOtp.length !== 4) {
-      setShowOtpErrorMessage(true);
-      return;
-    }
+ const waitForToken = async (retries = 5, delay = 1000) => {
+  for (let i = 0; i < retries; i++) {
+    const token = await AsyncStorage.getItem('token');
+    if (token) return token;
+    await new Promise(res => setTimeout(res, delay)); // wait 1s before retry
+  }
+  return null;
+};
 
-    setShowLoader(true);
-    const phoneNumber = props.route.params.mobileNumber;
-    const jsonBody = {
-      phone: `+61${phoneNumber}`,
-      otp: inputOtp,
-    };
+const handleContinuePress = async () => {
+  if (inputOtp.length !== 4) {
+    setShowOtpErrorMessage(true);
+    return;
+  }
 
-    try {
-      const token = await AsyncStorage.getItem('token');
-      console.log('Retrieved Firebase token:', token);
-
-      if (token && token !== 'token') {
-        jsonBody.fbToken = {
-          key: token,
-          enabled: true,
-        };
-      } else {
-        console.warn('Invalid or missing Firebase token');
-        jsonBody.fbToken = {
-          key: '',
-          enabled: false,
-        };
-      }
-
-      props.appActions.verifyOtp(jsonBody, response => {
-        setShowLoader(false);
-        if (response.status === 200) {
-          if (hasLocationPermission === true) {
-            props.navigation.navigate('DashBoard');
-          } else {
-            props.navigation.navigate('Location');
-          }
-        } else {
-          console.warn('OTP Verification failed:', response.error);
-        }
-      });
-    } catch (err) {
-      setShowLoader(false);
-      console.error('Error reading token from AsyncStorage:', err);
-    }
+  setShowLoader(true);
+  const phoneNumber = props.route.params.mobileNumber;
+  const jsonBody = {
+    phone: `+61${phoneNumber}`,
+    otp: inputOtp,
   };
+
+  try {
+    const token = await waitForToken(); // ✅ Wait for token to be available
+    console.log('Retrieved Firebase token after waiting:', token);
+
+    if (token) {
+      jsonBody.fbToken = {
+        key: token,
+        enabled: true,
+      };
+    } else {
+      console.warn('Firebase token still missing after retries');
+      jsonBody.fbToken = {
+        key: '',
+        enabled: false,
+      };
+    }
+
+    props.appActions.verifyOtp(jsonBody, response => {
+      setShowLoader(false);
+      if (response.status === 200) {
+        if (hasLocationPermission === true) {
+          props.navigation.navigate('DashBoard');
+        } else {
+          props.navigation.navigate('Location');
+        }
+      } else {
+        console.warn('OTP Verification failed:', response.error);
+      }
+    });
+  } catch (err) {
+    setShowLoader(false);
+    console.error('Error reading token from AsyncStorage:', err);
+  }
+};
+
 
   useEffect(() => {
     checkLocationPermission();

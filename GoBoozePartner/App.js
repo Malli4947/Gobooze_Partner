@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {LogBox} from 'react-native';
+import {LogBox,Platform} from 'react-native';
 // import SplashScreen from 'react-native-splash-screen';
 import {ColorSchemeProvider} from './src/components/ColorSchemeContext';
 import AppNavigator from './src/navigation/GoBoozeNavigation';
@@ -13,6 +13,8 @@ import {err} from 'react-native-svg';
 import axios from 'axios';
 import messaging from '@react-native-firebase/messaging';
 import DeviceInfo from 'react-native-device-info';
+import { enableScreens } from 'react-native-screens';
+
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   request,
@@ -29,160 +31,104 @@ const store = configureStore();
 function App() {
   const timerRef = useRef(null);
 
+
   useEffect(() => {
-    try {
-      if (Platform.OS === 'ios') {
-        enableScreens(false);
+    const initialize = async () => {
+      try {
+        if (Platform.OS === 'ios') {
+          enableScreens(false);
+          await getFirebaseToken(); // iOS handles this immediately
+        } else {
+          timerRef.current = setTimeout(() => {
+            permissionRequest();
+          }, 1000);
+        }
+
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+          console.log('🔥 Foreground Message:', remoteMessage);
+        });
+
+        return () => {
+          unsubscribe();
+          if (timerRef.current) {
+            clearTimeout(timerRef.current);
+          }
+        };
+      } catch (error) {
+        console.log('🔥 Initialization error:', error);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    };
 
-    if (Platform.OS === 'android') {
-      timerRef.current = setTimeout(() => {
-        permissionRequest();
-      }, 1000);
-    } else {
-      getFirebaseToken();
-    }
-
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('remoteMessage', remoteMessage);
-    });
-    // return () => {
-    //   unsubscribe();
-    //   if (timerRef.current) {
-    //     clearTimeout(timerRef.current);
-    //   }
-    // };
+    initialize();
   }, []);
 
-  const getFirebaseToken = async () => {
-    if (Platform.OS === 'ios') {
-      messaging()
-        .requestPermission()
-        .then(authStatus => {
-          const enabled =
-            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-          if (enabled) {
-            // console.log('Authorization status:', authStatus);
-            getFirebaseToken();
-          }
-        })
-        .catch(error => {
-          console.log('iOS permission error:', error);
-        });
+ const getFirebaseToken = async (retryCount = 3) => {
+    try {
+      console.log("📲 Registering device for remote messages...");
+      await messaging().registerDeviceForRemoteMessages();
+
+      let token = null;
+      for (let attempt = 1; attempt <= retryCount; attempt++) {
+        console.log(`🔁 Attempt ${attempt} to get Firebase token...`);
+        token = await messaging().getToken();
+        if (token) {
+          console.log('✅ Firebase Token:', token);
+          await AsyncStorage.setItem('token', token);
+          return token;
+        }
+        await new Promise(res => setTimeout(res, 1000));
+      }
+
+      console.warn('⚠️ Failed to retrieve Firebase token after retries.');
+      return null;
+    } catch (error) {
+      console.error("❌ Firebase token error:", error);
+      return null;
     }
-    await messaging().registerDeviceForRemoteMessages();
-    const firebaseToken = await messaging().getToken();
-    console.log('firebaseToken', firebaseToken);
-    await AsyncStorage.setItem('token', firebaseToken);
   };
 
-  // const requestPermissionToken = () => {
-  //   messaging()
-  //     .requestPermission()
-  //     .then(() => {
-  //       getToken();
-  //     })
-  //     .catch(error => {
-  //       console.log('permission rejected ' + error);
-  //     });
-  // };
 
-  // const getToken = () => {
-  //   messaging()
-  //     .getToken()
-  //     .then(async token => {
-  //       console.log('push token ' + token);
-  //       await AsyncStorage.setItem('token', token);
-  //     })
-  //     .catch(error => {
-  //       console.log('error getting push token ' + error);
-  //     });
-  // };
-  const permissionRequest = async () => {
-    // console.log('Executing permission request function: ');
-    let systemVersion = DeviceInfo.getSystemVersion();
-    // console.log('This is the SystemVersion: ' + systemVersion);
-    if (systemVersion > 12) {
-      // console.log('This is the systemversion: ' + systemVersion);
+const permissionRequest = async () => {
+    const systemVersion = DeviceInfo.getSystemVersion();
+    console.log("📱 Android version:", systemVersion);
+
+    if (parseInt(systemVersion, 10) >= 13) {
       check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
         .then(result => {
+          console.log("🔍 Notification permission status:", result);
           switch (result) {
-            case RESULTS.UNAVAILABLE:
-              notificationPermission();
-              break;
-            case RESULTS.DENIED:
-              notificationPermission();
-              break;
-            case RESULTS.LIMITED:
-              notificationPermission();
-              break;
             case RESULTS.GRANTED:
-              getFirebaseToken();
-              // console.log(CONSTANTS.PERMISSION_MESSGAE.GRANTED_PERMISSION);
-              break;
-            case RESULTS.BLOCKED:
-              notificationPermission();
-              break;
+              getFirebaseToken(); break;
+            default:
+              notificationPermission(); break;
           }
         })
         .catch(error => {
-          // …
-          console.log('Got an error: ');
-          console.log(error);
+          console.log('❌ Permission check error:', error);
         });
     } else {
-      console.log('getting into else block');
+      console.log('⚠️ Android version < 13, skip permission request');
       getFirebaseToken();
     }
   };
 
-  const notificationPermission = async () => {
-    request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(result => {
-      // switch (result) {
-      //   case RESULTS.UNAVAILABLE:
-      //     openSettings().catch(() =>
-      //       console.warn(CONSTANTS.PERMISSION_MESSGAE.CANNOT_OPEN),
-      //     );
-      //     console.log(CONSTANTS.PERMISSION_MESSGAE.UNIAVAILABLE_PERMISSION);
-      //     break;
-      //   case RESULTS.DENIED:
-      //     openSettings().catch(() =>
-      //       console.warn(CONSTANTS.PERMISSION_MESSGAE.CANNOT_OPEN),
-      //     );
-      //     console.log(CONSTANTS.PERMISSION_MESSGAE.DENIED_PERMISSION);
-      //     break;
-      //   case RESULTS.LIMITED:
-      //     openSettings().catch(() =>
-      //       console.warn(CONSTANTS.PERMISSION_MESSGAE.CANNOT_OPEN),
-      //     );
-      //     console.log(CONSTANTS.PERMISSION_MESSGAE.LIMITED_PERMISSION);
-      //     break;
-      //   case RESULTS.GRANTED:
-      //     getFirebaseToken();
-      //     console.log(CONSTANTS.PERMISSION_MESSGAE.GRANTED_PERMISSION);
-      //     break;
-      //   case RESULTS.BLOCKED:
-      //     // Toast.show(CONSTANTS.PERMISSION_MESSGAE.PERMISSION_NOTITIFCATION_MESSAGE);
-      //     openSettings().catch(() =>
-      //       console.warn(CONSTANTS.PERMISSION_MESSGAE.CANNOT_OPEN),
-      //     );
-      //     console.log(CONSTANTS.PERMISSION_MESSGAE.BLOCKED_PERMISSION);
-      //     break;
-      // }
-    });
+const notificationPermission = async () => {
+    const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    console.log("📥 Requested notification permission:", result);
+
+    if (result === RESULTS.GRANTED) {
+      console.log("✅ Permission granted");
+      getFirebaseToken();
+    } else {
+      console.warn("⛔ Permission denied or blocked, please enable from settings");
+      openSettings().catch(() => {
+        console.warn("⚠️ Cannot open settings");
+      });
+    }
   };
 
-  useEffect(() => {
-    // const interval = setInterval(() => {
-    //   // getLatAndLong();
-    // }, 18000);
-    // return () => clearInterval(interval);
-  }, []);
+
 
   const getLatAndLong = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
