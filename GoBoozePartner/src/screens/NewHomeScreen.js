@@ -41,6 +41,8 @@ import {pendingOrders} from '../redux/GoboozeApi';
 import {onGettingCoordinates} from '../redux/slices/LocationSlices';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {BackHandler} from 'react-native';
+import NetworkSpeedIndicator from './NetworkSpeedIndicator';
+import SignalStrengthComponent from './SignalStrengthComponent';
 var Sound = require('react-native-sound');
 
 Sound.setCategory('Playback');
@@ -467,6 +469,7 @@ const handleOrderPress = async (item) => {
         modalVisible={modalVisible}
         dismissModal={() => setModalVisible(false)}
       />
+     {/* <NetworkSpeedIndicator isDarkTheme={isDarkTheme} /> */}
       <NewOrderAlertScreen
         orderAlreadyAccepted={orderAlreadyAccepted}
         modalVisible={showNewOrderModal}
@@ -485,6 +488,7 @@ const handleOrderPress = async (item) => {
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
+      <SignalStrengthComponent />
       <ScrollView
         stickyHeaderIndices={[2]}
         // refreshControl={
