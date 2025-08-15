@@ -23,7 +23,6 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme == 'dark';
   const [showAllProducts, setShowAllProducts] = useState(0);
-
   const formatDate = dateString => {
     const date = new Date(dateString);
     const options = {day: '2-digit', month: 'long', year: 'numeric'};
@@ -37,7 +36,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
       options = {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false, 
+        hour12: false,
       };
     } else {
       options = {
@@ -46,7 +45,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false, 
+        hour12: false,
       };
     }
     let formattedDateTime = new Intl.DateTimeFormat('en-AU', options).format(
@@ -211,7 +210,12 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
           </Text>
         </View>
         <View style={[styles.rowCon, {margin: 10, overflow: 'hidden'}]}>
-          <Text style={[styles.lleftText, isDark && styles.dleftText, {marginTop: rHeight(-16)}]}>
+          <Text
+            style={[
+              styles.lleftText,
+              isDark && styles.dleftText,
+              {marginTop: rHeight(-16)},
+            ]}>
             Address:
           </Text>
           <TouchableOpacity
@@ -248,6 +252,26 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
               : 'NA'}
           </Text>
         </View>
+        {/* {item?.order?.comments ? ( */}
+          <View style={[styles.rowCon, {margin: 10, overflow: 'hidden'}]}>
+            <Text style={[styles.lleftText, isDark && styles.dleftText]}>
+              Instructions:
+            </Text>
+            <TouchableOpacity
+              style={{flexDirection: 'row'}}
+              activeOpacity={0.7}>
+              <Text
+                numberOfLines={3}
+                style={[
+                  styles.lRightText,
+                  isDark && styles.dRightText,
+                  {width: '90%',color:'#D3178A'},
+                ]}>
+                {item.order.comments || '-----'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        {/* ) : null} */}
       </Pressable>
     );
   };

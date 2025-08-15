@@ -295,6 +295,14 @@ const ReachedDropMapScreen = ({route}) => {
             title={'Customer Details:'}
             value={`${orderData?.order?.address?.first_name} ${orderData?.order?.address?.last_name}, ${orderData?.order?.address?.address}`}
           />
+          <DetailsView
+            style={{width: '70%',color:'#D3178A'}}
+            id="2"
+            image={IMAGES.BOX}
+            title={'Instructions :'}
+            value={`${orderData?.order?.comments || '----'}`}
+            valueStyle={{ color: '#D3178A' }}
+          />
         </View>
         <View style={styles.flexBtn}>
           <TouchableOpacity

@@ -83,6 +83,7 @@ const OrderDetailsView = ({
               mobileNumber={customerDetail.mobileNum}
               orderId={customerDetail.orderId}
               address={customerDetail.address}
+              instructions={customerDetail.comments}
             />
           </View>
           {/* <CallButton
