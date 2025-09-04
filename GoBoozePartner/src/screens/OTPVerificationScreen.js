@@ -247,12 +247,12 @@ const handleContinuePress = async () => {
           styles.bottomContainerNoKeyboard,
           // {bottom: rHeight(keyboardHeight > 0 ? keyboardHeight + 15 : 25)},
         ]}>
-        <Pressable style={styles.con_1}>
+        {/* <Pressable style={styles.con_1}>
           <Text
             style={[styles.resend_otp_1, isDarkTheme && styles.resend_otp_2]}>
             Resend code in 0:59
           </Text>
-        </Pressable>
+        </Pressable> */} 
         <CustomButton
           buttonText="Continue"
           disabled={buttonDisabled}

@@ -67,9 +67,12 @@ const NewHomeScreen = props => {
   const [isLoading, setIsLoading] = useState(true);
   const [listOfRequests, setListOfRequests] = useState([]);
   const [deliveredOrders, setDeliveriedOrders] = useState([]);
+  console.log('deliveredOrderss',deliveredOrders)
   const [accepteddOrders, setAcceptedOrders] = useState([]);
+  console.log('acceptedOrderss',accepteddOrders)
   const [modalData, setModaldata] = useState([]);
   const [allPendingOrders, setAllpendingOrders] = useState([]);
+  console.log('allPendingOrders',allPendingOrders)
   const [refresh, setRefresh] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [render, rerender] = useState(false);
@@ -185,51 +188,73 @@ const NewHomeScreen = props => {
   };
 
   const fetchOrders = async () => {
-    const isActive = await checkIsActiveStatus();
-    if (!isActive) return;
+  const isActive = await checkIsActiveStatus();
+  if (!isActive) return;
+
+  try {
+    const combinedData = await AsyncStorage.getItem('USER_DATA');
+    console.log('comibnedData',combinedData)
+    const [accessToken, userId] = combinedData?.split(':') ?? [];
+    console.log('accestoken',userId,accessToken)
+    
+
+    // --- Delivered Orders ---
+    let deliveredOrders = [];
     try {
-      const combinedData = await AsyncStorage.getItem('USER_DATA');
-      const [accessToken, userId] = combinedData?.split(':') ?? [];
-      const deliveredOrdersResponse = axios.post(
+      const res = await axios.post(
         `https://api.gobooze.com.au/order/api/orders/get-delivery-user-order-by-status/${userId}`,
-        {
-          order_status: 'delivered',
-        },
-        {
-          headers: {
-            Authorization: `${accessToken}`,
-          },
-        },
+        { order_status: 'delivered' },
+        { headers: { Authorization: `${accessToken}` } }
       );
-      // console.log(deliveredOrdersResponse, 'deliveredOrdersResponse=======');
-      const activeOrdersResponse = axios.post(
+      deliveredOrders = res.data?.data?.reverse() ?? [];
+    } catch (err) {
+      console.error("❌ Delivered orders error:", err.response?.data || err.message);
+    }
+
+    // --- Active Orders ---
+    let activeOrders = [];
+    try {
+      const res = await axios.post(
         `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
-        {
-          headers: {
-            Authorization: `${accessToken}`,
-          },
-        },
+        { headers: { Authorization: `${accessToken}` } }
       );
-      // console.log(activeOrdersResponse, 'activeOrdersResponse=======');
-      const allPendingResponse = await axios.get(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
-      );
-      // console.log(allPendingResponse.data.data, 'allPendingResponse=======');
-      setAllpendingOrders(allPendingResponse.data.data.reverse());
-
-      const [deliveredOrders, activeOrders] = await Promise.all([
-        deliveredOrdersResponse,
-        activeOrdersResponse,
-      ]);
-
-      setDeliveriedOrders(deliveredOrders.data.data.reverse());
-      setAcceptedOrders(activeOrders.data.data.reverse());
-      // setIsLoading(false);
-    } catch (e) {
-      // setIsLoading(false);
+      activeOrders = res.data?.data?.reverse() ?? [];
+    } catch (err) {
+      console.error("❌ Active orders error:", err.response?.data || err.message);
     }
-  };
+
+    // --- Pending Orders ---
+    let pendingOrders = [];
+    try {
+      const res = await axios.get(
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`
+      );
+      if (res.data?.success && res.data?.data) {
+        pendingOrders = res.data.data.reverse();
+      } else {
+        console.warn("⚠️ No pending orders found");
+      }
+    } catch (err) {
+      if (err.response?.status === 500 && err.response?.data?.message === "No order found") {
+        console.warn("⚠️ Pending orders empty (500 response from server)");
+        pendingOrders = [];
+      } else {
+        console.error("❌ Pending orders error:", err.response?.data || err.message);
+      }
+    }
+
+    // --- Set State ---
+    setDeliveriedOrders(deliveredOrders);
+    setAcceptedOrders(activeOrders);
+    setAllpendingOrders(pendingOrders);
+
+  } catch (e) {
+    console.error("❌ fetchOrders general error:", e.message);
+  }
+};
+
+
 const handleOrderPress = async (item) => {
   if (showNewOrderModal) return; // Already open — do nothing
 
@@ -488,7 +513,7 @@ const handleOrderPress = async (item) => {
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
-      <SignalStrengthComponent />
+      {/* <SignalStrengthComponent /> */}
       <ScrollView
         stickyHeaderIndices={[2]}
         // refreshControl={

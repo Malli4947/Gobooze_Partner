@@ -465,6 +465,8 @@ PODS:
     - React-Core
   - react-native-maps (1.15.1):
     - React-Core
+  - react-native-netinfo (11.4.1):
+    - React-Core
   - react-native-safe-area-context (4.9.0):
     - React-Core
   - react-native-slider (4.5.2):
@@ -621,6 +623,8 @@ PODS:
     - React-Core
   - RNSVG (14.1.0):
     - React-Core
+  - RNWifi (4.13.6):
+    - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
@@ -664,6 +668,7 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - react-native-maps (from `../node_modules/react-native-maps`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
@@ -697,6 +702,7 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSound (from `../node_modules/react-native-sound`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - RNWifi (from `../node_modules/react-native-wifi-reborn`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -775,6 +781,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-resizer"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
@@ -841,6 +849,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-sound"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  RNWifi:
+    :path: "../node_modules/react-native-wifi-reborn"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -866,36 +876,37 @@ SPEC CHECKSUMS:
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
+  RCT-Folly: 8dc08ca5a393b48b1c523ab6220dfdcc0fe000ad
   RCTRequired: b4d3068afa6f52ec5260a8417053b1f1b421483d
   RCTTypeSafety: a4551b3d338c96435f63bf06d564055c1d3cc0ac
   React: 66caa2a8192a35d7ba466a5fdf5dc06ee4a5f6dd
   React-callinvoker: e5b55e46894c2dd1bcdc19d4f82b0f7f631d1237
-  React-Codegen: 0cf41e00026c5eba61f6bdcabd6e4bf659754f33
-  React-Core: 2ce84187a00913f287b96753c56c7819ed7d90d5
-  React-CoreModules: 893e7c5eed1ef8fe9e1ee1d913581c946e55b305
-  React-cxxreact: 075d98dc664c0e9607cc0c45d41dc052bcc7313b
+  React-Codegen: f0f6ca43e08851b30eca007c1a975ad8ff74fcf8
+  React-Core: bbd8c5a106b00c70184700bdbd85d4cf48bbaaeb
+  React-CoreModules: bf11beabbb819dfaf2362f639cec34b03812cf0e
+  React-cxxreact: 6c7af2e167197e6a3a1327ed474c9133a40fd725
   React-debug: abc6213dcb9eafcf5242cbb194fef4c70c91871f
-  React-hermes: 133cfa220ef836406f693ed7db56a509032ce433
-  React-jsi: 9b45fd040d575f8ae6771bf1960641a58eb0bdd4
-  React-jsiexecutor: 45ef2ec6dcde31b90469175ec76ddac77b91dfc3
+  React-hermes: 48c76305505f0b14e6e8f56463e90cff03c5bbbd
+  React-jsi: 3b05af20a27d0defe76a3c367aba0ac59ed4de12
+  React-jsiexecutor: 82f0f431eb415ab249d892dba44b43751aa13abf
   React-jsinspector: de0198127395fec3058140a20c045167f761bb16
-  React-logger: dc3a2b174d79c2da635059212747d8d929b54e06
-  react-native-blur: 69ecfe61d81b32ee7baae10f5d17aeb4e2594b10
-  react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
-  react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
-  react-native-image-picker: 51fdb07f7ef722988c8a219e1416153760a25e4d
-  react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
-  react-native-maps: 4c07b21deac3ac3579558956b63e288efb8725bb
-  react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
-  react-native-slider: 593253eb5fbc6ea519290e812bd477fc6abafd5a
-  react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
-  React-NativeModulesApple: c3e696ff867e4bc212266cbdf7e862e48a0166fd
+  React-logger: 13a8b7094f27626adf648a8458e842e27fa70e13
+  react-native-blur: 1416fe124f5715f0cce89d96e3149c52ac4ca06b
+  react-native-geolocation: f0fa51740690633a1adb6222539166b484facefb
+  react-native-geolocation-service: 32b2c2a3b91e70ce2a8d0c684801aaeb0a07e0ec
+  react-native-image-picker: f02b573847436881b851f74b7afbf26a0b0107aa
+  react-native-image-resizer: 17b2d73c030975b6543395c7e7368bc8774c5efa
+  react-native-maps: d7de829cfedc8535d0da8454bbad4a8fba613c55
+  react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
+  react-native-safe-area-context: 435f4c13ac75ceed6135382ee77d57d1a5b5b2d6
+  react-native-slider: ec61eaa4105648b6d33ebc325c905dc1103d9a05
+  react-native-splash-screen: 95994222cc95c236bd3cdc59fe45ed5f27969594
+  React-NativeModulesApple: cb6d3c0f057dbd98545ddf1ec047f225d1dd9bf9
   React-perflogger: 43287389ea08993c300897a46f95cfac04bb6c1a
   React-RCTActionSheet: 923afe77f9bb89da7c1f98e2730bfc9dde0eed6d
   React-RCTAnimation: afd4d94c5e1f731e32ac99800850be06564ac642
-  React-RCTAppDelegate: fb2e1447d014557f29e214fe2eb777442f808a3b
-  React-RCTBlob: 167e2c6c3643f093058c51e76ecc653fc8236033
+  React-RCTAppDelegate: 52cd1b88ae59cb17033eda28e7a3bcd18104f9b2
+  React-RCTBlob: b09fa4c199b51f983a20f08ac314b52d229a8fed
   React-RCTImage: 867de82a17630a08a3fa64b0cd6677dd19bf6eaf
   React-RCTLinking: 885dde8bc5d397c3e72c76315f1f9b5030b3a70e
   React-RCTNetwork: efec71102220b96ac8605d0253debd859ca0c817
@@ -904,22 +915,23 @@ SPEC CHECKSUMS:
   React-RCTVibration: de6b7218e415d82788e0965f278dddb2ef88b372
   React-rncore: f0d8c23481a6c263a343fa7fd3816d943754b720
   React-runtimeexecutor: 2b2c09edbca4c9a667428e8c93959f66b3b53140
-  React-runtimescheduler: 6ca43e8deadf01ff06b3f01abf8f0e4d508e23c3
-  React-utils: 372b83030a74347331636909278bf0a60ec30d59
-  ReactCommon: 38824bfffaf4c51fbe03a2730b4fd874ef34d67b
-  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
-  RNCClipboard: 4411a880506f11fbcbdc03b5093eb8ffb246d900
-  RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
-  RNDeviceInfo: 6192a9c9167e256803e554038b22b3b2b40163dc
-  RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
-  RNFBApp: a7aff07a7f212149539fce51a1326c6d208b03ad
-  RNFBMessaging: f1fdc7ac62df96e3c8362d516caaf84fab69085d
-  RNGestureHandler: 7909c50383a18f0cb10ce1db7262b9a6da504c03
-  RNPermissions: a4c964f030841f35d918ab3248df9dec9db5f44d
-  RNReanimated: 43675f1f0e704abe8ebf953fd79b00e66302cda2
-  RNScreens: 3c5b9f4a9dcde752466854b6109b79c0e205dad3
-  RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
-  RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
+  React-runtimescheduler: 1f51ecd9eaa819eb66267ad66d8ac42d2173768f
+  React-utils: a4a93189d0daacb5e8215250dc87907ff303744a
+  ReactCommon: 5307bd88aa11a192d8a75717e66d7b630d9bc8bd
+  RNCAsyncStorage: a03b770a50541a761447cea9c24536047832124d
+  RNCClipboard: e1d17c9d093d8129ef50b39b63a17a0e8ccd0ade
+  RNCPushNotificationIOS: 6c4ca3388c7434e4a662b92e4dfeeee858e6f440
+  RNDeviceInfo: f632df5f5d9262794c03eac265e4a0f6dbb14f0a
+  RNFastImage: 462a183c4b0b6b26fdfd639e1ed6ba37536c3b87
+  RNFBApp: 04ab278465cfd7a4f22de8add81c604e6cb273f2
+  RNFBMessaging: 2ed723f98417eea62d1549a46bc498ca3cc21107
+  RNGestureHandler: 69620f0c250b73a1e02e471256e5a147d51df69c
+  RNPermissions: 308909220f5f1486f19e2978f185151f6aaee4b5
+  RNReanimated: a5c9c84557cd3f4763eca9d9b428439e85aec751
+  RNScreens: a425ae50ad66d024a6e936121bf5c9fbe6a5cdc6
+  RNSound: 314cc5226453ef4a3314a196c65e8a65e5106a7b
+  RNSVG: 6d5ed33b6635ed6d6ecb50744dcf127580c39ed5
+  RNWifi: 6669d0fe0f82592d64383d0d4ac1ff888d15f8bc
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17

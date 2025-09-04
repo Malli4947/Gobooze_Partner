@@ -31,6 +31,23 @@ const store = configureStore();
 function App() {
   const timerRef = useRef(null);
 
+const requestUserPermission = async () => {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  console.log("🔑 Notification permission:", enabled, authStatus);
+  return enabled;
+};
+
+useEffect(() => {
+  const subscribe = messaging().onTokenRefresh(token => {
+    console.log("♻️ FCM Token refreshed:", token);
+    AsyncStorage.setItem('token', token);
+  });
+  return subscribe;
+}, []);
 
   useEffect(() => {
     const initialize = async () => {
@@ -63,30 +80,28 @@ function App() {
   }, []);
 
 
- const getFirebaseToken = async (retryCount = 3) => {
-    try {
-      console.log("📲 Registering device for remote messages...");
-      await messaging().registerDeviceForRemoteMessages();
+const getFirebaseToken = async () => {
+  const hasPermission = await requestUserPermission();
+  if (!hasPermission) return null;
 
-      let token = null;
-      for (let attempt = 1; attempt <= retryCount; attempt++) {
-        console.log(`🔁 Attempt ${attempt} to get Firebase token...`);
-        token = await messaging().getToken();
-        if (token) {
-          console.log('✅ Firebase Token:', token);
-          await AsyncStorage.setItem('token', token);
-          return token;
-        }
-        await new Promise(res => setTimeout(res, 1000));
-      }
+  await messaging().registerDeviceForRemoteMessages();
 
-      console.warn('⚠️ Failed to retrieve Firebase token after retries.');
-      return null;
-    } catch (error) {
-      console.error("❌ Firebase token error:", error);
+  try {
+    const token = await messaging().getToken();
+    if (token) {
+      console.log("✅ Initial FCM Token:", token);
+      await AsyncStorage.setItem('token', token);
+      return token;
+    } else {
+      console.warn("⚠️ No token yet, will wait for onTokenRefresh");
       return null;
     }
-  };
+  } catch (e) {
+    console.log("❌ Error getting FCM Token:", e);
+    return null;
+  }
+};
+
 
 
 const permissionRequest = async () => {
