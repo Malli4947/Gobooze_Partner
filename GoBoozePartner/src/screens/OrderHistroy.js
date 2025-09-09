@@ -112,6 +112,9 @@ const OrderHistory = ({orderRequests}) => {
 
     return () => backHandler.remove(); // Cleanup the event listener
   }, [navigation]);
+
+  const IMAGE_URL = `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/`;
+
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
@@ -264,10 +267,10 @@ const OrderHistory = ({orderRequests}) => {
                           ]}>
                           {variant.orderQuantity}x
                         </Text>
+
                         <FastImage
                           source={{
-                            uri: `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/
-${variant.variantImage}`,
+                            uri: `${IMAGE_URL}${variant.variantImage}`,
                           }}
                           resizeMode="contain"
                           style={styles.product_Image}

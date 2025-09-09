@@ -11,6 +11,8 @@ import {
   PermissionsAndroid,
   RefreshControl,
   SafeAreaView,
+  NativeModules,
+  NativeEventEmitter
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -44,7 +46,7 @@ import {BackHandler} from 'react-native';
 import NetworkSpeedIndicator from './NetworkSpeedIndicator';
 import SignalStrengthComponent from './SignalStrengthComponent';
 var Sound = require('react-native-sound');
-
+const {RNNetworkSpeed, MobileSignalModule, NetworkTypeModule} = NativeModules;
 Sound.setCategory('Playback');
 
 var ding = new Sound(
@@ -67,12 +69,9 @@ const NewHomeScreen = props => {
   const [isLoading, setIsLoading] = useState(true);
   const [listOfRequests, setListOfRequests] = useState([]);
   const [deliveredOrders, setDeliveriedOrders] = useState([]);
-  console.log('deliveredOrderss',deliveredOrders)
   const [accepteddOrders, setAcceptedOrders] = useState([]);
-  console.log('acceptedOrderss',accepteddOrders)
   const [modalData, setModaldata] = useState([]);
   const [allPendingOrders, setAllpendingOrders] = useState([]);
-  console.log('allPendingOrders',allPendingOrders)
   const [refresh, setRefresh] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [render, rerender] = useState(false);
@@ -120,39 +119,49 @@ const NewHomeScreen = props => {
       return false; // Return false if there's an error
     }
   };
-  const getLatAndLong = async () => {
-    const isActive = await checkIsActiveStatus();
-    if (!isActive) return; // Do not proceed if user is inactive
 
-    try {
-      Geolocation.getCurrentPosition(
-        position => {
-          const lat = position.coords.latitude;
-          const long = position.coords.longitude;
+const getLatAndLong = async () => {
+  const isActive = await checkIsActiveStatus();
+  if (!isActive) return; // Do not proceed if user is inactive
 
-          if (lat && long) {
-            setCurrentCoordinates({lat, long});
-            postDriverLocation(lat, long);
-            dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
-            setModalVisible(false);
+  try {
+    Geolocation.getCurrentPosition(
+      async position => {
+        const lat = position.coords.latitude;
+        const long = position.coords.longitude;
+        if (lat && long) {
+          const coords = { lat, long };
+          setCurrentCoordinates(coords);
+          try {
+            await AsyncStorage.setItem("LAST_COORDINATES", JSON.stringify(coords));
+            console.log("Coordinates saved locally:", coords);
+          } catch (err) {
+            console.warn("Failed to store coordinates:", err.message);
           }
-        },
-        error => {
-          setModalVisible(true);
-          setCurrentCoordinates(null);
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 10000,
-          distanceFilter: 1,
-          interval: 1000,
-          fastestInterval: 2000,
-        },
-      );
-    } catch (error) {
-      setModalVisible(true);
-    }
-  };
+          postDriverLocation(lat, long);
+          dispatch(onGettingCoordinates({ lattitude: lat, longitude: long }));
+          setModalVisible(false);
+        }
+      },
+      error => {
+        console.warn("Geolocation error:", error.message);
+        setModalVisible(true);
+        setCurrentCoordinates(null);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        distanceFilter: 1,
+        interval: 1000,
+        fastestInterval: 2000,
+      },
+    );
+  } catch (error) {
+    console.error("getLatAndLong failed:", error.message);
+    setModalVisible(true);
+  }
+};
+
   const fecthPendingOrders = async () => {
     const isActive = await checkIsActiveStatus();
     if (!isActive) return;
@@ -187,76 +196,90 @@ const NewHomeScreen = props => {
     }
   };
 
-  const fetchOrders = async () => {
+const mask = (s) => {
+  if (!s) return '[missing]';
+  if (s.length <= 8) return s;
+  return `${s.slice(0,4)}...${s.slice(-4)}`; // safe masking
+};
+
+const fetchOrders = async () => {
   const isActive = await checkIsActiveStatus();
-  if (!isActive) return;
+  // --- Always load cache first (so UI has something to show) ---
+  const cachedDelivered = await AsyncStorage.getItem("CACHED_DELIVERED_ORDERS");
+  const cachedActive = await AsyncStorage.getItem("CACHED_ACTIVE_ORDERS");
+  const cachedPending = await AsyncStorage.getItem("CACHED_PENDING_ORDERS");
+  let deliveredOrders = cachedDelivered ? JSON.parse(cachedDelivered) : [];
+  let activeOrders = cachedActive ? JSON.parse(cachedActive) : [];
+  let pendingOrders = cachedPending ? JSON.parse(cachedPending) : [];
+
+  // update UI immediately with cache
+  setDeliveriedOrders(deliveredOrders);
+  setAcceptedOrders(activeOrders);
+  setAllpendingOrders(pendingOrders);
+
+  // --- If user is not active, just stop here but keep cache UI ---
+  if (!isActive) {
+    console.log('User not active → showing cached orders only');
+    return;
+  }
 
   try {
-    const combinedData = await AsyncStorage.getItem('USER_DATA');
-    console.log('comibnedData',combinedData)
-    const [accessToken, userId] = combinedData?.split(':') ?? [];
-    console.log('accestoken',userId,accessToken)
-    
-
-    // --- Delivered Orders ---
-    let deliveredOrders = [];
+    const combinedData = await AsyncStorage.getItem("USER_DATA");
+    const [accessToken, userId] = combinedData?.split(":") ?? [];
     try {
       const res = await axios.post(
         `https://api.gobooze.com.au/order/api/orders/get-delivery-user-order-by-status/${userId}`,
-        { order_status: 'delivered' },
+        { order_status: "delivered" },
         { headers: { Authorization: `${accessToken}` } }
       );
-      deliveredOrders = res.data?.data?.reverse() ?? [];
+      const apiData = res.data?.data?.reverse() ?? [];
+      if (apiData.length > 0) {
+        deliveredOrders = apiData;
+        await AsyncStorage.setItem("CACHED_DELIVERED_ORDERS", JSON.stringify(apiData));
+      }
     } catch (err) {
-      console.error("❌ Delivered orders error:", err.response?.data || err.message);
+      console.warn('Delivered API failed, keeping cache', err?.message);
     }
-
-    // --- Active Orders ---
-    let activeOrders = [];
+    // --- Active Orders API ---
     try {
       const res = await axios.post(
         `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
         { headers: { Authorization: `${accessToken}` } }
       );
-      activeOrders = res.data?.data?.reverse() ?? [];
+      const apiData = res.data?.data?.reverse() ?? [];
+      if (apiData.length > 0) {
+        activeOrders = apiData;
+        await AsyncStorage.setItem("CACHED_ACTIVE_ORDERS", JSON.stringify(apiData));
+      }
     } catch (err) {
-      console.error("❌ Active orders error:", err.response?.data || err.message);
+      console.warn('Active API failed, keeping cache', err?.message);
     }
-
-    // --- Pending Orders ---
-    let pendingOrders = [];
+    // --- Pending Orders API ---
     try {
       const res = await axios.get(
         `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`
       );
-      if (res.data?.success && res.data?.data) {
-        pendingOrders = res.data.data.reverse();
-      } else {
-        console.warn("⚠️ No pending orders found");
+      const apiData =
+        res.data?.success && res.data?.data ? res.data.data.reverse() : [];
+      if (apiData.length > 0) {
+        pendingOrders = apiData;
+        await AsyncStorage.setItem("CACHED_PENDING_ORDERS", JSON.stringify(apiData));
       }
     } catch (err) {
-      if (err.response?.status === 500 && err.response?.data?.message === "No order found") {
-        console.warn("⚠️ Pending orders empty (500 response from server)");
-        pendingOrders = [];
-      } else {
-        console.error("❌ Pending orders error:", err.response?.data || err.message);
-      }
+      console.warn('Pending API failed, keeping cache', err?.message);
     }
-
-    // --- Set State ---
+    // --- Final UI update ---
     setDeliveriedOrders(deliveredOrders);
     setAcceptedOrders(activeOrders);
     setAllpendingOrders(pendingOrders);
-
   } catch (e) {
-    console.error("❌ fetchOrders general error:", e.message);
+    console.error('fetchOrders general error:', e?.message, e);
   }
 };
 
-
 const handleOrderPress = async (item) => {
-  if (showNewOrderModal) return; // Already open — do nothing
+  if (showNewOrderModal) return;
 
   try {
     const locationEnabled = await checkLocationEnabled();
@@ -269,30 +292,44 @@ const handleOrderPress = async (item) => {
       return;
     }
 
-    if (!currentCoordinates) {
-      Alert.alert(
-        'Unable to Retrieve Location',
-        'Please ensure your location services are enabled and try again.',
-        [{ text: 'OK' }]
-      );
-      return;
+    // --- Use currentCoordinates or fallback to stored coordinates ---
+    let coordinates = currentCoordinates;
+    if (!coordinates) {
+      const savedCoords = await AsyncStorage.getItem("LAST_COORDINATES");
+      if (savedCoords) {
+        coordinates = JSON.parse(savedCoords);
+        setCurrentCoordinates(coordinates);
+        dispatch(onGettingCoordinates({ lattitude: coordinates.lat, longitude: coordinates.long }));
+      } else {
+        Alert.alert(
+          'Unable to Retrieve Location',
+          'Please ensure your location services are enabled and try again.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
     }
 
+    // --- Get accessToken and userId from storage ---
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
 
-    const fetchDetails = await fetch(
-      `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
-      {
-        headers: {
-          Authorization: `${accessToken}`,
-        },
-      }
-    );
+    let isActive = true; // default assume active
+    try {
+      // Try to fetch user status
+      const res = await axios.get(
+        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
+        { headers: { Authorization: accessToken } }
+      );
+      isActive = res.data?.data?.is_active ?? true;
+    } catch (err) {
+      console.warn(" Network failed, using local status:", err.message);
+      // Optionally, you can read a locally cached partner info if you saved it before
+      // const cachedPartner = await AsyncStorage.getItem("CACHED_PARTNER_INFO");
+      // isActive = cachedPartner ? JSON.parse(cachedPartner).is_active : true;
+    }
 
-    const data = await fetchDetails.json();
-
-    if (data.data.is_active === false) {
+    if (!isActive) {
       Alert.alert(
         'Alert: You are Currently Offline',
         'To accept new orders, Please go Online.',
@@ -301,17 +338,17 @@ const handleOrderPress = async (item) => {
       return;
     }
 
-    // ✅ Open only one modal
+    // --- Open modal or navigate ---
     if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
       setModaldata(item);
       setShowNewOrderModal(true);
     } else if (insignSelectedIndex === 1) {
-      navigation.navigate('ReachMapDrop', {
-        orderData: item,
-      });
+      navigation.navigate('ReachMapDrop', { orderData: item });
     }
+
   } catch (error) {
-    console.error('Error in handleOrderPress:', error);
+    console.error('Error in handleOrderPress:', error.message);
+    Alert.alert('Error', 'Something went wrong. Please try again.', [{ text: 'OK' }]);
   }
 };
 
@@ -464,7 +501,6 @@ const handleOrderPress = async (item) => {
           coordinates: [lat, long],
         },
       };
-      // console.log(obj, 'obj================');
       const res = await axios.patch(
         `https://api.gobooze.com.au/order/api/orders/update-driver-location/${userId}`,
         obj,
@@ -513,7 +549,7 @@ const handleOrderPress = async (item) => {
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
-      {/* <SignalStrengthComponent /> */}
+      <SignalStrengthComponent />
       <ScrollView
         stickyHeaderIndices={[2]}
         // refreshControl={

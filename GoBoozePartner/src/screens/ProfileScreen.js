@@ -114,6 +114,10 @@ const ProfileScreen = () => {
       const userData = await AsyncStorage.getItem('USER_DATA');
       console.log('USER_DATA to remove:', userData);
       await AsyncStorage.removeItem('USER_DATA');
+      await AsyncStorage.removeItem("CACHED_DELIVERED_ORDERS");
+      await AsyncStorage.removeItem("CACHED_ACTIVE_ORDERS");
+      await AsyncStorage.removeItem("CACHED_PENDING_ORDERS");
+      await AsyncStorage.removeItem("LAST_COORDINATES");
       navigation.navigate('Onboarding');
     } catch (error) {
       console.log('Error during logout:', error);
