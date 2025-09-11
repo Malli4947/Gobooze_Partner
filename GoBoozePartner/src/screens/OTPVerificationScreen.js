@@ -64,8 +64,11 @@ const OTPVerificationScreen = props => {
   return null;
 };
 
-const handleContinuePress = async () => {
-  if (inputOtp.length !== 4) {
+//  Allow passing OTP directly
+const handleContinuePress = async (otpValue) => {
+  const otpToUse = otpValue ?? inputOtp;  // if param provided use it, else use state
+
+  if (otpToUse.length !== 4) {
     setShowOtpErrorMessage(true);
     return;
   }
@@ -74,35 +77,31 @@ const handleContinuePress = async () => {
   const phoneNumber = props.route.params.mobileNumber;
   const jsonBody = {
     phone: `+61${phoneNumber}`,
-    otp: inputOtp,
+    otp: otpToUse, // use the OTP passed in
   };
 
   try {
-    const token = await waitForToken(); // ✅ Wait for token to be available
+    const token = await waitForToken();
     console.log('Retrieved Firebase token after waiting:', token);
 
     if (token) {
-      jsonBody.fbToken = {
-        key: token,
-        enabled: true,
-      };
+      jsonBody.fbToken = { key: token, enabled: true };
     } else {
       console.warn('Firebase token still missing after retries');
-      jsonBody.fbToken = {
-        key: '',
-        enabled: false,
-      };
+      jsonBody.fbToken = { key: '', enabled: false };
     }
 
     props.appActions.verifyOtp(jsonBody, response => {
       setShowLoader(false);
       if (response.status === 200) {
-        if (hasLocationPermission === true) {
+        setShowOtpErrorMessage(false);
+        if (hasLocationPermission) {
           props.navigation.navigate('DashBoard');
         } else {
           props.navigation.navigate('Location');
         }
       } else {
+        setShowOtpErrorMessage(true);
         console.warn('OTP Verification failed:', response.error);
       }
     });
@@ -111,6 +110,7 @@ const handleContinuePress = async () => {
     console.error('Error reading token from AsyncStorage:', err);
   }
 };
+
 
 
   useEffect(() => {
@@ -225,7 +225,12 @@ const handleContinuePress = async () => {
 
         <View style={{}}>
           <OTPTextView
-            handleTextChange={value => setInputOtp(value)}
+             handleTextChange={value => {
+    setInputOtp(value);
+    if (value.length === 4) {
+      handleContinuePress(value); //  pass OTP directly
+    }
+  }}
             containerStyle={{marginTop: rHeight(40)}}
             inputCount={4}
             textInputStyle={

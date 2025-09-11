@@ -202,30 +202,34 @@ const mask = (s) => {
   return `${s.slice(0,4)}...${s.slice(-4)}`; // safe masking
 };
 
-const fetchOrders = async () => {
+const  fetchOrders = async () => {
   const isActive = await checkIsActiveStatus();
-  // --- Always load cache first (so UI has something to show) ---
+
+  // --- Load cache first (so UI has something while API loads) ---
   const cachedDelivered = await AsyncStorage.getItem("CACHED_DELIVERED_ORDERS");
   const cachedActive = await AsyncStorage.getItem("CACHED_ACTIVE_ORDERS");
   const cachedPending = await AsyncStorage.getItem("CACHED_PENDING_ORDERS");
+
   let deliveredOrders = cachedDelivered ? JSON.parse(cachedDelivered) : [];
   let activeOrders = cachedActive ? JSON.parse(cachedActive) : [];
   let pendingOrders = cachedPending ? JSON.parse(cachedPending) : [];
 
-  // update UI immediately with cache
+  // Update UI immediately with cached data
   setDeliveriedOrders(deliveredOrders);
   setAcceptedOrders(activeOrders);
   setAllpendingOrders(pendingOrders);
 
-  // --- If user is not active, just stop here but keep cache UI ---
+  // --- If user is not active, stop here ---
   if (!isActive) {
-    console.log('User not active → showing cached orders only');
+    console.log("User not active → showing cached orders only");
     return;
   }
 
   try {
     const combinedData = await AsyncStorage.getItem("USER_DATA");
     const [accessToken, userId] = combinedData?.split(":") ?? [];
+
+    // --- Delivered Orders ---
     try {
       const res = await axios.post(
         `https://api.gobooze.com.au/order/api/orders/get-delivery-user-order-by-status/${userId}`,
@@ -233,14 +237,14 @@ const fetchOrders = async () => {
         { headers: { Authorization: `${accessToken}` } }
       );
       const apiData = res.data?.data?.reverse() ?? [];
-      if (apiData.length > 0) {
-        deliveredOrders = apiData;
-        await AsyncStorage.setItem("CACHED_DELIVERED_ORDERS", JSON.stringify(apiData));
-      }
+      //  Always update, even if empty
+      deliveredOrders = apiData;
+      await AsyncStorage.setItem("CACHED_DELIVERED_ORDERS", JSON.stringify(apiData));
     } catch (err) {
-      console.warn('Delivered API failed, keeping cache', err?.message);
+      console.warn("Delivered API failed, using cache", err?.message);
     }
-    // --- Active Orders API ---
+
+    // --- Active Orders ---
     try {
       const res = await axios.post(
         `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
@@ -248,35 +252,34 @@ const fetchOrders = async () => {
         { headers: { Authorization: `${accessToken}` } }
       );
       const apiData = res.data?.data?.reverse() ?? [];
-      if (apiData.length > 0) {
-        activeOrders = apiData;
-        await AsyncStorage.setItem("CACHED_ACTIVE_ORDERS", JSON.stringify(apiData));
-      }
+      activeOrders = apiData;
+      await AsyncStorage.setItem("CACHED_ACTIVE_ORDERS", JSON.stringify(apiData));
     } catch (err) {
-      console.warn('Active API failed, keeping cache', err?.message);
+      console.warn("Active API failed, using cache", err?.message);
     }
-    // --- Pending Orders API ---
+
+    // --- Pending Orders ---
     try {
       const res = await axios.get(
         `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`
       );
       const apiData =
         res.data?.success && res.data?.data ? res.data.data.reverse() : [];
-      if (apiData.length > 0) {
-        pendingOrders = apiData;
-        await AsyncStorage.setItem("CACHED_PENDING_ORDERS", JSON.stringify(apiData));
-      }
+      pendingOrders = apiData;
+      await AsyncStorage.setItem("CACHED_PENDING_ORDERS", JSON.stringify(apiData));
     } catch (err) {
-      console.warn('Pending API failed, keeping cache', err?.message);
+      console.warn("Pending API failed, using cache", err?.message);
     }
-    // --- Final UI update ---
+
+    // --- Final UI update with fresh API data (or empty arrays) ---
     setDeliveriedOrders(deliveredOrders);
     setAcceptedOrders(activeOrders);
     setAllpendingOrders(pendingOrders);
   } catch (e) {
-    console.error('fetchOrders general error:', e?.message, e);
+    console.error("fetchOrders general error:", e?.message, e);
   }
 };
+
 
 const handleOrderPress = async (item) => {
   if (showNewOrderModal) return;

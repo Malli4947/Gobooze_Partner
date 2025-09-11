@@ -285,7 +285,7 @@ const ReachedDropScreen = ({route}) => {
           onPress={() => {
             navigation.navigate('Home');
           }}
-          title={'Reached'}
+         title={'Deliver Order Now'}
         />
         <View style={[styles.seperator, darkSep]} />
       </View>

@@ -23,18 +23,27 @@ const OrderDetailExpandView = ({orderDetails}) => {
             {item.orderQuantity}x
           </Text>
 
-          <FastImage
+          {/* <FastImage
             source={{
               uri: `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/
 ${item.variantImage}`,
             }}
             resizeMode="contain"
             style={styles.whiskeyImg}
-          />
+          /> */}
+          <FastImage
+  source={{
+    uri: `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/${item.variantImage}`,
+  }}
+  resizeMode={FastImage.resizeMode.contain} 
+  style={styles.whiskeyImg}
+/>
+
           <View
             style={{
               alignSelf: 'flex-start',
               width: '70%',
+              marginTop:rHeight(12)
             }}>
             <Text style={[styles.nameTxt, darkTextStyle, {width: '100%'}]}>
               {item.quantity}-Pack

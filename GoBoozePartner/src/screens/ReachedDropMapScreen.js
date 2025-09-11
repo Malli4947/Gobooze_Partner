@@ -135,7 +135,7 @@ const ReachedDropMapScreen = ({route}) => {
           onPress={() => {
             navigation.navigate('Home');
           }}
-          title={'Reached'}
+          title={'Reach Delivery Address'}
         />
       </View>
 
