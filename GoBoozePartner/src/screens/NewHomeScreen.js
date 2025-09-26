@@ -105,7 +105,7 @@ const NewHomeScreen = props => {
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
       const fetchDetails = await fetch(
-        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
+        `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
@@ -170,7 +170,7 @@ const getLatAndLong = async () => {
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
       const checkingPendingOrders = await axios.post(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
         {
           order_status: 'pending',
         },
@@ -232,7 +232,7 @@ const  fetchOrders = async () => {
     // --- Delivered Orders ---
     try {
       const res = await axios.post(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-order-by-status/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
         { order_status: "delivered" },
         { headers: { Authorization: `${accessToken}` } }
       );
@@ -247,7 +247,7 @@ const  fetchOrders = async () => {
     // --- Active Orders ---
     try {
       const res = await axios.post(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
         { headers: { Authorization: `${accessToken}` } }
       );
@@ -261,7 +261,7 @@ const  fetchOrders = async () => {
     // --- Pending Orders ---
     try {
       const res = await axios.get(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`
       );
       const apiData =
         res.data?.success && res.data?.data ? res.data.data.reverse() : [];
@@ -321,7 +321,7 @@ const handleOrderPress = async (item) => {
     try {
       // Try to fetch user status
       const res = await axios.get(
-        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
+        `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
         { headers: { Authorization: accessToken } }
       );
       isActive = res.data?.data?.is_active ?? true;
@@ -342,7 +342,7 @@ const handleOrderPress = async (item) => {
     }
 
     // --- Open modal or navigate ---
-    if (insignSelectedIndex === 0 || insignSelectedIndex === 2) {
+    if (insignSelectedIndex === 0 ) {
       setModaldata(item);
       setShowNewOrderModal(true);
     } else if (insignSelectedIndex === 1) {
@@ -424,7 +424,7 @@ const handleOrderPress = async (item) => {
       const interval = setInterval(() => {
         fecthPendingOrders();
         fetchOrders();
-      }, 5000); 
+      }, 500); 
 
       return () => clearInterval(interval);
     }, []),
@@ -505,7 +505,7 @@ const handleOrderPress = async (item) => {
         },
       };
       const res = await axios.patch(
-        `https://api.gobooze.com.au/order/api/orders/update-driver-location/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/update-driver-location/${userId}`,
         obj,
         {
           headers: {
@@ -604,7 +604,7 @@ const handleOrderPress = async (item) => {
               tintColor={isDarkTheme ? '#3F444D' : '#FFF'}
               inactiveFont={isDarkTheme && '#FFFFFFBF'}
               activeFont={isDarkTheme ? '#FFF' : COLORS.light_primary_text}
-              segmentArray={['Orders', 'On Going']}
+              segmentArray={['UNPICKED ORDERS ', 'PICKED ORDERS', 'MY ORDERS']}
               selectedIndex={insignSelectedIndex}
               onValueChange={index => {
                 // playPause();
@@ -619,8 +619,11 @@ const handleOrderPress = async (item) => {
               ? allPendingOrders
               : insignSelectedIndex === 1
               ? accepteddOrders
+              : insignSelectedIndex === 2
+              ? deliveredOrders
               : []
           }
+          
           onOrderPress={item => handleOrderPress(item)}
         />
 

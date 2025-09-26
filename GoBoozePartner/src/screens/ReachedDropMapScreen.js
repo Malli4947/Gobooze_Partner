@@ -12,7 +12,9 @@ import {
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
+import CustomButton from '../components/CustomButton';
 import {rHeight, rWidth} from '../constants/PixelSize';
+import axios from 'axios';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import NavBarWithBackButton from '../components/NavBarWithBackButton';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -21,6 +23,7 @@ import {CONST_STYLES} from '../constants/ConstStyles';
 import DetailsView from '../components/DetailsView';
 import MapView, {MapMarker, PROVIDER_DEFAULT} from 'react-native-maps';
 import NewSlideButton from '../components/NewSlideButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import updateOrder from '../constants/statusUpdate';
 import Nav from '../assets/Navi.svg';
 import {Marker} from 'react-native-svg';
@@ -38,6 +41,7 @@ const ReachedDropMapScreen = ({route}) => {
   const {currentLattitude, currentLongitude} = useSelector(
     state => state.location,
   );
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   const navigation = useNavigation();
   // console.log(
   //   currentLattitude,
@@ -49,7 +53,7 @@ const ReachedDropMapScreen = ({route}) => {
   // );
   const orderData = route.params.orderData;
 
-  console.log(orderData, 'OrderDetails===========><====');
+  // console.log(orderData, 'OrderDetails===========><====');
 
   // Use orders.length or check for specific properties inside orders to safely access data
 
@@ -123,9 +127,51 @@ const ReachedDropMapScreen = ({route}) => {
     latitude: orderData?.order?.address?.coordinates?.lat,
     longitude: orderData?.order?.address?.coordinates?.lng,
   };
-  // Assuming OrderDetails is your variable containing the order details JSON
 
-  // console.log(userLocation, 'userLocation=========================');
+const confirmCancelOrder = (orderId) => {
+  Alert.alert('Order', 'Are you sure you want to cancel order?', [
+    {
+      text: 'No',
+      style: 'cancel',
+    },
+    {
+      text: 'Yes',
+      onPress: () => CancelOrder(orderId),
+    },
+  ]);
+};
+
+const CancelOrder = async (orderId) => {
+  try {
+    const combinedData = await AsyncStorage.getItem('USER_DATA');
+    if (!combinedData) {
+      Alert.alert('Error', 'User not logged in');
+      return;
+    }
+    const [accessToken, userId] = combinedData.split(':') ?? [];
+    const response = await axios.post(
+      `https://gobooze-test.codefactstech.com/order/api/orders/drop-order/${orderId}/${userId}`,
+      {},
+      {
+        headers: {
+          Authorization: `${accessToken}`,
+        },
+      }
+    );
+    const resData = response.data;
+    if (resData?.success) {
+      Alert.alert('Success', resData.message || 'Order cancelled successfully');
+      navigation.goBack();
+    } else {
+      Alert.alert('Failed', resData?.message || 'Could not cancel order');
+    }
+  } catch (error) {
+    console.error('Cancel error:', error.response?.data || error.message);
+    const backendMessage = error.response?.data?.message || 'Something went wrong while cancelling the order';
+    Alert.alert('Error', backendMessage);
+  }
+};
+
   return (
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
@@ -135,7 +181,7 @@ const ReachedDropMapScreen = ({route}) => {
           onPress={() => {
             navigation.navigate('Home');
           }}
-          title={'Reach Delivery Address'}
+          title={'Order has been Picked'}
         />
       </View>
 
@@ -183,7 +229,7 @@ const ReachedDropMapScreen = ({route}) => {
       {/* </View> */}
 
       {/* ---------------- BOTTOM CONTAINER ---------------- */}
-      <View style={[styles.bottomContainer, darkBg]}>
+      <View style={[styles.bottomContainer, darkBg,{marginBottom:rHeight(48)}]}>
         <View
           style={[
             styles.topSeperator,
@@ -227,7 +273,7 @@ const ReachedDropMapScreen = ({route}) => {
                   {orderData?.order?.address?.last_name}
                 </Text>
                 <Text style={[styles.ultralightBlackText, darkTextStyle]}>
-                  {orderData?.order?.address?.state}
+                  {orderData?.order?.address?.address}
                 </Text>
               </View>
 
@@ -295,6 +341,19 @@ const ReachedDropMapScreen = ({route}) => {
             title={'Customer Details:'}
             value={`${orderData?.order?.address?.first_name} ${orderData?.order?.address?.last_name}, ${orderData?.order?.address?.address}`}
           />
+          {/* <DetailsView
+  style={{ width: '60%' }}
+  id="1"
+  image={IMAGES.CUSTOMER} // change the icon if needed
+  title="Product Details:"
+  value={orderData?.order?.order_Variants
+    ?.map(
+      (item) =>
+        `${item.product_name} x${item.quantity} (${item.variant_name || 'Default'})`
+    )
+    .join(', ')}
+/> */}
+
           <DetailsView
             style={{width: '70%',color:'#D3178A'}}
             id="2"
@@ -316,24 +375,22 @@ const ReachedDropMapScreen = ({route}) => {
             <RightA />
           </TouchableOpacity>
         </View>
-        {/* ------------- Bottom slide button ----------- */}
-        {/* <CustomSlideButton
-          hideSeperator={true}
-          title="reached-pickup-location"
-          confirmedText="Placing your order"
-          onReachedToEnd={() => props.navigation.navigate('OrderPick')}
-        /> */}
-        {/* <NewSlideButton
-          title={'ready-for-delivery'}
-          navigationScreen={'CollectMoney'}
-          onComplete={handleUpdateOrder}
-          orderData={orderData}
-
-          // onComplete={() => {
-          //   navigation.navigate('ReachDrop');
-          // }}
-        /> */}
+       
       </View>
+<View style={{position:'absolute',bottom:12,width:'100%',paddingHorizontal:rWidth(16),}}>
+ <CustomButton
+          buttonText="Cancel Order"
+          
+          handleClick={() => confirmCancelOrder(orderData?.order?._id)}
+          buttonStyle={[
+            {
+              backgroundColor:  '#D3178A',
+              color:'#FFF'
+            },
+          ]}
+        />
+</View>
+     
     </SafeAreaView>
   );
 };
@@ -347,7 +404,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.dark_theme_background,
   },
   map: {
-    height: '80%',
+    height: '60%',
   },
   logoContainer: {
     marginBottom: 100,

@@ -88,7 +88,8 @@ const handleContinuePress = async (otpValue) => {
       jsonBody.fbToken = { key: token, enabled: true };
     } else {
       console.warn('Firebase token still missing after retries');
-      jsonBody.fbToken = { key: '', enabled: false };
+      // jsonBody.fbToken = { key: '', enabled: false };
+      return false; // Stop if no token
     }
 
     props.appActions.verifyOtp(jsonBody, response => {

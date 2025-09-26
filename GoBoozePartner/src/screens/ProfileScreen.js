@@ -57,10 +57,11 @@ const ProfileScreen = () => {
   }, [navigation]);
   const FetchDetails = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
+    console.log('combineData',combinedData)
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchDetails = await fetch(
-        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
+        `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,

@@ -26,7 +26,7 @@ const OrderNavigationBar = () => {
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
       const activeOrdersResponse = await axios.post(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
         {
           headers: {
@@ -62,7 +62,7 @@ const OrderNavigationBar = () => {
     try {
       const obj = { is_active: isActive };
       await axios.patch(
-        `https://api.gobooze.com.au/admin/api/partner/update-partner-profile/${userId}`,
+        `https://gobooze-test.codefactstech.com/admin/api/partner/update-partner-profile/${userId}`,
         obj,
         {
           headers: {
@@ -93,7 +93,7 @@ const OrderNavigationBar = () => {
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchDetails = await fetch(
-        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
+        `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
