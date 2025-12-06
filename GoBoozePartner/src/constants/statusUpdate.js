@@ -1,28 +1,34 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {MAIN_BASE_URL} from './Constant';
+import { MAIN_BASE_URL } from './Constant';
 
 const updateOrder = async (orderId, orderStatus) => {
   try {
-    const combinedData = await AsyncStorage.getItem('USER_DATA');
+const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
-    const acceptRes = await axios.patch(
+    const response = await axios.patch(
       `${MAIN_BASE_URL}order/api/orders/update-order-status/${orderId}`,
-      {
-        order_status: orderStatus,
-      },
+      { order_status: orderStatus },
       {
         headers: {
           Authorization: `${accessToken}`,
         },
       },
     );
-    console.log(
-      '💕 ~ file: NewOrderAlertScreen.js:49 ~ acceptOrder ~ acceptRes:',
-      acceptRes,
-    );
-  } catch (e) {
-    console.log('💕 ~ file: ReachPickupScreen.js:55 ~ updateOrder ~ e:', e);
+    return {
+      success: true,
+      message: response.data?.message || 'Order updated successfully',
+      data: response.data,
+    };
+  } catch (error) {
+    console.log('updateOrder error:', error.response?.data || error.message);
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        'Failed to update order',
+    };
   }
 };
 

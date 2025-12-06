@@ -48,7 +48,7 @@ const OrderHistory = ({orderRequests}) => {
   //   const [accessToken, userId] = combinedData?.split(':') ?? [];
   //   try {
   //     const fetchOrderDetails = await fetch(
-  //       `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-completed-orders/${userId}`,
+  //       `https://api.gobooze.com.au/order/api/orders/get-delivery-user-completed-orders/${userId}`,
   //       {
   //         headers: {
   //           Authorization: `${accessToken}`,
@@ -68,7 +68,7 @@ const OrderHistory = ({orderRequests}) => {
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchOrderDetails = await fetch(
-        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-completed-orders/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-completed-orders/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
@@ -588,6 +588,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.light_disabled_background,
     borderBottomWidth: 1,
     paddingBottom: rHeight(16),
+     marginTop:rHeight(16)
   },
   menuContainer: {
     width: rHeight(44),

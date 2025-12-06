@@ -1,4 +1,4 @@
-import React, {useState, Suspense} from 'react';
+import React, { useState, Suspense } from 'react';
 import {
   View,
   Text,
@@ -8,24 +8,23 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import {useColorScheme} from './ColorSchemeContext';
+import { useColorScheme } from './ColorSchemeContext';
 import COLORS from '../constants/Colors';
-import {rHeight, rWidth} from '../constants/PixelSize';
-import {GRAPHIK_FONT} from '../constants/Constant';
+import { rHeight, rWidth } from '../constants/PixelSize';
+import { GRAPHIK_FONT } from '../constants/Constant';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 // Lazy load FastImage and NoOrder components
 const FastImage = React.lazy(() => import('react-native-fast-image'));
 const NoOrder = React.lazy(() => import('../assets/NoOrders1.svg'));
 
-const OrdersCard = ({onOrderPress, orderRequests}) => {
-  // console.log(orderRequests, 'ordersssss');
+const OrdersCard = ({ onOrderPress, orderRequests }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme == 'dark';
   const [showAllProducts, setShowAllProducts] = useState(0);
   const formatDate = dateString => {
     const date = new Date(dateString);
-    const options = {day: '2-digit', month: 'long', year: 'numeric'};
+    const options = { day: '2-digit', month: 'long', year: 'numeric' };
     return new Intl.DateTimeFormat('en-US', options).format(date);
   };
   const formatDateTime = (dateString, showOnlyTime = false) => {
@@ -71,11 +70,9 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
   const copyToClipboard = item => {
     const address = item.order?.address?.address;
     if (!address) {
-      console.log('Address is undefined for item:', address);
       Alert.alert('Error', 'Address is not available for this item.');
       return;
     }
-    console.log(address, 'address');
     Clipboard.setString(address);
     Alert.alert('Copied!', 'Address has been copied to clipboard.');
   };
@@ -100,7 +97,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
             </Text>
           </View>
 
-          <View style={{marginLeft: rWidth(32)}}>
+          <View style={{ marginLeft: rWidth(32) }}>
             <Text style={[styles.ltext1, isDark && styles.dtext1]}>
               ORDER ID
             </Text>
@@ -125,7 +122,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                 resizeMode="contain"
                 style={styles.product_Image}
               />
-              <View style={{marginLeft: rWidth(12)}}>
+              <View style={{ marginLeft: rWidth(12) }}>
                 <Text style={[styles.lbrandText, isDark && styles.dbrandText]}>
                   {product.quantity}-Pack,{' '}
                 </Text>
@@ -133,7 +130,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                   {product.variantName}
                 </Text>
                 <Text style={[styles.lpriceText, isDark && styles.dpriceText]}>
-                  ${product.finalSellingPrice}
+                  ${(product.finalSellingPrice).toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -157,7 +154,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                     resizeMode="contain"
                     style={styles.product_Image}
                   />
-                  <View style={{marginLeft: rWidth(12)}}>
+                  <View style={{ marginLeft: rWidth(12) }}>
                     <Text
                       style={[styles.lbrandText, isDark && styles.dbrandText]}>
                       {product.quantity}-Pack,{' '}
@@ -168,7 +165,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
                     </Text>
                     <Text
                       style={[styles.lpriceText, isDark && styles.dpriceText]}>
-                      ${product.finalSellingPrice}
+                      ${(product.finalSellingPrice).toFixed(2)}
                     </Text>
                   </View>
                 </View>
@@ -196,7 +193,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
         <View
           style={[
             styles.dummyView,
-            isDark && {backgroundColor: COLORS.dark_disabled_background},
+            isDark && { backgroundColor: COLORS.dark_disabled_background },
           ]}
         />
         <View style={[styles.rowCon]}>
@@ -209,17 +206,17 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
               : `${item.order.address.first_name} ${item.order.address.last_name}`}
           </Text>
         </View>
-        <View style={[styles.rowCon, {margin: 10, overflow: 'hidden'}]}>
+        <View style={[styles.rowCon, { margin: 10, overflow: 'hidden' }]}>
           <Text
             style={[
               styles.lleftText,
               isDark && styles.dleftText,
-              {marginTop: rHeight(-16)},
+              { marginTop: rHeight(-16) },
             ]}>
             Address:
           </Text>
           <TouchableOpacity
-            style={{flexDirection: 'row'}}
+            style={{ flexDirection: 'row' }}
             onPress={() => {
               const address = item?.order?.address?.address || 'NA';
               Clipboard.setString(address);
@@ -230,7 +227,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
               style={[
                 styles.lRightText,
                 isDark && styles.dRightText,
-                {width: '70%'},
+                { width: '70%' },
               ]}>
               {item?.order?.address?.address || 'NA'}
             </Text>
@@ -240,7 +237,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
           </TouchableOpacity>
         </View>
         {/* ORDER PLACED TIME */}
-        <View style={[styles.rowCon, {overflow: 'hidden'}]}>
+        <View style={[styles.rowCon, { overflow: 'hidden' }]}>
           <Text style={[styles.lleftText, isDark && styles.dleftText]}>
             Order Placed:
           </Text>
@@ -253,24 +250,55 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
           </Text>
         </View>
         {/* {item?.order?.comments ? ( */}
-          <View style={[styles.rowCon, {margin: 10, overflow: 'hidden'}]}>
-            <Text style={[styles.lleftText, isDark && styles.dleftText]}>
-              Instructions:
+        <View style={[styles.rowCon, { margin: 10, overflow: 'hidden' }]}>
+          <Text style={[styles.lleftText, isDark && styles.dleftText]}>
+            Instructions:
+          </Text>
+          <TouchableOpacity
+            style={{ flexDirection: 'row' }}
+            activeOpacity={0.7}>
+            <Text
+              numberOfLines={3}
+              style={[
+                styles.lRightText,
+                isDark && styles.dRightText,
+                { width: '90%', color: '#D3178A' },
+              ]}>
+              {item.order.comments || '-----'}
             </Text>
-            <TouchableOpacity
-              style={{flexDirection: 'row'}}
-              activeOpacity={0.7}>
-              <Text
-                numberOfLines={3}
-                style={[
-                  styles.lRightText,
-                  isDark && styles.dRightText,
-                  {width: '90%',color:'#D3178A'},
-                ]}>
-                {item.order.comments || '-----'}
-              </Text>
-            </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
+
+        {['accepted', 'confirmed', 'ready-for-delivery', 'reached-pickup-location....'].includes(item?.delivery_status?.toLowerCase()) && (
+          <View style={[styles.rowCon]}>
+            <Text style={[styles.lleftText, isDark && styles.dleftText]}>
+              Accepted By :
+            </Text>
+            <Text style={[styles.lRightText, isDark && styles.dRightText]}>
+  {item?.deliveryUserDetails?.full_name
+    ? item.deliveryUserDetails.full_name
+    : item?.delivery_user
+      ? item.delivery_user
+      : 'Not Assigned Yet'}
+</Text>
+
           </View>
+        )}
+
+        <View style={[styles.rowCon, { marginTop: rHeight(6) }]}>
+          <Text style={[styles.lleftText, isDark && styles.dleftText]}>
+            Delivery Status :
+          </Text>
+          <Text style={[styles.lRightText, isDark && styles.dRightText]}>
+            {item?.delivery_status
+              ? item.delivery_status
+              : 'Not '}
+          </Text>
+        </View>
+
+
+
+
         {/* ) : null} */}
       </Pressable>
     );
@@ -281,7 +309,7 @@ const OrdersCard = ({onOrderPress, orderRequests}) => {
       <FlatList
         initialNumToRender={1}
         data={orderRequests}
-        renderItem={({item, index}) => {
+        renderItem={({ item, index }) => {
           return renderItem(item, index);
         }}></FlatList>
     </>

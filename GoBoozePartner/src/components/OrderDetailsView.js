@@ -24,10 +24,7 @@ const OrderDetailsView = ({
   Onpresses,
   store,
 }) => {
-  // console.log(
-  //   '💕 ~ file: OrderDetailsView.js:24 ~ orderDetails:====================================================',
-  //   orderDetails,
-  // );
+ 
   const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
   const darkTextStyle = isDarkTheme && {color: COLORS.dark_primary_text};

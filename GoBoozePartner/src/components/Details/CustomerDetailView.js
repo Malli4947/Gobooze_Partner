@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {IMAGES} from '../../constants/Constant';
 import DetailsView from '../DetailsView';
 
-const CustomerDetailView = ({orderId, mobileNumber, name, address = 'NA',instructions='---'}) => {
+const CustomerDetailView = ({orderId, mobileNumber, name, address = 'NA',instructions}) => {
   return (
     <View style={{}}>
       <DetailsView id="0" image={IMAGES.BOX} title={'Order:'} value={orderId} />

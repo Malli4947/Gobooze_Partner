@@ -68,7 +68,7 @@ const CollectCashView = ({
               <Text
                 style={[
                   styles.orderText,
-                  // lightTxt,
+                  lightTxt,
                 ]}>
                   {`Order: ${orderDetails?.order?.sequence_number}`}
               </Text>

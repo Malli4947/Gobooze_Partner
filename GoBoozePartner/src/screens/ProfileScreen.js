@@ -36,7 +36,7 @@ const ProfileScreen = () => {
   const darkTextStyle = isDarkTheme && {color: COLORS.dark_primary_text};
   const insets = useSafeAreaInsets();
   const [profileData, setProfileData] = useState();
-  console.log('userDtaaa', profileData);
+  // console.log('userDtaaa', profileData);
   const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
@@ -61,16 +61,14 @@ const ProfileScreen = () => {
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchDetails = await fetch(
-        `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
           },
         },
       );
-      console.log('fetchDta', fetchDetails);
       const data = await fetchDetails.json();
-      console.log(data, 'data.....');
       // const store = await data.data.storeId.json();
       // console.log(store, 'store.....');
       setProfileData(data);
@@ -113,7 +111,6 @@ const ProfileScreen = () => {
   const LogOut = async () => {
     try {
       const userData = await AsyncStorage.getItem('USER_DATA');
-      console.log('USER_DATA to remove:', userData);
       await AsyncStorage.removeItem('USER_DATA');
       await AsyncStorage.removeItem("CACHED_DELIVERED_ORDERS");
       await AsyncStorage.removeItem("CACHED_ACTIVE_ORDERS");
@@ -458,6 +455,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.light_disabled_background,
     borderBottomWidth: 1,
     paddingBottom: rHeight(16),
+     marginTop:rHeight(16)
   },
   menuContainer: {
     width: rHeight(44),
@@ -473,5 +471,6 @@ const styles = StyleSheet.create({
     color: '#000',
     paddingLeft: rWidth(16),
     fontSize: rWidth(14),
+   
   },
 });

@@ -52,7 +52,7 @@ const ReachedDropMapScreen = ({route}) => {
   //   'currentLongitude================><=============drop',
   // );
   const orderData = route.params.orderData;
-
+// console.log('orderDetailsss',orderData)
   // console.log(orderData, 'OrderDetails===========><====');
 
   // Use orders.length or check for specific properties inside orders to safely access data
@@ -129,7 +129,7 @@ const ReachedDropMapScreen = ({route}) => {
   };
 
 const confirmCancelOrder = (orderId) => {
-  Alert.alert('Order', 'Are you sure you want to cancel order?', [
+  Alert.alert('Alert!', 'Are you sure you want to drop order?', [
     {
       text: 'No',
       style: 'cancel',
@@ -150,7 +150,7 @@ const CancelOrder = async (orderId) => {
     }
     const [accessToken, userId] = combinedData.split(':') ?? [];
     const response = await axios.post(
-      `https://gobooze-test.codefactstech.com/order/api/orders/drop-order/${orderId}/${userId}`,
+      `https://api.gobooze.com.au/order/api/orders/drop-order/${orderId}/${userId}`,
       {},
       {
         headers: {
@@ -163,7 +163,7 @@ const CancelOrder = async (orderId) => {
       Alert.alert('Success', resData.message || 'Order cancelled successfully');
       navigation.goBack();
     } else {
-      Alert.alert('Failed', resData?.message || 'Could not cancel order');
+      Alert.alert('Failed', resData?.message || 'Could not drop order');
     }
   } catch (error) {
     console.error('Cancel error:', error.response?.data || error.message);
@@ -244,9 +244,9 @@ const CancelOrder = async (orderId) => {
               userLocation.latitude,
               userLocation.longitude,
             ),
-          )} min`}
+          )} min`} {' '}
           <Text style={[{color: COLORS.light_primary_text}, darkTextStyle]}>
-            ({' '}
+            ({''}
             {`${calculateDistance(
               currentLattitude,
               currentLongitude,
@@ -339,7 +339,9 @@ const CancelOrder = async (orderId) => {
             id="1"
             image={IMAGES.CUSTOMER}
             title={'Customer Details:'}
+            
             value={`${orderData?.order?.address?.first_name} ${orderData?.order?.address?.last_name}, ${orderData?.order?.address?.address}`}
+          
           />
           {/* <DetailsView
   style={{ width: '60%' }}
@@ -379,7 +381,7 @@ const CancelOrder = async (orderId) => {
       </View>
 <View style={{position:'absolute',bottom:12,width:'100%',paddingHorizontal:rWidth(16),}}>
  <CustomButton
-          buttonText="Cancel Order"
+          buttonText="Drop Order"
           
           handleClick={() => confirmCancelOrder(orderData?.order?._id)}
           buttonStyle={[
@@ -491,9 +493,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   lightBlackText: {
-    fontFamily: GRAPHIK_FONT.MEDIUM,
+    // fontFamily: GRAPHIK_FONT.BOLD,
     fontSize: rHeight(16),
     lineHeight: 21,
+    fontWeight:'bold',
+    color: COLORS.light_primary_text,
   },
   viewText: {
     position: 'absolute',

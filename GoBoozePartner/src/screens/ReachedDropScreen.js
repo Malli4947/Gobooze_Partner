@@ -59,7 +59,7 @@ const orders = [
 
 const ReachedDropScreen = ({route}) => {
   const orderData = route?.params?.orderData;
-  // console.log(orderData, 'orderData');
+  console.log('orderDateee',orderData);
   const navigation = useNavigation();
   const orders = orderData?.order?.order_Variants;
   const [showOtpModal, setShowOtpModal] = useState(false);
@@ -99,18 +99,26 @@ const ReachedDropScreen = ({route}) => {
   //   }
   //   navigation.navigate('Home');
   // };
+
   const handleUpdateOrder = async () => {
-    try {
-      await updateOrder(orderData.order_id, 'delivered');
-      if (photo) {
-        await updateOrder(orderData.order_id, 'delivered');
-      }
-      Alert.alert('Success', 'Order marked as delivered');
+  const orderId = orderData?.order?._id;
+  if (!orderId) {
+    Alert.alert('Error', 'Order ID is missing!');
+    return;
+  }
+  try {
+    const result = await updateOrder(orderId, 'delivered'); // or 'delivered'
+    if (result.success) { 
+      Alert.alert('Success', result.message);
       navigation.navigate('Home');
-    } catch (e) {
-      Alert.alert('Error', 'Failed to update order status');
+    } else {
+      Alert.alert('Error', result.message);
     }
-  };
+  } catch (e) {
+    Alert.alert('Error', 'Something went wrong while updating the order');
+  }
+};
+
 
   useEffect(() => {
     const backAction = () => {
@@ -177,7 +185,6 @@ const ReachedDropScreen = ({route}) => {
       });
     } catch (e) {
       Alert.alert('Something went wrong!');
-      console.log('Error occurred: ', e);
     }
   };
   const takePhoto = () => {
@@ -190,8 +197,6 @@ const ReachedDropScreen = ({route}) => {
       };
 
       launchCamera(options, response => {
-        console.log('This is the response:', response);
-
         if (response.didCancel) {
           console.log('User cancelled image picker');
         } else if (response.error) {
@@ -199,14 +204,10 @@ const ReachedDropScreen = ({route}) => {
         } else if (response.customButton) {
           console.log('User tapped custom button:', response.customButton);
         } else if (response.assets && response.assets.length > 0) {
-          // Check if response.assets exists and has at least one element
           const source = {
             uri: response.assets[0].uri,
             fileName: response.assets[0].fileName,
           };
-
-          console.log('Image source:', source);
-
           setPhoto(source);
           setShowPhotoModal(false);
           uploadPhoto(source);
@@ -222,7 +223,6 @@ const ReachedDropScreen = ({route}) => {
 
   const uploadPhoto = async source => {
     const formData = new FormData();
-
     const resizedImage = await ImageResizer.createResizedImage(
       source.uri,
       800,
@@ -239,7 +239,7 @@ const ReachedDropScreen = ({route}) => {
 
     try {
       const response = await fetch(
-        `https://gobooze-test.codefactstech.com/order/api/orders/upload-delivery-images/${orderData.order_id}`,
+        `https://api.gobooze.com.au/order/api/orders/upload-delivery-images/${orderData.order_id}`,
         {
           method: 'POST',
           body: formData,
@@ -256,7 +256,7 @@ const ReachedDropScreen = ({route}) => {
 
       if (response.ok) {
         const responseData = await response.json();
-        // console.log('Upload Success', responseData);
+        console.log('Upload Success', responseData);
       } else {
         const errorData = await response.json();
         // console.log('Upload Error', errorData);
@@ -366,6 +366,7 @@ const ReachedDropScreen = ({route}) => {
                       // )}-${OrderDetails.order_id.slice(-5)}`,
                       orderId: `${orderData?.order?.sequence_number}`,
                       address: `${orderData?.order?.address?.address}`,
+                      instructions: `${orderData?.order?.comments}`,
                     }}
                     onPress={() =>
                       setExpandCustomerDetailView(!expandCustomerDetailView)
@@ -412,7 +413,7 @@ const ReachedDropScreen = ({route}) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnNo1}
-            onPress={() => setShowOtpModal(true)}>
+            onPress={() =>   handleUpdateOrder()}>
             <Text style={styles.yes}>Deliver Order</Text>
             <RightA />
           </TouchableOpacity>

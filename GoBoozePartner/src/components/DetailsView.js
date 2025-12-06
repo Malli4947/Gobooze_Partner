@@ -31,8 +31,8 @@ const DetailsView = ({id, image, title, value, style}) => {
 
       {id != 0 && (
         <Text
-          numberOfLines={1}
-          style={[styles.orderText, darkTextStyle, style, {width: '70%'}]}>
+          numberOfLines={2}
+          style={[styles.orderText, darkTextStyle, style, {width: '65%'}]}>
           {value}
         </Text>
       )}

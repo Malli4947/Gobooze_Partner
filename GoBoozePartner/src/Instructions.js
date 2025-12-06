@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.light_disabled_background,
     borderBottomWidth: 1,
     paddingBottom: rHeight(16),
+     marginTop:rHeight(16)
   },
   menuContainer: {
     width: rHeight(44),

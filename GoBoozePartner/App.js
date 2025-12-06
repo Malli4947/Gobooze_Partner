@@ -36,14 +36,11 @@ const requestUserPermission = async () => {
   const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-  console.log("🔑 Notification permission:", enabled, authStatus);
   return enabled;
 };
 
 useEffect(() => {
   const subscribe = messaging().onTokenRefresh(token => {
-    console.log("♻️ FCM Token refreshed:", token);
     AsyncStorage.setItem('token', token);
   });
   return subscribe;
@@ -62,7 +59,7 @@ useEffect(() => {
         }
 
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-          console.log('🔥 Foreground Message:', remoteMessage);
+          console.log('Foreground Message:', remoteMessage);
         });
 
         return () => {
@@ -72,7 +69,7 @@ useEffect(() => {
           }
         };
       } catch (error) {
-        console.log('🔥 Initialization error:', error);
+        console.log('Initialization error:', error);
       }
     };
 
@@ -89,15 +86,14 @@ const getFirebaseToken = async () => {
   try {
     const token = await messaging().getToken();
     if (token) {
-      console.log("✅ Initial FCM Token:", token);
       await AsyncStorage.setItem('token', token);
       return token;
     } else {
-      console.warn("⚠️ No token yet, will wait for onTokenRefresh");
+      console.warn(" No token yet, will wait for onTokenRefresh");
       return null;
     }
   } catch (e) {
-    console.log("❌ Error getting FCM Token:", e);
+    console.log(" Error getting FCM Token:", e);
     return null;
   }
 };
@@ -106,12 +102,9 @@ const getFirebaseToken = async () => {
 
 const permissionRequest = async () => {
     const systemVersion = DeviceInfo.getSystemVersion();
-    console.log("📱 Android version:", systemVersion);
-
     if (parseInt(systemVersion, 10) >= 13) {
       check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
         .then(result => {
-          console.log("🔍 Notification permission status:", result);
           switch (result) {
             case RESULTS.GRANTED:
               getFirebaseToken(); break;
@@ -120,25 +113,22 @@ const permissionRequest = async () => {
           }
         })
         .catch(error => {
-          console.log('❌ Permission check error:', error);
+          console.log('Permission check error:', error);
         });
     } else {
-      console.log('⚠️ Android version < 13, skip permission request');
+      console.log('Android version < 13, skip permission request');
       getFirebaseToken();
     }
   };
 
 const notificationPermission = async () => {
     const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
-    console.log("📥 Requested notification permission:", result);
-
     if (result === RESULTS.GRANTED) {
-      console.log("✅ Permission granted");
       getFirebaseToken();
     } else {
-      console.warn("⛔ Permission denied or blocked, please enable from settings");
+      console.warn("Permission denied or blocked, please enable from settings");
       openSettings().catch(() => {
-        console.warn("⚠️ Cannot open settings");
+        console.warn("Cannot open settings");
       });
     }
   };
@@ -147,7 +137,6 @@ const notificationPermission = async () => {
 
   const getLatAndLong = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
-    console.log('hii for 500 milliseconds');
     const id = Geolocation.watchPosition(
       position => {
         const lat = JSON.stringify(position.coords.longitude);
@@ -187,7 +176,7 @@ const notificationPermission = async () => {
       };
 
       const res = await axios.patch(
-        'https://gobooze-test.codefactstech.com/order/api/orders/update-driver-location/6658508a5f9586ce68675dc9 ',
+        'https://api.gobooze.com.au/order/api/orders/update-driver-location/6658508a5f9586ce68675dc9 ',
         obj,
         {
           headers: {

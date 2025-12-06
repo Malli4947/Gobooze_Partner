@@ -20,7 +20,8 @@ import LocationPermissionModal from '../components/LocationPermissionModal';
 import Geolocation from '@react-native-community/geolocation';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
-import {rHeight} from '../constants/PixelSize';
+import { useMemo } from 'react';
+import {rHeight, rWidth} from '../constants/PixelSize';
 import {API_BASE_URL, GRAPHIK_FONT} from '../constants/Constant';
 import OrderNavigationBar from '../components/OrderNavigationBar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -62,107 +63,233 @@ const screenWidth = Dimensions.get('screen').width - 30;
 
 const NewHomeScreen = props => {
   const navigation = useNavigation();
-  const [showNewOrderModal, setShowNewOrderModal] = useState(false);
-  const colorScheme = useColorScheme();
   const dispatch = useDispatch();
+  const isFocus = useIsFocused();
+
+  const [showNewOrderModal, setShowNewOrderModal] = useState(false);
+  const [modalData, setModaldata] = useState([]);
+  const [orderAlreadyAccepted, setOrderAlreadyAccepted] = useState(false);
+
   const [insignSelectedIndex, setInsightSelectedIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [listOfRequests, setListOfRequests] = useState([]);
-  const [deliveredOrders, setDeliveriedOrders] = useState([]);
-  const [accepteddOrders, setAcceptedOrders] = useState([]);
-  const [modalData, setModaldata] = useState([]);
+
   const [allPendingOrders, setAllpendingOrders] = useState([]);
-  const [refresh, setRefresh] = useState(false);
+  // console.log('allPendingOrders', allPendingOrders);
+  const [accepteddOrders, setAcceptedOrders] = useState([]);
+  console.log('accepteddOrders', accepteddOrders); 
+  const [deliveredOrders, setDeliveriedOrders] = useState([]);
+// console.log('deliveredOrderss',deliveredOrders)
   const [modalVisible, setModalVisible] = useState(false);
-  const [render, rerender] = useState(false);
-  const previousLengthRef = useRef(0);
+  const [refresh, setRefresh] = useState(false);
   const [currentCoordinates, setCurrentCoordinates] = useState(null);
-  const isFocus = useIsFocused();
-  const [orderAlreadyAccepted, setOrderAlreadyAccepted] = useState(false);
-  const socket = io('https://api.gobooze.com.au');
+  const previousLengthRef = useRef(0);
 
+  const colorScheme = useColorScheme();
   const isDarkTheme = colorScheme === 'dark';
-  const darkSeperator = isDarkTheme && {
-    backgroundColor: COLORS.dark_theme_background,
-  };
+  const darkSeperator = isDarkTheme && {backgroundColor: COLORS.dark_theme_background};
 
-  //malika code starting 15/08
-  useEffect(() => {
-    // console.log('This is focus executing...');
-    onRefresh();
-  }, [isFocus]);
-  const checkLocationEnabled = async () => {
-    const locationEnabled = await checkLocationPermission(); // This function is already implemented in your code
-    return locationEnabled;
-  };
+  const socket = io('https://gobooze-test.codefactstech.com');
 
-  //Malike Code ending
-
-  //Malika new changes -> 17-08
-  const checkIsActiveStatus = async () => {
+  // ----------------------------- LOCATION PERMISSION ---------------------------------
+  const checkLocationPermission = async () => {
     try {
-      const combinedData = await AsyncStorage.getItem('USER_DATA');
-      const [accessToken, userId] = combinedData?.split(':') ?? [];
-
-      const fetchDetails = await fetch(
-        `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
-        {
-          headers: {
-            Authorization: `${accessToken}`,
-          },
-        },
-      );
-      const data = await fetchDetails.json();
-
-      return data?.data?.is_active ?? false;
-    } catch (error) {
-      return false; // Return false if there's an error
+      if (Platform.OS === 'android') {
+        return await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+      } else {
+        const status = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        return status === 'granted';
+      }
+    } catch {
+      return false;
     }
   };
 
-const getLatAndLong = async () => {
-  const isActive = await checkIsActiveStatus();
-  if (!isActive) return; // Do not proceed if user is inactive
+  const checkLocationEnabled = async () => {
+    return await checkLocationPermission();
+  };
 
+ 
+  const checkIsActiveStatus = async () => {
   try {
+    const combinedData = await AsyncStorage.getItem('USER_DATA');
+    const [accessToken, userId] = combinedData?.split(':') ?? [];
+    const res = await fetch(
+      `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
+      { headers: { Authorization: `${accessToken}` } },
+    );
+    const data = await res.json();
+    return data?.data?.is_active ?? false;
+  } catch {
+    return false;
+  }
+};
+
+
+  const postDriverLocation = async (lat, long) => {
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      if (!combinedData) return;
+      const [accessToken, userId] = combinedData.split(':');
+      await axios.patch(
+        `https://api.gobooze.com.au/order/api/orders/update-driver-location/${userId}`,
+        {
+          location: {type: 'Point', coordinates: [lat, long]},
+        },
+        {headers: {Authorization: `${accessToken}`}},
+      );
+    } catch (error) {
+      console.log('Error posting location:', error.message);
+    }
+  };
+
+  const getLatAndLong = useCallback(async () => {
+    const isActive = await checkIsActiveStatus();
+    if (!isActive) return;
+
     Geolocation.getCurrentPosition(
       async position => {
         const lat = position.coords.latitude;
         const long = position.coords.longitude;
-        if (lat && long) {
-          const coords = { lat, long };
-          setCurrentCoordinates(coords);
-          try {
-            await AsyncStorage.setItem("LAST_COORDINATES", JSON.stringify(coords));
-            console.log("Coordinates saved locally:", coords);
-          } catch (err) {
-            console.warn("Failed to store coordinates:", err.message);
-          }
-          postDriverLocation(lat, long);
-          dispatch(onGettingCoordinates({ lattitude: lat, longitude: long }));
-          setModalVisible(false);
-        }
+        const coords = {lat, long};
+        setCurrentCoordinates(coords);
+        await AsyncStorage.setItem('LAST_COORDINATES', JSON.stringify(coords));
+        postDriverLocation(lat, long);
+        dispatch(onGettingCoordinates({lattitude: lat, longitude: long}));
+        setModalVisible(false);
       },
       error => {
-        console.warn("Geolocation error:", error.message);
+        console.warn('Geolocation error:', error.message);
         setModalVisible(true);
         setCurrentCoordinates(null);
       },
-      {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        distanceFilter: 1,
-        interval: 1000,
-        fastestInterval: 2000,
-      },
+      {enableHighAccuracy: false, timeout: 10000, distanceFilter: 1},
     );
-  } catch (error) {
-    console.error("getLatAndLong failed:", error.message);
-    setModalVisible(true);
+  }, []);
+
+   useFocusEffect(
+    useCallback(() => {
+      fetchOrders();
+      fecthPendingOrders();
+      const interval = setInterval(() => {
+        fecthPendingOrders();
+        fetchOrders();
+      }, 15000);
+      return () => clearInterval(interval);
+    }, [fetchOrders, fecthPendingOrders]),
+  );
+  // ----------------------------- FETCH ORDERS ---------------------------------
+const fetchOrders = async () => {
+  const isActive = await checkIsActiveStatus();
+
+  // Load cached data first
+  const cachedDelivered = await AsyncStorage.getItem("CACHED_DELIVERED_ORDERS");
+  const cachedActive = await AsyncStorage.getItem("CACHED_ACTIVE_ORDERS");
+  const cachedPending = await AsyncStorage.getItem("CACHED_PENDING_ORDERS");
+
+  let deliveredOrders = cachedDelivered ? JSON.parse(cachedDelivered) : [];
+  let activeOrders = cachedActive ? JSON.parse(cachedActive) : [];
+  let pendingOrders = cachedPending ? JSON.parse(cachedPending) : [];
+
+  // Set cached data to UI
+  setDeliveriedOrders(deliveredOrders);
+  setAcceptedOrders(activeOrders);
+  setAllpendingOrders(pendingOrders);
+
+  if (!isActive) {
+    console.log(" User not active → showing cached orders only");
+    return;
+  }
+
+  try {
+    const combinedData = await AsyncStorage.getItem("USER_DATA");
+    if (!combinedData) return;
+    const [accessToken, userId] = combinedData.split(":");
+    try {
+      const res = await axios.post(
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        {},
+        { headers: { Authorization: `${accessToken}` } }
+      );
+      const apiData = res.data?.data?.reverse() ?? [];
+      deliveredOrders = apiData;
+      await AsyncStorage.setItem("CACHED_DELIVERED_ORDERS", JSON.stringify(apiData));
+    } catch (err) {
+      console.warn(" Delivered API failed:", err?.response?.data || err?.message);
+    }
+    try {
+      const res = await axios.post(
+        // `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-picked-orders`,
+        {},
+        { headers: { Authorization: `${accessToken}` } }
+      );
+      const apiData = res.data?.data?.reverse() ?? [];
+      activeOrders = apiData;
+      await AsyncStorage.setItem("CACHED_ACTIVE_ORDERS", JSON.stringify(apiData));
+    } catch (err) {
+      console.warn("Active API failed:", err?.response?.data || err?.message);
+    }
+    try {
+      const res = await axios.get(
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
+        { order_status: "pending" },
+        { headers: { Authorization: `${accessToken}` } }
+      );
+
+      const apiData =
+        res.data?.success && Array.isArray(res.data?.data)
+          ? res.data.data.reverse()
+          : [];
+      pendingOrders = apiData;
+      await AsyncStorage.setItem("CACHED_PENDING_ORDERS", JSON.stringify(apiData));
+    } catch (err) {
+      console.warn(" Pending API failed:", err?.response?.data || err?.message);
+    }
+    setDeliveriedOrders(deliveredOrders);
+    setAcceptedOrders(activeOrders);
+    setAllpendingOrders(pendingOrders);
+  } catch (e) {
+    console.error("fetchOrders general error:", e?.message);
   }
 };
 
-  const fecthPendingOrders = async () => {
+// const fecthPendingOrders = async () => {
+//   const isActive = await checkIsActiveStatus();
+//   // console.log("🔍 checkIsActiveStatus →", isActive);
+//   if (!isActive) {
+//     console.warn(" User not active – skipping pending orders fetch");
+//     return;
+//   }
+
+//   try {
+//     const combinedData = await AsyncStorage.getItem("USER_DATA");
+//     if (!combinedData) {
+//       console.error(" fetchPendingOrders: USER_DATA is null/undefined");
+//       return;
+//     }
+
+//     const [accessToken, userId] = combinedData.split(":");
+//     // console.log("fetchPendingOrders with userId:", userId);
+
+//     const res = await axios.get(
+//       `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
+//       { order_status: "pending" },
+//       { headers: { Authorization: `${accessToken}` } }
+//     );
+//     const newData = Array.isArray(res.data?.data) ? res.data.data.reverse() : [];
+//     if (newData.length > previousLengthRef.current) {
+//       console.log(" New pending orders arrived!");
+//       playPause();
+//     }
+//     previousLengthRef.current = newData.length;
+//     setAllpendingOrders(newData);
+//     await AsyncStorage.setItem("CACHED_PENDING_ORDERS", JSON.stringify(newData));
+//   } catch (err) {
+//     console.error(" fetchPendingOrders failed:", err?.response?.data || err?.message);
+//   }
+// };
+
+const fecthPendingOrders = async () => {
     const isActive = await checkIsActiveStatus();
     if (!isActive) return;
     try {
@@ -170,7 +297,7 @@ const getLatAndLong = async () => {
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
       const checkingPendingOrders = await axios.post(
-        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
         {
           order_status: 'pending',
         },
@@ -196,90 +323,84 @@ const getLatAndLong = async () => {
     }
   };
 
-const mask = (s) => {
-  if (!s) return '[missing]';
-  if (s.length <= 8) return s;
-  return `${s.slice(0,4)}...${s.slice(-4)}`; // safe masking
-};
 
-const  fetchOrders = async () => {
-  const isActive = await checkIsActiveStatus();
 
-  // --- Load cache first (so UI has something while API loads) ---
-  const cachedDelivered = await AsyncStorage.getItem("CACHED_DELIVERED_ORDERS");
-  const cachedActive = await AsyncStorage.getItem("CACHED_ACTIVE_ORDERS");
-  const cachedPending = await AsyncStorage.getItem("CACHED_PENDING_ORDERS");
+  // ----------------------------- ORDER CARD PRESS ---------------------------------
+//   const handleOrderPress = async (item) => {
+//   if (showNewOrderModal) return;
+//   try {
+//     const locationEnabled = await checkLocationEnabled();
+//     if (!locationEnabled) {
+//       Alert.alert(
+//         'Location Services Disabled',
+//         'Please enable location services to proceed.',
+//         [{ text: 'OK' }]
+//       );
+//       return;
+//     }
 
-  let deliveredOrders = cachedDelivered ? JSON.parse(cachedDelivered) : [];
-  let activeOrders = cachedActive ? JSON.parse(cachedActive) : [];
-  let pendingOrders = cachedPending ? JSON.parse(cachedPending) : [];
+//     // --- Use currentCoordinates or fallback to stored coordinates ---
+//     let coordinates = currentCoordinates;
+//     if (!coordinates) {
+//       const savedCoords = await AsyncStorage.getItem("LAST_COORDINATES");
+//       if (savedCoords) {
+//         coordinates = JSON.parse(savedCoords);
+//         setCurrentCoordinates(coordinates);
+//         dispatch(onGettingCoordinates({ lattitude: coordinates.lat, longitude: coordinates.long }));
+//       } else {
+//         Alert.alert(
+//           'Unable to Retrieve Location',
+//           'Please ensure your location services are enabled and try again.',
+//           [{ text: 'OK' }]
+//         );
+//         return;
+//       }
+//     }
 
-  // Update UI immediately with cached data
-  setDeliveriedOrders(deliveredOrders);
-  setAcceptedOrders(activeOrders);
-  setAllpendingOrders(pendingOrders);
+//     // --- Get accessToken and userId from storage ---
+//     const combinedData = await AsyncStorage.getItem('USER_DATA');
+//     const [accessToken, userId] = combinedData?.split(':') ?? [];
 
-  // --- If user is not active, stop here ---
-  if (!isActive) {
-    console.log("User not active → showing cached orders only");
-    return;
-  }
+//     let isActive = true; // default assume active
+//     try {
+//       // Try to fetch user status
+//       const res = await axios.get(
+//         `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
+//         { headers: { Authorization: accessToken } }
+//       );
+//       isActive = res.data?.data?.is_active ?? true;
+//     } catch (err) {
+//       console.warn(" Network failed, using local status:", err.message);
+//       // Optionally, you can read a locally cached partner info if you saved it before
+//       // const cachedPartner = await AsyncStorage.getItem("CACHED_PARTNER_INFO");
+//       // isActive = cachedPartner ? JSON.parse(cachedPartner).is_active : true;
+//     }
 
-  try {
-    const combinedData = await AsyncStorage.getItem("USER_DATA");
-    const [accessToken, userId] = combinedData?.split(":") ?? [];
+//     if (!isActive) {
+//       Alert.alert(
+//         'Alert: You are Currently Offline',
+//         'To accept new orders, Please go Online.',
+//         [{ text: 'OK' }]
+//       );
+//       return;
+//     }
 
-    // --- Delivered Orders ---
-    try {
-      const res = await axios.post(
-        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-order-by-status/${userId}`,
-        { order_status: "delivered" },
-        { headers: { Authorization: `${accessToken}` } }
-      );
-      const apiData = res.data?.data?.reverse() ?? [];
-      //  Always update, even if empty
-      deliveredOrders = apiData;
-      await AsyncStorage.setItem("CACHED_DELIVERED_ORDERS", JSON.stringify(apiData));
-    } catch (err) {
-      console.warn("Delivered API failed, using cache", err?.message);
-    }
+//     // --- Open modal or navigate ---
+//     if (insignSelectedIndex === 0 ) {
+//       setModaldata(item);
+//       setShowNewOrderModal(true);
+//     } else if (insignSelectedIndex === 1) {
+//       navigation.navigate('ReachMapDrop', { orderData: item });
+//     }
+//     else if (insignSelectedIndex === 2) {
+//       navigation.navigate('ReachMapDrop', { orderData: item });
+//     }
 
-    // --- Active Orders ---
-    try {
-      const res = await axios.post(
-        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
-        {},
-        { headers: { Authorization: `${accessToken}` } }
-      );
-      const apiData = res.data?.data?.reverse() ?? [];
-      activeOrders = apiData;
-      await AsyncStorage.setItem("CACHED_ACTIVE_ORDERS", JSON.stringify(apiData));
-    } catch (err) {
-      console.warn("Active API failed, using cache", err?.message);
-    }
-
-    // --- Pending Orders ---
-    try {
-      const res = await axios.get(
-        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`
-      );
-      const apiData =
-        res.data?.success && res.data?.data ? res.data.data.reverse() : [];
-      pendingOrders = apiData;
-      await AsyncStorage.setItem("CACHED_PENDING_ORDERS", JSON.stringify(apiData));
-    } catch (err) {
-      console.warn("Pending API failed, using cache", err?.message);
-    }
-
-    // --- Final UI update with fresh API data (or empty arrays) ---
-    setDeliveriedOrders(deliveredOrders);
-    setAcceptedOrders(activeOrders);
-    setAllpendingOrders(pendingOrders);
-  } catch (e) {
-    console.error("fetchOrders general error:", e?.message, e);
-  }
-};
-
+//   } catch (error) {
+//     // console.error('Error in handleOrderPress:', error.message);
+//     Alert.alert('Error', 'Something went wrong. Please try again.', [{ text: 'OK' }]);
+//   }
+// };
 
 const handleOrderPress = async (item) => {
   if (showNewOrderModal) return;
@@ -295,96 +416,107 @@ const handleOrderPress = async (item) => {
       return;
     }
 
-    // --- Use currentCoordinates or fallback to stored coordinates ---
+    // Get coordinates
     let coordinates = currentCoordinates;
     if (!coordinates) {
       const savedCoords = await AsyncStorage.getItem("LAST_COORDINATES");
       if (savedCoords) {
         coordinates = JSON.parse(savedCoords);
         setCurrentCoordinates(coordinates);
-        dispatch(onGettingCoordinates({ lattitude: coordinates.lat, longitude: coordinates.long }));
+        dispatch(onGettingCoordinates({
+          lattitude: coordinates.lat,
+          longitude: coordinates.long
+        }));
       } else {
         Alert.alert(
           'Unable to Retrieve Location',
-          'Please ensure your location services are enabled and try again.',
+          'Please ensure your location services are enabled.',
           [{ text: 'OK' }]
         );
         return;
       }
     }
 
-    // --- Get accessToken and userId from storage ---
+    // Get logged-in userId
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
 
-    let isActive = true; // default assume active
+    // Check user active
+    let isActive = true;
     try {
-      // Try to fetch user status
       const res = await axios.get(
-        `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
         { headers: { Authorization: accessToken } }
       );
       isActive = res.data?.data?.is_active ?? true;
     } catch (err) {
-      console.warn(" Network failed, using local status:", err.message);
-      // Optionally, you can read a locally cached partner info if you saved it before
-      // const cachedPartner = await AsyncStorage.getItem("CACHED_PARTNER_INFO");
-      // isActive = cachedPartner ? JSON.parse(cachedPartner).is_active : true;
+      console.warn("Network error:", err.message);
     }
 
     if (!isActive) {
       Alert.alert(
         'Alert: You are Currently Offline',
-        'To accept new orders, Please go Online.',
+        'To accept new orders, please go Online.',
         [{ text: 'OK' }]
       );
       return;
     }
 
-    // --- Open modal or navigate ---
-    if (insignSelectedIndex === 0 ) {
+    // -------------------------------------
+    // 🔥 IMPORTANT: CHECK IF ORDER BELONGS TO USER
+    // -------------------------------------
+
+    const assignedUserId = item?.delivery_user;
+    const assignedUserName = item?.deliveryUserDetails?.full_name ?? "Someone";
+
+    // If order belongs to another driver
+    if (assignedUserId && assignedUserId !== userId) {
+      Alert.alert(
+        'Order Already Picked',
+        `This order was accepted by ${assignedUserName}.`,
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    // -------------------------------------
+    // 🔥 NOW HANDLE TAB LOGIC
+    // -------------------------------------
+
+    // UNPICKED → show accept modal
+    if (insignSelectedIndex === 0) {
       setModaldata(item);
       setShowNewOrderModal(true);
-    } else if (insignSelectedIndex === 1) {
+      return;
+    }
+
+    // PICKED or MY ORDERS → navigate
+    if (insignSelectedIndex === 1 || insignSelectedIndex === 2) {
       navigation.navigate('ReachMapDrop', { orderData: item });
+      return;
     }
 
   } catch (error) {
-    console.error('Error in handleOrderPress:', error.message);
     Alert.alert('Error', 'Something went wrong. Please try again.', [{ text: 'OK' }]);
   }
 };
 
-  //Malika New changes ends
+
+  // ----------------------------- REFRESH ---------------------------------
+  const onRefresh = async () => {
+    setRefresh(true);
+    await Promise.all([fetchOrders(), fecthPendingOrders()]);
+    setRefresh(false);
+  };
+
+  // ----------------------------- EFFECTS ---------------------------------
   useEffect(() => {
-    const backAction = () => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       BackHandler.exitApp();
       return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
+    });
     return () => backHandler.remove();
   }, []);
-
-  useEffect(() => {
-    ding.setVolume(10);
-    return () => {
-      ding.release();
-    };
-  }, []);
-  useEffect(() => {
-    fetchData();
-  }, []);
-  useFocusEffect(
-    useCallback(() => {
-      setShowNewOrderModal(false);
-      fetchData();
-    }, []),
-  );
 
   const playPause = () => {
     ding.play(success => {
@@ -393,173 +525,73 @@ const handleOrderPress = async (item) => {
       }
     });
   };
-  const fetchData = async () => {
-    try {
-      const combinedData = await AsyncStorage.getItem('USER_DATA');
-      const [accessToken, userId] = combinedData?.split(':') ?? [];
 
-      const response = await axios.get('your_api_endpoint', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+ 
 
-      // Process response data
-      const data = response.data;
-    } catch (error) {
-      if (error.response && error.response.status === 403) {
-        // Access token has expired, navigate to login
-        navigation.navigate('Login');
-      } else {
-        // Handle other errors
-        console.error('Error fetching data:', error);
-      }
-    }
-  };
-  useFocusEffect(
-    useCallback(() => {
-      fetchOrders();
-      fecthPendingOrders();
-
-      const interval = setInterval(() => {
-        fecthPendingOrders();
-        fetchOrders();
-      }, 500); 
-
-      return () => clearInterval(interval);
-    }, []),
-  );
-  const checkLocationPermission = async () => {
-    // console.log('Executing check location permission:');
-    // console.log(Platform.OS);
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.check(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        );
-        // console.log(granted, 'permission android--');
-        return granted;
-      } catch (err) {
-        // console.warn(err);
-        return false;
-      }
-    } else if (Platform.OS === 'ios') {
-      try {
-        const status = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-        // console.log(status, 'permission ios--');
-        return status;
-      } catch (err) {
-        // console.log(err, 'error');
-        return false;
-      }
-    }
-  };
   useEffect(() => {
-    // console.log('This is focus value: ' + isFocus);
-    const getData = async () => {
-      fecthPendingOrders();
-      fetchOrders();
+    const init = async () => {
       const res = await checkLocationPermission();
-      // console.log('This is res: ');
-      // console.log(res);
-
-      rerender(!render);
-      if (res == true || res == 'granted') {
+      if (res) {
         getLatAndLong();
-        const interval = setInterval(() => {
-          getLatAndLong();
-        }, 120000); // 900000 milliseconds = 15 minutes, 120000 milliseconds = 2 minutes
-        return () => clearInterval(interval);
+        const locInterval = setInterval(() => getLatAndLong(), 120000);
+        return () => clearInterval(locInterval);
       } else {
-        setModalVisible(!res);
-        const intervalId = setInterval(async () => {
-          // console.log('Checking for location permission: ');
-          const res2 = await checkLocationPermission();
-          if (res2) {
-            clearInterval(intervalId);
-            // console.log('This interval has been cleared: ' + intervalId);
-            setModalVisible(false);
-          }
-        }, 1000);
+        setModalVisible(true);
       }
     };
-    getData();
+    init();
   }, []);
 
-  const postDriverLocation = async (lat, long) => {
-    try {
-      const combinedData = await AsyncStorage.getItem('USER_DATA');
-      if (!combinedData) {
-        throw new Error('User data is not available.');
-      }
+  // ----------------------------- UI ---------------------------------
+  const segmentLabels = useMemo(
+    () => [
+      <Text>
+        UNPICKED ORDERS{' '}
+        {/* <Text style={{color: '#D3178A'}}>({allPendingOrders?.length || 0})</Text> */}
+      </Text>,
+      <Text>
+        PICKED ORDERS{' '}
+        {/* <Text style={{color: '#D3178A'}}>({accepteddOrders?.length || 0})</Text> */}
+      </Text>,
+      <Text>
+        MY ORDERS{' '}
+        {/* <Text style={{color: '#D3178A'}}>({deliveredOrders?.length || 0})</Text> */}
+      </Text>,
+    ],
+    [allPendingOrders, accepteddOrders, deliveredOrders],
+  );
 
-      const [accessToken, userId] = combinedData.split(':');
-      if (!accessToken || !userId) {
-        throw new Error('Invalid user data format.');
-      }
-
-      const obj = {
-        location: {
-          type: 'Point',
-          coordinates: [lat, long],
-        },
-      };
-      const res = await axios.patch(
-        `https://gobooze-test.codefactstech.com/order/api/orders/update-driver-location/${userId}`,
-        obj,
-        {
-          headers: {
-            Authorization: `${accessToken}`,
-          },
-        },
-      );
-    } catch (error) {
-      console.log(error, 'error================');
-    }
-  };
-
-  const onRefresh = async () => {
-    setRefresh(true);
-    await fetchOrders();
-    fecthPendingOrders();
-    setRefresh(false);
-  };
+  const selectedOrderCount =
+  insignSelectedIndex === 0
+    ? allPendingOrders?.length || 0
+    : insignSelectedIndex === 1
+    ? accepteddOrders?.length || 0
+    : insignSelectedIndex === 2
+    ? deliveredOrders?.length || 0
+    : 0;
 
 
   return (
-    <SafeAreaView
-      style={[styles.container, isDarkTheme && styles.dark_container]}>
-      <LocationPermissionModal
-        modalVisible={modalVisible}
-        dismissModal={() => setModalVisible(false)}
-      />
-     {/* <NetworkSpeedIndicator isDarkTheme={isDarkTheme} /> */}
+    <SafeAreaView style={[styles.container, isDarkTheme && styles.dark_container]}>
+      <LocationPermissionModal modalVisible={modalVisible} dismissModal={() => setModalVisible(false)} />
+
       <NewOrderAlertScreen
         orderAlreadyAccepted={orderAlreadyAccepted}
         modalVisible={showNewOrderModal}
         dismissModal={() => setShowNewOrderModal(!showNewOrderModal)}
         onReachedToEnd={() => props.navigation.navigate('ReachPickup')}
         orderDetails={modalData}
-        denyClick={() => {
-          setShowNewOrderModal(false);
-        }}
+        denyClick={() => setShowNewOrderModal(false)}
       />
-      {/* <CustomStatusBar
-        backgroundColor={isDarkTheme ? COLORS.dark_con : COLORS.light_con}
-      /> */}
-      {/* marginTop: insets.top */}
-      <View style={{}}>
+
+      <View>
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
-      <SignalStrengthComponent />
-      <ScrollView
-        stickyHeaderIndices={[2]}
-        // refreshControl={
-        //   <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
-        // }
-        contentContainerStyle={{paddingBottom: 30}}>
-        {/* ------------- total arning and order view  ------------- */}
+
+      {/* <SignalStrengthComponent /> */}
+
+      <ScrollView contentContainerStyle={{paddingBottom: 30}}>
         <View style={styles.horizontalMargin}>
           <Text
             style={[
@@ -569,19 +601,13 @@ const handleOrderPress = async (item) => {
             Orders
           </Text>
           <View style={styles.earningOrderContainer}>
-            <TotalEarningOrderView
-              title="Orders"
-              value={allPendingOrders.length}
-            />
-            <TotalEarningOrderView
-              title="Active Orders"
-              value={`${accepteddOrders.length}`}
-            />
+            <TotalEarningOrderView title="Orders" value={allPendingOrders.length} />
+            <TotalEarningOrderView title="Active Orders" value={deliveredOrders.length} />
           </View>
         </View>
-        <View style={[styles.seperator, darkSeperator]}></View>
 
-        {/* ------------- total arning and order view  ------------- */}
+        <View style={[styles.seperator, darkSeperator]} />
+
         <View
           style={{
             padding: 10,
@@ -595,7 +621,7 @@ const handleOrderPress = async (item) => {
                 {marginBottom: 20},
                 isDarkTheme && {color: COLORS.dark_primary_text},
               ]}>
-              Orders
+              Orders (<Text style={{color: '#D3178A'}}>{selectedOrderCount}</Text>)
             </Text>
             <GBSegmentControl
               width={screenWidth}
@@ -604,15 +630,13 @@ const handleOrderPress = async (item) => {
               tintColor={isDarkTheme ? '#3F444D' : '#FFF'}
               inactiveFont={isDarkTheme && '#FFFFFFBF'}
               activeFont={isDarkTheme ? '#FFF' : COLORS.light_primary_text}
-              segmentArray={['UNPICKED ORDERS ', 'PICKED ORDERS', 'MY ORDERS']}
+              segmentArray={segmentLabels}
               selectedIndex={insignSelectedIndex}
-              onValueChange={index => {
-                // playPause();
-                setInsightSelectedIndex(index);
-              }}
+              onValueChange={index => setInsightSelectedIndex(index)}
             />
           </View>
         </View>
+
         <OrdersCard
           orderRequests={
             insignSelectedIndex === 0
@@ -623,7 +647,6 @@ const handleOrderPress = async (item) => {
               ? deliveredOrders
               : []
           }
-          
           onOrderPress={item => handleOrderPress(item)}
         />
 
@@ -633,19 +656,18 @@ const handleOrderPress = async (item) => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    isLoggedIn: state.auth.isLoggedIn,
-    accessToken: state.auth.bearerAccessToken,
-    loginUserId: state.auth.loginUserId,
-  };
-};
+const mapStateToProps = state => ({
+  isLoggedIn: state.auth.isLoggedIn,
+  accessToken: state.auth.bearerAccessToken,
+  loginUserId: state.auth.loginUserId,
+});
 
-const mapDispatchToProps = dispatch => {
-  return {appActions: bindActionCreators(appActions, dispatch)};
-};
+const mapDispatchToProps = dispatch => ({
+  appActions: bindActionCreators(appActions, dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewHomeScreen);
+
 
 const styles = StyleSheet.create({
   container: {
