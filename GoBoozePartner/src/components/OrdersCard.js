@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -18,16 +18,20 @@ import Clipboard from '@react-native-clipboard/clipboard';
 const FastImage = React.lazy(() => import('react-native-fast-image'));
 const NoOrder = React.lazy(() => import('../assets/NoOrders1.svg'));
 
-const OrdersCard = ({ onOrderPress, orderRequests }) => {
+const OrdersCard = React.memo(({ onOrderPress, orderRequests, ListHeaderComponent, ListFooterComponent }) => {
+  // ALL HOOKS MUST BE CALLED FIRST - BEFORE ANY CONDITIONAL RETURNS
   const colorScheme = useColorScheme();
   const isDark = colorScheme == 'dark';
   const [showAllProducts, setShowAllProducts] = useState(0);
-  const formatDate = dateString => {
+  
+  // Memoize format functions to prevent recreation on every render
+  const formatDate = useCallback((dateString) => {
     const date = new Date(dateString);
     const options = { day: '2-digit', month: 'long', year: 'numeric' };
     return new Intl.DateTimeFormat('en-US', options).format(date);
-  };
-  const formatDateTime = (dateString, showOnlyTime = false) => {
+  }, []);
+  
+  const formatDateTime = useCallback((dateString, showOnlyTime = false) => {
     const date = new Date(dateString);
     let options = {};
 
@@ -53,21 +57,9 @@ const OrdersCard = ({ onOrderPress, orderRequests }) => {
     formattedDateTime = formattedDateTime.replace(/ at /, ' ');
 
     return formattedDateTime;
-  };
+  }, []);
 
-  const IMAGE_URL = `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/`;
-
-  if (!orderRequests || orderRequests.length === 0) {
-    return (
-      <View style={styles.noOrderContainer}>
-        <NoOrder />
-        <Text style={[styles.noOrderText, isDark && styles.noOrderTextDark]}>
-          No Orders
-        </Text>
-      </View>
-    );
-  }
-  const copyToClipboard = item => {
+  const copyToClipboard = useCallback((item) => {
     const address = item.order?.address?.address;
     if (!address) {
       Alert.alert('Error', 'Address is not available for this item.');
@@ -75,13 +67,11 @@ const OrdersCard = ({ onOrderPress, orderRequests }) => {
     }
     Clipboard.setString(address);
     Alert.alert('Copied!', 'Address has been copied to clipboard.');
-  };
+  }, []);
 
-  const renderItem = (item, index) => {
-    if (index == 0) {
-      // console.log(JSON.stringify(item, null, 2));
-      // console.log('This is the order item: ', item);
-    }
+  const IMAGE_URL = `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/`;
+
+  const renderItem = useCallback(({ item, index }) => {
     return (
       <Pressable
         key={index}
@@ -302,19 +292,52 @@ const OrdersCard = ({ onOrderPress, orderRequests }) => {
         {/* ) : null} */}
       </Pressable>
     );
-  };
+  }, [isDark, formatDate, formatDateTime, copyToClipboard, showAllProducts, onOrderPress]);
+  
+  const keyExtractor = useCallback((item, index) => {
+    return item?._id || item?.order?._id || `order-${index}`;
+  }, []);
+  
+  const getItemLayout = useCallback((data, index) => {
+    // Approximate item height for better performance
+    return {
+      length: 300, // Approximate height of each order card
+      offset: 300 * index,
+      index,
+    };
+  }, []);
+
+  const ListEmptyComponent = useMemo(() => (
+    <View style={styles.noOrderContainer}>
+      <Suspense fallback={<View />}>
+        <NoOrder />
+      </Suspense>
+      <Text style={[styles.noOrderText, isDark && styles.noOrderTextDark]}>
+        No Orders
+      </Text>
+    </View>
+  ), [isDark]);
 
   return (
     <>
       <FlatList
-        initialNumToRender={1}
         data={orderRequests}
-        renderItem={({ item, index }) => {
-          return renderItem(item, index);
-        }}></FlatList>
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        getItemLayout={getItemLayout}
+        initialNumToRender={3}
+        maxToRenderPerBatch={5}
+        windowSize={10}
+        removeClippedSubviews={true}
+        updateCellsBatchingPeriod={50}
+        ListHeaderComponent={ListHeaderComponent}
+        ListFooterComponent={ListFooterComponent}
+        ListEmptyComponent={ListEmptyComponent}
+        contentContainerStyle={{paddingBottom: 30}}
+      />
     </>
   );
-};
+});
 
 export default OrdersCard;
 const styles = StyleSheet.create({

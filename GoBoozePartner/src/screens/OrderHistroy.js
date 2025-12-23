@@ -21,6 +21,7 @@ import FastImage from 'react-native-fast-image';
 import Histroy from '../assets/Delivery history.svg';
 import {useNavigation} from '@react-navigation/native';
 import {BackHandler} from 'react-native';
+import logger from '../utils/logger';
 const OrderHistory = ({orderRequests}) => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
@@ -76,10 +77,11 @@ const OrderHistory = ({orderRequests}) => {
         },
       );
       const data = await fetchOrderDetails.json();
-      setOrderData(data?.data.reverse());
-      setFilteredOrderData(data?.data.reverse());
+      const reversedData = Array.isArray(data?.data) ? [...data.data].reverse() : [];
+      setOrderData(reversedData);
+      setFilteredOrderData(reversedData);
     } catch (error) {
-      console.log(error, 'error');
+      logger.error('Error fetching order details:', error);
     } finally {
       setLoading(false);
     }
@@ -216,7 +218,7 @@ const OrderHistory = ({orderRequests}) => {
         </View>
       ) : (
         <ScrollView>
-          {filteredOrderData.reverse().map((item, index) => (
+          {[...filteredOrderData].reverse().map((item, index) => (
             <View
               key={index}
               style={[styles.lcardCon, isDarkTheme && styles.dcardCon]}>

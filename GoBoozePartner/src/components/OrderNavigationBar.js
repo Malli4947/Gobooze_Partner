@@ -9,6 +9,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GRAPHIK_FONT } from '../constants/Constant';
+import logger from '../utils/logger';
 
 const screenWidth = Dimensions.get('screen').width * 0.6;
 
@@ -35,9 +36,12 @@ const OrderNavigationBar = () => {
         }
       );
 
-      setAcceptedOrders(activeOrdersResponse.data.data.reverse());
+      const ordersData = Array.isArray(activeOrdersResponse.data?.data) 
+        ? [...activeOrdersResponse.data.data].reverse() 
+        : [];
+      setAcceptedOrders(ordersData);
     } catch (e) {
-      console.error('Error fetching orders:', e);
+      logger.error('Error fetching orders:', e);
     }
   }, []);
 
@@ -71,7 +75,7 @@ const OrderNavigationBar = () => {
         }
       );
     } catch (error) {
-      console.error('Error updating:', error.response || error.message || error);
+      logger.error('Error updating:', error.response || error.message || error);
     }
   };
 
@@ -101,7 +105,6 @@ const OrderNavigationBar = () => {
         }
       );
       const data = await fetchDetails.json();
-      // console.log(data, 'data.....');
       setProfileData(data.data);
 
       // Set the initial onlineOfflineIndex based on is_active status
@@ -111,7 +114,7 @@ const OrderNavigationBar = () => {
         setOnlineOfflineIndex(1);
       }
     } catch (error) {
-      console.log(error, 'error');
+      logger.error('Error fetching profile details:', error);
     }
   };
 

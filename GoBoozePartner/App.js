@@ -14,6 +14,7 @@ import axios from 'axios';
 import messaging from '@react-native-firebase/messaging';
 import DeviceInfo from 'react-native-device-info';
 import { enableScreens } from 'react-native-screens';
+import logger from './src/utils/logger';
 
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -59,7 +60,7 @@ useEffect(() => {
         }
 
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-          console.log('Foreground Message:', remoteMessage);
+          logger.log('Foreground Message:', remoteMessage);
         });
 
         return () => {
@@ -69,7 +70,7 @@ useEffect(() => {
           }
         };
       } catch (error) {
-        console.log('Initialization error:', error);
+        logger.error('Initialization error:', error);
       }
     };
 
@@ -89,11 +90,11 @@ const getFirebaseToken = async () => {
       await AsyncStorage.setItem('token', token);
       return token;
     } else {
-      console.warn(" No token yet, will wait for onTokenRefresh");
+      logger.warn(" No token yet, will wait for onTokenRefresh");
       return null;
     }
   } catch (e) {
-    console.log(" Error getting FCM Token:", e);
+    logger.error(" Error getting FCM Token:", e);
     return null;
   }
 };
@@ -113,10 +114,10 @@ const permissionRequest = async () => {
           }
         })
         .catch(error => {
-          console.log('Permission check error:', error);
+          logger.error('Permission check error:', error);
         });
     } else {
-      console.log('Android version < 13, skip permission request');
+      logger.log('Android version < 13, skip permission request');
       getFirebaseToken();
     }
   };
@@ -126,32 +127,44 @@ const notificationPermission = async () => {
     if (result === RESULTS.GRANTED) {
       getFirebaseToken();
     } else {
-      console.warn("Permission denied or blocked, please enable from settings");
+      logger.warn("Permission denied or blocked, please enable from settings");
       openSettings().catch(() => {
-        console.warn("Cannot open settings");
+        logger.warn("Cannot open settings");
       });
     }
   };
 
 
 
+  const locationWatchIdRef = useRef(null);
+  
   const getLatAndLong = async () => {
+    // Clear existing watch if any
+    if (locationWatchIdRef.current !== null) {
+      Geolocation.clearWatch(locationWatchIdRef.current);
+    }
+    
     const combinedData = await AsyncStorage.getItem('USER_DATA');
-    const id = Geolocation.watchPosition(
+    if (!combinedData) {
+      logger.warn('getLatAndLong: USER_DATA not available');
+      return;
+    }
+    
+    locationWatchIdRef.current = Geolocation.watchPosition(
       position => {
-        const lat = JSON.stringify(position.coords.longitude);
-        const long = JSON.stringify(position.coords.latitude);
+        const lat = position.coords.longitude;
+        const long = position.coords.latitude;
         postDriverLocation(lat, long);
       },
       error => {
-        console.log(error, 'error--');
+        logger.error('Geolocation watch error:', error);
       },
       {
         enableHighAccuracy: false,
         timeout: 10000,
-        distanceFilter: 1,
-        interval: 1000,
-        fastestInterval: 2000,
+        distanceFilter: 10, // Increased from 1 to reduce frequency
+        interval: 30000, // Increased from 1000ms to 30s
+        fastestInterval: 10000, // Increased from 2000ms to 10s
       },
     );
   };
@@ -176,7 +189,7 @@ const notificationPermission = async () => {
       };
 
       const res = await axios.patch(
-        'https://api.gobooze.com.au/order/api/orders/update-driver-location/6658508a5f9586ce68675dc9 ',
+        `https://api.gobooze.com.au/order/api/orders/update-driver-location/${userId}`,
         obj,
         {
           headers: {
@@ -185,11 +198,21 @@ const notificationPermission = async () => {
         },
       );
 
-      console.log('Location update response:', res);
+      logger.log('Location update response:', res.status);
     } catch (error) {
-      console.error('Error posting driver location:', error);
+      logger.error('Error posting driver location:', error);
     }
   };
+  
+  // Cleanup location watch on unmount
+  useEffect(() => {
+    return () => {
+      if (locationWatchIdRef.current !== null) {
+        Geolocation.clearWatch(locationWatchIdRef.current);
+        locationWatchIdRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>

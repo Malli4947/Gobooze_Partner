@@ -7,16 +7,53 @@ import {
   Text,
   Pressable,
   TouchableOpacity,
+  AppState,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import COLORS from '../constants/Colors';
 import {GRAPHIK_FONT} from '../constants/Constant';
 import {rHeight, rWidth} from '../constants/PixelSize';
 import {useColorScheme} from './ColorSchemeContext';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import logger from '../utils/logger';
 
 const LocationPermissionModal = props => {
   const colorScheme = useColorScheme();
 
-  const {modalVisible, dismissModal} = props;
+  const {modalVisible, dismissModal, onPermissionGranted} = props;
+
+  // Check permissions when app comes back to foreground
+  React.useEffect(() => {
+    if (!modalVisible) return;
+
+    const subscription = AppState.addEventListener('change', async nextAppState => {
+      if (nextAppState === 'active' && modalVisible) {
+        // User returned from settings - check if permission was granted
+        let hasPermission = false;
+        try {
+          if (Platform.OS === 'android') {
+            hasPermission = await PermissionsAndroid.check(
+              PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            );
+          } else {
+            const status = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+            hasPermission = status === RESULTS.GRANTED;
+          }
+          
+          if (hasPermission && onPermissionGranted) {
+            onPermissionGranted();
+          }
+        } catch (error) {
+          logger.error('Error checking permission after returning from settings:', error);
+        }
+      }
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, [modalVisible, onPermissionGranted]);
 
   return (
     <Modal
