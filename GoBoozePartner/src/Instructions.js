@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.MEDIUM,
     color: '#000',
     paddingLeft: rWidth(16),
-    fontSize: rWidth(14),
+    fontSize: rWidth(16),
   },
   textHeader:{fontSize:rWidth(16),fontFamily:GRAPHIK_FONT.SEMIBOLD,color:`#000`},
   dtext1: {

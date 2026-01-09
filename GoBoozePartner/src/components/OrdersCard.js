@@ -7,6 +7,7 @@ import {
   Pressable,
   FlatList,
   Alert,
+  RefreshControl
 } from 'react-native';
 import { useColorScheme } from './ColorSchemeContext';
 import COLORS from '../constants/Colors';
@@ -18,7 +19,8 @@ import Clipboard from '@react-native-clipboard/clipboard';
 const FastImage = React.lazy(() => import('react-native-fast-image'));
 const NoOrder = React.lazy(() => import('../assets/NoOrders1.svg'));
 
-const OrdersCard = React.memo(({ onOrderPress, orderRequests, ListHeaderComponent, ListFooterComponent }) => {
+const OrdersCard = React.memo(({ onOrderPress, orderRequests, ListHeaderComponent, ListFooterComponent,refreshing,
+  onRefresh }) => {
   // ALL HOOKS MUST BE CALLED FIRST - BEFORE ANY CONDITIONAL RETURNS
   const colorScheme = useColorScheme();
   const isDark = colorScheme == 'dark';
@@ -334,6 +336,14 @@ const OrdersCard = React.memo(({ onOrderPress, orderRequests, ListHeaderComponen
         ListFooterComponent={ListFooterComponent}
         ListEmptyComponent={ListEmptyComponent}
         contentContainerStyle={{paddingBottom: 30}}
+        refreshControl={
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={['#D3178A']}     
+      tintColor="#D3178A"      
+    />
+  }
       />
     </>
   );

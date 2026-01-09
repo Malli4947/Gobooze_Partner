@@ -1,19 +1,13 @@
 import {
   View,
   StyleSheet,
-  ScrollView,
   Text,
   Dimensions,
-  TouchableNativeFeedback,
-  Pressable,
   Alert,
   Platform,
   PermissionsAndroid,
-  RefreshControl,
   SafeAreaView,
   NativeModules,
-  NativeEventEmitter,
-  FlatList,
   AppState
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
@@ -22,30 +16,24 @@ import LocationPermissionModal from '../components/LocationPermissionModal';
 import Geolocation from '@react-native-community/geolocation';
 import {useColorScheme} from '../components/ColorSchemeContext';
 import COLORS from '../constants/Colors';
-import {rHeight, rWidth} from '../constants/PixelSize';
-import {API_BASE_URL, GRAPHIK_FONT} from '../constants/Constant';
+import {rHeight} from '../constants/PixelSize';
+import { GRAPHIK_FONT} from '../constants/Constant';
 import OrderNavigationBar from '../components/OrderNavigationBar';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TotalEarningOrderView from '../components/TotalEarningOrderView';
 import GBSegmentControl from '../components/GBSegmentControl';
 import NewOrderAlertScreen from './NewOrderAlertScreen';
-import CustomStatusBar from '../components/CustomStatusBar';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as appActions from '../redux/actions/appActionCreator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import NewSlideButton from '../components/NewSlideButton';
 import {useDispatch} from 'react-redux';
 import Song from '../assets/BearSound.mp3';
 import OrdersCard from '../components/OrdersCard';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import {pendingOrders} from '../redux/GoboozeApi';
 import {onGettingCoordinates} from '../redux/slices/LocationSlices';
-import {check, request, PERMISSIONS, RESULTS, openSettings} from 'react-native-permissions';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {BackHandler} from 'react-native';
-import NetworkSpeedIndicator from './NetworkSpeedIndicator';
-import SignalStrengthComponent from './SignalStrengthComponent';
 import logger from '../utils/logger';
 var Sound = require('react-native-sound');
 const {RNNetworkSpeed, MobileSignalModule, NetworkTypeModule} = NativeModules;
@@ -60,10 +48,7 @@ const NewHomeScreen = props => {
   const [showNewOrderModal, setShowNewOrderModal] = useState(false);
   const [modalData, setModaldata] = useState([]);
   const [orderAlreadyAccepted, setOrderAlreadyAccepted] = useState(false);
-
   const [insignSelectedIndex, setInsightSelectedIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-
   const [allPendingOrders, setAllpendingOrders] = useState([]);
   const [accepteddOrders, setAcceptedOrders] = useState([]);
   const [deliveredOrders, setDeliveriedOrders] = useState([]);
@@ -78,7 +63,6 @@ const NewHomeScreen = props => {
   const isDarkTheme = colorScheme === 'dark';
   const darkSeperator = isDarkTheme && {backgroundColor: COLORS.dark_theme_background};
 
-  // ----------------------------- LOCATION PERMISSION ---------------------------------
   const checkLocationPermission = useCallback(async () => {
     try {
       if (Platform.OS === 'android') {
@@ -99,15 +83,12 @@ const NewHomeScreen = props => {
   const requestLocationPermission = useCallback(async () => {
     try {
       if (Platform.OS === 'android') {
-        // First check if already granted
         const hasPermission = await PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
         );
         if (hasPermission) {
           return true;
         }
-
-        // Request permission
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           {
@@ -139,7 +120,7 @@ const NewHomeScreen = props => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     const res = await fetch(
-      `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
+      `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
       { headers: { Authorization: `${accessToken}` } },
     );
     const data = await res.json();
@@ -160,7 +141,7 @@ const NewHomeScreen = props => {
       const [accessToken, userId] = combinedData.split(':');
       logger.log('postDriverLocation: Posting location to server', {lat, long, userId});
       await axios.patch(
-        `https://api.gobooze.com.au/order/api/orders/update-driver-location/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/update-driver-location/${userId}`,
         {
           location: {type: 'Point', coordinates: [lat, long]},
         },
@@ -178,25 +159,18 @@ const NewHomeScreen = props => {
       logger.warn('getLatAndLong: User is not active, skipping location fetch');
       return;
     }
-
-    // First check if permission is granted
     let hasPermission = await checkLocationPermission();
     if (!hasPermission) {
-      // Permission not granted - try to request it first
       hasPermission = await requestLocationPermission();
       if (!hasPermission) {
-        // Permission still not granted - show modal
         setModalVisible(true);
         return;
       }
     }
-
-    // Try to use cached coordinates first if available and recent
     try {
       const savedCoords = await AsyncStorage.getItem('LAST_COORDINATES');
       if (savedCoords) {
         const coords = JSON.parse(savedCoords);
-        // Use cached coordinates immediately to avoid delay
         setCurrentCoordinates(coords);
         dispatch(onGettingCoordinates({
           lattitude: coords.lat,
@@ -208,16 +182,11 @@ const NewHomeScreen = props => {
       logger.error('Error reading cached coordinates:', e);
     }
 
-      // Permission is granted, try to get location
-      // Using maximumAge: 3600000 (1 hour) to accept cached locations for faster response
-      // This reduces timeout issues while still getting reasonably fresh locations
-      logger.log('getLatAndLong: Attempting to get location...');
       Geolocation.getCurrentPosition(
         async position => {
           const lat = position.coords.latitude;
           const long = position.coords.longitude;
           const coords = {lat, long};
-          logger.log('getLatAndLong: Location captured successfully', coords);
           setCurrentCoordinates(coords);
           await AsyncStorage.setItem('LAST_COORDINATES', JSON.stringify(coords));
           postDriverLocation(lat, long);
@@ -225,21 +194,17 @@ const NewHomeScreen = props => {
           setModalVisible(false);
         },
         async error => {
-          // Check error code to determine if it's a permission issue
-          // Error codes: 1=PERMISSION_DENIED, 2=POSITION_UNAVAILABLE, 3=TIMEOUT
+          
           if (error.code === 1) {
-            // Permission denied - try requesting again or show modal
             logger.warn('Geolocation permission denied');
             const hasPermission = await requestLocationPermission();
             if (!hasPermission) {
               setModalVisible(true);
             } else {
-              // Permission granted, retry getting location
               getLatAndLong();
             }
           } else {
-            // Other errors (GPS signal, timeout, etc.) - don't show permission modal
-            // Try to use cached coordinates if available (even if old)
+           
             let usedCachedCoords = false;
             try {
               const savedCoords = await AsyncStorage.getItem('LAST_COORDINATES');
@@ -253,36 +218,27 @@ const NewHomeScreen = props => {
                 usedCachedCoords = true;
                 logger.log('Using cached coordinates due to location error:', error.code === 3 ? 'timeout' : error.message);
               } else {
-                // No cached coordinates - log warning but don't show alert (non-blocking)
                 logger.warn('Geolocation error and no cached coordinates available. Code:', error.code, 'Message:', error.message);
               }
             } catch (e) {
               logger.error('Error reading cached coordinates:', e);
             }
-            
-            // Only log error if we couldn't use cached coordinates
             if (!usedCachedCoords) {
-              // Don't retry on timeout - it will likely timeout again
-              // Instead, log the issue - user should set mock location on emulator or use cached coordinates
               if (error.code === 3) {
                 logger.warn('Location timeout - this is normal on emulator without mock location. Please set a mock location in Extended Controls > Location, or the app will use cached coordinates if available.');
               } else {
                 logger.warn('Geolocation error (non-permission) and no fallback available. Code:', error.code, 'Message:', error.message);
               }
             } else {
-              // Successfully used cached coordinates - log as info, not error
               logger.log('Location fetch failed but using cached coordinates successfully');
             }
             
-            // Don't show permission modal for non-permission errors
-            // Keep modal state as is (don't force show/hide)
           }
         },
         {
-          enableHighAccuracy: false, // Better for emulator - uses network/WiFi
-          timeout: 15000, // 15 seconds timeout - faster failure on emulator without mock location
-          maximumAge: 3600000, // Accept cached location up to 1 hour old (much better fallback)
-          // Note: distanceFilter is only for watchPosition, not getCurrentPosition
+          enableHighAccuracy: false, 
+          timeout: 15000, 
+          maximumAge: 3600000, 
         },
       );
   }, [dispatch, checkLocationPermission, requestLocationPermission]);
@@ -298,11 +254,9 @@ const NewHomeScreen = props => {
       return () => clearInterval(interval);
     }, [fetchOrders, fecthPendingOrders]),
   );
-  // ----------------------------- FETCH ORDERS ---------------------------------
   const fetchOrders = useCallback(async () => {
   const isActive = await checkIsActiveStatus();
 
-  // Load cached data first
   const cachedDelivered = await AsyncStorage.getItem("CACHED_DELIVERED_ORDERS");
   const cachedActive = await AsyncStorage.getItem("CACHED_ACTIVE_ORDERS");
   const cachedPending = await AsyncStorage.getItem("CACHED_PENDING_ORDERS");
@@ -311,7 +265,6 @@ const NewHomeScreen = props => {
   let activeOrders = cachedActive ? JSON.parse(cachedActive) : [];
   let pendingOrders = cachedPending ? JSON.parse(cachedPending) : [];
 
-  // Set cached data to UI
   setDeliveriedOrders(deliveredOrders);
   setAcceptedOrders(activeOrders);
   setAllpendingOrders(pendingOrders);
@@ -327,11 +280,10 @@ const NewHomeScreen = props => {
     const [accessToken, userId] = combinedData.split(":");
     try {
       const res = await axios.post(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
         { headers: { Authorization: `${accessToken}` } }
       );
-      // Use slice().reverse() to avoid mutating original array
       const apiData = Array.isArray(res.data?.data) ? [...res.data.data].reverse() : [];
       deliveredOrders = apiData;
       await AsyncStorage.setItem("CACHED_DELIVERED_ORDERS", JSON.stringify(apiData));
@@ -340,7 +292,7 @@ const NewHomeScreen = props => {
     }
     try {
       const res = await axios.post(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-picked-orders`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-picked-orders`,
         {},
         { headers: { Authorization: `${accessToken}` } }
       );
@@ -352,7 +304,7 @@ const NewHomeScreen = props => {
     }
     try {
       const res = await axios.get(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
         { order_status: "pending" },
         { headers: { Authorization: `${accessToken}` } }
       );
@@ -374,42 +326,6 @@ const NewHomeScreen = props => {
   }
 }, []);
 
-// const fecthPendingOrders = async () => {
-//   const isActive = await checkIsActiveStatus();
-//   // console.log("🔍 checkIsActiveStatus →", isActive);
-//   if (!isActive) {
-//     console.warn(" User not active – skipping pending orders fetch");
-//     return;
-//   }
-
-//   try {
-//     const combinedData = await AsyncStorage.getItem("USER_DATA");
-//     if (!combinedData) {
-//       console.error(" fetchPendingOrders: USER_DATA is null/undefined");
-//       return;
-//     }
-
-//     const [accessToken, userId] = combinedData.split(":");
-//     // console.log("fetchPendingOrders with userId:", userId);
-
-//     const res = await axios.get(
-//       `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
-//       { order_status: "pending" },
-//       { headers: { Authorization: `${accessToken}` } }
-//     );
-//     const newData = Array.isArray(res.data?.data) ? res.data.data.reverse() : [];
-//     if (newData.length > previousLengthRef.current) {
-//       console.log(" New pending orders arrived!");
-//       playPause();
-//     }
-//     previousLengthRef.current = newData.length;
-//     setAllpendingOrders(newData);
-//     await AsyncStorage.setItem("CACHED_PENDING_ORDERS", JSON.stringify(newData));
-//   } catch (err) {
-//     console.error(" fetchPendingOrders failed:", err?.response?.data || err?.message);
-//   }
-// };
-
   const fecthPendingOrders = useCallback(async () => {
     const isActive = await checkIsActiveStatus();
     if (!isActive) return;
@@ -418,7 +334,7 @@ const NewHomeScreen = props => {
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
       const checkingPendingOrders = await axios.post(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
         {
           order_status: 'pending',
         },
@@ -439,11 +355,8 @@ const NewHomeScreen = props => {
         playPause();
       }
       previousLengthRef.current = newData.length;
-
       setAllpendingOrders(newData);
       await AsyncStorage.setItem("CACHED_PENDING_ORDERS", JSON.stringify(newData));
-      
-      // Clear sound timeout
       if (soundTimeoutRef.current) {
         clearTimeout(soundTimeoutRef.current);
       }
@@ -458,100 +371,17 @@ const NewHomeScreen = props => {
     }
   }, [playPause]);
 
-
-
-  // ----------------------------- ORDER CARD PRESS ---------------------------------
-//   const handleOrderPress = useCallback(async (item) => {
-//   if (showNewOrderModal) return;
-//   try {
-//     const locationEnabled = await checkLocationEnabled();
-//     if (!locationEnabled) {
-//       Alert.alert(
-//         'Location Services Disabled',
-//         'Please enable location services to proceed.',
-//         [{ text: 'OK' }]
-//       );
-//       return;
-//     }
-
-//     // --- Use currentCoordinates or fallback to stored coordinates ---
-//     let coordinates = currentCoordinates;
-//     if (!coordinates) {
-//       const savedCoords = await AsyncStorage.getItem("LAST_COORDINATES");
-//       if (savedCoords) {
-//         coordinates = JSON.parse(savedCoords);
-//         setCurrentCoordinates(coordinates);
-//         dispatch(onGettingCoordinates({ lattitude: coordinates.lat, longitude: coordinates.long }));
-//       } else {
-//         Alert.alert(
-//           'Unable to Retrieve Location',
-//           'Please ensure your location services are enabled and try again.',
-//           [{ text: 'OK' }]
-//         );
-//         return;
-//       }
-//     }
-
-//     // --- Get accessToken and userId from storage ---
-//     const combinedData = await AsyncStorage.getItem('USER_DATA');
-//     const [accessToken, userId] = combinedData?.split(':') ?? [];
-
-//     let isActive = true; // default assume active
-//     try {
-//       // Try to fetch user status
-//       const res = await axios.get(
-//         `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
-//         { headers: { Authorization: accessToken } }
-//       );
-//       isActive = res.data?.data?.is_active ?? true;
-//     } catch (err) {
-//       console.warn(" Network failed, using local status:", err.message);
-//       // Optionally, you can read a locally cached partner info if you saved it before
-//       // const cachedPartner = await AsyncStorage.getItem("CACHED_PARTNER_INFO");
-//       // isActive = cachedPartner ? JSON.parse(cachedPartner).is_active : true;
-//     }
-
-//     if (!isActive) {
-//       Alert.alert(
-//         'Alert: You are Currently Offline',
-//         'To accept new orders, Please go Online.',
-//         [{ text: 'OK' }]
-//       );
-//       return;
-//     }
-
-//     // --- Open modal or navigate ---
-//     if (insignSelectedIndex === 0 ) {
-//       setModaldata(item);
-//       setShowNewOrderModal(true);
-//     } else if (insignSelectedIndex === 1) {
-//       navigation.navigate('ReachMapDrop', { orderData: item });
-//     }
-//     else if (insignSelectedIndex === 2) {
-//       navigation.navigate('ReachMapDrop', { orderData: item });
-//     }
-
-//   } catch (error) {
-//     // console.error('Error in handleOrderPress:', error.message);
-//     Alert.alert('Error', 'Something went wrong. Please try again.', [{ text: 'OK' }]);
-//   }
-// };
-
   const handleOrderPress = useCallback(async (item) => {
     if (showNewOrderModal) return;
 
     try {
       const hasPermission = await checkLocationPermission();
       if (!hasPermission) {
-        // Show permission modal instead of alert
         setModalVisible(true);
         return;
       }
-
-      // Get coordinates
       let coordinates = currentCoordinates;
       if (!coordinates) {
-        // Try to get from cache first
         const savedCoords = await AsyncStorage.getItem("LAST_COORDINATES");
         if (savedCoords) {
           coordinates = JSON.parse(savedCoords);
@@ -561,16 +391,15 @@ const NewHomeScreen = props => {
             longitude: coordinates.long
           }));
         } else {
-          // No cached coordinates - try to fetch location on-demand with optimized settings
           try {
             const position = await new Promise((resolve, reject) => {
               Geolocation.getCurrentPosition(
                 resolve,
                 reject,
                 {
-                  enableHighAccuracy: false, // Use network/WiFi for faster response (better for emulator)
-                  timeout: 15000, // 15 seconds - increased timeout for emulator
-                  maximumAge: 300000, // Accept location up to 5 minutes old (much better fallback)
+                  enableHighAccuracy: false, 
+                  timeout: 15000, 
+                  maximumAge: 300000, 
                 }
               );
             });
@@ -586,7 +415,6 @@ const NewHomeScreen = props => {
               longitude: coordinates.long
             }));
           } catch (locationError) {
-            // Location fetch failed - try to use cached coordinates first
             let hasCachedCoords = false;
             try {
               const savedCoords = await AsyncStorage.getItem("LAST_COORDINATES");
@@ -600,16 +428,11 @@ const NewHomeScreen = props => {
                 }));
                 hasCachedCoords = true;
                 logger.log('Using cached coordinates after location fetch failure');
-                // Continue with cached coordinates - don't show error
               }
             } catch (e) {
               logger.error('Error reading cached coordinates:', e);
             }
-
-            // Only show error if we don't have cached coordinates
             if (!hasCachedCoords) {
-              logger.warn('Failed to get location on-demand:', locationError.message, 'Code:', locationError.code);
-              
               let errorMessage = 'Unable to get your current location. ';
               if (locationError.code === 3) {
                 errorMessage += 'Location request timed out. ';
@@ -621,7 +444,6 @@ const NewHomeScreen = props => {
               } else if (locationError.code === 2) {
                 errorMessage += 'GPS signal is weak. Please move to an area with better signal.';
               } else if (locationError.code === 1) {
-                // Permission denied - should not happen here but handle it
                 errorMessage = 'Location permission denied. Please grant permission in settings.';
                 setModalVisible(true);
                 return;
@@ -636,27 +458,22 @@ const NewHomeScreen = props => {
               );
               return;
             }
-            // If we have cached coordinates, continue with the flow
           }
         }
       }
 
-      // Get logged-in userId
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
-
-      // Check user active
       let isActive = true;
       try {
         const res = await axios.get(
-          `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
+          `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
           { headers: { Authorization: accessToken } }
         );
         isActive = res.data?.data?.is_active ?? true;
       } catch (err) {
         logger.warn("Network error:", err.message);
       }
-
       if (!isActive) {
         Alert.alert(
           'Alert: You are Currently Offline',
@@ -666,14 +483,9 @@ const NewHomeScreen = props => {
         return;
       }
 
-      // -------------------------------------
-      // 🔥 IMPORTANT: CHECK IF ORDER BELONGS TO USER
-      // -------------------------------------
-
       const assignedUserId = item?.delivery_user;
       const assignedUserName = item?.deliveryUserDetails?.full_name ?? "Someone";
 
-      // If order belongs to another driver
       if (assignedUserId && assignedUserId !== userId) {
         Alert.alert(
           'Order Already Picked',
@@ -683,18 +495,12 @@ const NewHomeScreen = props => {
         return;
       }
 
-      // -------------------------------------
-      // 🔥 NOW HANDLE TAB LOGIC
-      // -------------------------------------
-
-      // UNPICKED → show accept modal
       if (insignSelectedIndex === 0) {
         setModaldata(item);
         setShowNewOrderModal(true);
         return;
       }
 
-      // PICKED or MY ORDERS → navigate
       if (insignSelectedIndex === 1 || insignSelectedIndex === 2) {
         navigation.navigate('ReachMapDrop', { orderData: item });
         return;
@@ -707,19 +513,18 @@ const NewHomeScreen = props => {
   }, [insignSelectedIndex, navigation, dispatch, currentCoordinates, showNewOrderModal]);
 
 
-  // ----------------------------- REFRESH ---------------------------------
-  const onRefresh = useCallback(async () => {
-    setRefresh(true);
-    try {
-      await Promise.all([fetchOrders(), fecthPendingOrders()]);
-    } catch (error) {
-      logger.error('onRefresh error:', error);
-    } finally {
-      setRefresh(false);
-    }
-  }, [fetchOrders, fecthPendingOrders]);
+const onRefresh = useCallback(async () => {
+  setRefresh(true);
+  try {
+    await Promise.all([fetchOrders(), fecthPendingOrders()]);
+  } catch (error) {
+    logger.error('onRefresh error:', error);
+  } finally {
+    setRefresh(false);
+  }
+}, [fetchOrders, fecthPendingOrders]);
 
-  // ----------------------------- EFFECTS ---------------------------------
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       BackHandler.exitApp();
@@ -753,27 +558,21 @@ const NewHomeScreen = props => {
 
   useEffect(() => {
     let locInterval = null;
-    
     const init = async () => {
-      // First try to request permission if not granted
       let hasPermission = await checkLocationPermission();
       if (!hasPermission) {
         hasPermission = await requestLocationPermission();
       }
-      
       if (hasPermission) {
-        // Permission granted - get location and set up interval
         getLatAndLong();
         locInterval = setInterval(() => getLatAndLong(), 120000);
       } else {
-        // Permission not granted - show modal
         setModalVisible(true);
       }
     };
     
     init();
     
-    // Cleanup on unmount
     return () => {
       if (locInterval) {
         clearInterval(locInterval);
@@ -790,15 +589,12 @@ const NewHomeScreen = props => {
     };
   }, [getLatAndLong, checkLocationPermission, requestLocationPermission]);
 
-  // Listen for app state changes to re-check permissions when user returns from settings
   useEffect(() => {
     const subscription = AppState.addEventListener('change', async nextAppState => {
       if (nextAppState === 'active' && modalVisible) {
-        // User returned to app - re-check permissions
         const hasPermission = await checkLocationPermission();
         if (hasPermission) {
           setModalVisible(false);
-          // Try to get location now that permission is granted
           getLatAndLong();
         }
       }
@@ -809,7 +605,7 @@ const NewHomeScreen = props => {
     };
   }, [modalVisible, checkLocationPermission, getLatAndLong]);
 
-  // ----------------------------- UI ---------------------------------
+  
   const segmentLabels = useMemo(
     () => [
       'UNPICKED ORDERS',
@@ -918,14 +714,13 @@ const NewHomeScreen = props => {
         <OrderNavigationBar />
         <View style={[styles.seperator, darkSeperator]} />
       </View>
-
-      {/* <SignalStrengthComponent /> */}
-
       <OrdersCard
         orderRequests={currentOrders}
         onOrderPress={handleOrderPress}
         ListHeaderComponent={ListHeaderComponent}
         ListFooterComponent={ListFooterComponent}
+        refreshing={refresh}
+  onRefresh={onRefresh}
       />
     </SafeAreaView>
   );

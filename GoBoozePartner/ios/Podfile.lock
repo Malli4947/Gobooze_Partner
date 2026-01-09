@@ -454,7 +454,8 @@ PODS:
   - react-native-blur (4.4.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - react-native-geolocation (3.1.0):
+  - react-native-geolocation (3.4.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - react-native-geolocation-service (5.3.1):
     - React
@@ -892,7 +893,7 @@ SPEC CHECKSUMS:
   React-jsinspector: de0198127395fec3058140a20c045167f761bb16
   React-logger: 13a8b7094f27626adf648a8458e842e27fa70e13
   react-native-blur: 1416fe124f5715f0cce89d96e3149c52ac4ca06b
-  react-native-geolocation: f0fa51740690633a1adb6222539166b484facefb
+  react-native-geolocation: 9e89c8dbec96c6671da28da6c20f13a0a2a1785f
   react-native-geolocation-service: 32b2c2a3b91e70ce2a8d0c684801aaeb0a07e0ec
   react-native-image-picker: f02b573847436881b851f74b7afbf26a0b0107aa
   react-native-image-resizer: 17b2d73c030975b6543395c7e7368bc8774c5efa

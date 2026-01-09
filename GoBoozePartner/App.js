@@ -189,7 +189,7 @@ const notificationPermission = async () => {
       };
 
       const res = await axios.patch(
-        `https://api.gobooze.com.au/order/api/orders/update-driver-location/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/update-driver-location/${userId}`,
         obj,
         {
           headers: {

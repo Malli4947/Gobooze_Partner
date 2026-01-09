@@ -18,18 +18,13 @@ import axios from 'axios';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import NavBarWithBackButton from '../components/NavBarWithBackButton';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import {CONST_STYLES} from '../constants/ConstStyles';
 import DetailsView from '../components/DetailsView';
 import MapView, {MapMarker, PROVIDER_DEFAULT} from 'react-native-maps';
-import NewSlideButton from '../components/NewSlideButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import updateOrder from '../constants/statusUpdate';
 import Nav from '../assets/Navi.svg';
-import {Marker} from 'react-native-svg';
 import MapViewDirections from 'react-native-maps-directions';
-import Shop from '../assets/Shop.svg';
-import Geolocation from '@react-native-community/geolocation';
 import UserPin from '../assets/UserPin.svg';
 import {useSelector} from 'react-redux';
 import {BackHandler} from 'react-native';
@@ -43,24 +38,8 @@ const ReachedDropMapScreen = ({route}) => {
   );
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const navigation = useNavigation();
-  // console.log(
-  //   currentLattitude,
-  //   'currentLattitude================><=============drop',
-  // );
-  // console.log(
-  //   currentLongitude,
-  //   'currentLongitude================><=============drop',
-  // );
   const orderData = route.params.orderData;
-// console.log('orderDetailsss',orderData)
-  // console.log(orderData, 'OrderDetails===========><====');
-
-  // Use orders.length or check for specific properties inside orders to safely access data
-
-  // const orders = OrderDetails.order && OrderDetails.order.order_Variants ? OrderDetails.order.order_Variants : [];
-  // const ordersAddress = OrderDetails.order.address;
   const storeDetails = orderData?.order?.store;
-  // console.log(storeDetails, 'storeDetails-------');
 
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
@@ -71,7 +50,7 @@ const ReachedDropMapScreen = ({route}) => {
     borderColor: COLORS.dark_disabled_background,
   };
   const calculateDistance = (startLat, startLng, endLat, endLng) => {
-    const earthRadius = 6371; // Radius of the Earth in kilometers
+    const earthRadius = 6371;
     const dLat = toRadians(endLat - startLat);
     const dLng = toRadians(endLng - startLng);
     const a =
@@ -82,17 +61,17 @@ const ReachedDropMapScreen = ({route}) => {
         Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = earthRadius * c;
-    return distance.toFixed(2); // Return distance rounded to 2 decimal places
+    return distance.toFixed(2);
   };
 
   const toRadians = angle => {
     return angle * (Math.PI / 180);
   };
   const calculateTravelTime = distanceInKm => {
-    const averageSpeed = 40; // Average speed assumed in km/h
+    const averageSpeed = 40; 
     const travelTimeHours = distanceInKm / averageSpeed;
     const travelTimeMinutes = travelTimeHours * 60;
-    return Math.round(travelTimeMinutes); // Round to nearest whole number
+    return Math.round(travelTimeMinutes); 
   };
 
   const handleUpdateOrder = async () => {
@@ -114,7 +93,7 @@ const ReachedDropMapScreen = ({route}) => {
       backAction,
     );
 
-    return () => backHandler.remove(); // Cleanup the event listener
+    return () => backHandler.remove(); 
   }, [navigation]);
 
   const handleOpenNow = () => {
@@ -150,7 +129,7 @@ const CancelOrder = async (orderId) => {
     }
     const [accessToken, userId] = combinedData.split(':') ?? [];
     const response = await axios.post(
-      `https://api.gobooze.com.au/order/api/orders/drop-order/${orderId}/${userId}`,
+      `https://gobooze-test.codefactstech.com/order/api/orders/drop-order/${orderId}/${userId}`,
       {},
       {
         headers: {
@@ -187,7 +166,7 @@ const CancelOrder = async (orderId) => {
 
       {currentLattitude && currentLongitude && (
         <MapView
-          provider={PROVIDER_DEFAULT} // remove if not using Google Maps
+          provider={PROVIDER_DEFAULT} 
           style={styles.map}
           showsTraffic={false}
           region={{
@@ -225,10 +204,6 @@ const CancelOrder = async (orderId) => {
           )}
         </MapView>
       )}
-
-      {/* </View> */}
-
-      {/* ---------------- BOTTOM CONTAINER ---------------- */}
       <View style={[styles.bottomContainer, darkBg,{marginBottom:rHeight(48)}]}>
         <View
           style={[
@@ -256,8 +231,6 @@ const CancelOrder = async (orderId) => {
             )
           </Text>
         </Text>
-
-        {/* ------------- Address view -------------- */}
         <View
           style={[
             styles.pickupAddressContainer,
@@ -321,17 +294,11 @@ const CancelOrder = async (orderId) => {
             </View>
           </View>
         </View>
-
-        {/* --------------- ORDER DETAIL VIEW --------------- */}
         <View style={{marginHorizontal: rWidth(23), marginTop: 10}}>
           <DetailsView
             id="0"
             image={IMAGES.BOX}
             title={'Order:'}
-            // value={`   #${OrderDetails.order_id.slice(
-            //   0,
-            //   5,
-            // )}-${OrderDetails.order_id.slice(-5)}`}
             value={orderData?.order?.sequence_number}
           />
           <DetailsView
@@ -339,23 +306,9 @@ const CancelOrder = async (orderId) => {
             id="1"
             image={IMAGES.CUSTOMER}
             title={'Customer Details:'}
-            
             value={`${orderData?.order?.address?.first_name} ${orderData?.order?.address?.last_name}, ${orderData?.order?.address?.address}`}
           
           />
-          {/* <DetailsView
-  style={{ width: '60%' }}
-  id="1"
-  image={IMAGES.CUSTOMER} // change the icon if needed
-  title="Product Details:"
-  value={orderData?.order?.order_Variants
-    ?.map(
-      (item) =>
-        `${item.product_name} x${item.quantity} (${item.variant_name || 'Default'})`
-    )
-    .join(', ')}
-/> */}
-
           <DetailsView
             style={{width: '70%',color:'#D3178A'}}
             id="2"
@@ -426,7 +379,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     paddingTop: 20,
-    // height: '50%',
   },
   topSeperator: {
     height: 4,
@@ -493,7 +445,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   lightBlackText: {
-    // fontFamily: GRAPHIK_FONT.BOLD,
     fontSize: rHeight(16),
     lineHeight: 21,
     fontWeight:'bold',

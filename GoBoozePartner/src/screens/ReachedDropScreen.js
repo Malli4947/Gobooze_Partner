@@ -20,53 +20,31 @@ import {rHeight, rWidth} from '../constants/PixelSize';
 import {GRAPHIK_FONT, IMAGES} from '../constants/Constant';
 import NavBarWithBackButton from '../components/NavBarWithBackButton';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import CustomSlideButton from '../components/SlideButton/CustomSlideButton';
 import OrderDetailsView from '../components/OrderDetailsView';
 import PickOrderNowAlert from './PickOrderNowAlert';
 import CollectCashView from '../components/CollectCashView';
 import LeaveOrderAtDoorView from '../components/LeaveOrderAtDoorView';
-import UPIView from '../components/UPIView';
 import AddPhotoAlert from '../components/AddPhotoAlert';
 import CannotLeaveOrderAlert from '../components/CannotLeaveOrderAlert';
 import CustomButton from '../components/CustomButton';
-import NewSlideButton from '../components/NewSlideButton';
 import updateOrder from '../constants/statusUpdate';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import axios from 'axios';
+import {launchCamera} from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {BackHandler} from 'react-native';
 import BackA from '../assets/BackA.svg';
 import RightA from '../assets/RightA.svg';
 import ModalCancelButton from '../components/ModalCancelButton';
-const orders = [
-  {
-    id: 0,
-    quantity: 1,
-    image: '',
-    name: 'VICKERS GIN',
-    description: 'Vickers London Dry Gin 37.0% 700ml',
-  },
-  {
-    id: 1,
-    quantity: 2,
-    image: '',
-    name: 'CARLTON',
-    description: 'Carlton Draught 4.6% 750mL 3pack',
-  },
-];
+
 
 const ReachedDropScreen = ({route}) => {
   const orderData = route?.params?.orderData;
-  console.log('orderDateee',orderData);
   const navigation = useNavigation();
   const orders = orderData?.order?.order_Variants;
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [inputOtp, setInputOtp] = useState('');
   const [isOtpValid, setIsOtpValid] = useState(false);
   const storeDetails = route?.params?.orderData?.order?.store;
-  const [isOrderReady, setIsOrderReady] = useState(false);
   const [isPaidOnline, setIsPaidOnline] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
   const [expandOrderDetailView, setExpandOrderDetailView] = useState(false);
@@ -82,24 +60,7 @@ const ReachedDropScreen = ({route}) => {
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showCancelOrder, setShowCancelOrder] = useState(false);
   const [photo, setPhoto] = useState();
-  // console.log(
-  //   '💕 ~ file: ReachedDropScreen.js:73 ~ ReachedDropScreen ~ photo:',
-  //   photo,
-  // );
-
-  // const handleUpdateOrder = async () => {
-  //   try {
-  //     if (photo) {
-  //       await updateOrder(orderData.order_id, 'delivered');
-  //     } else {
-  //       Alert.alert('', 'Please upload the image');
-  //     }
-  //   } catch (e) {
-  //     Alert.alert('Error', 'Failed to update order status');
-  //   }
-  //   navigation.navigate('Home');
-  // };
-
+  
   const handleUpdateOrder = async () => {
   const orderId = orderData?.order?._id;
   if (!orderId) {
@@ -107,7 +68,7 @@ const ReachedDropScreen = ({route}) => {
     return;
   }
   try {
-    const result = await updateOrder(orderId, 'delivered'); // or 'delivered'
+    const result = await updateOrder(orderId, 'delivered'); 
     if (result.success) { 
       Alert.alert('Success', result.message);
       navigation.navigate('Home');
@@ -131,62 +92,12 @@ const ReachedDropScreen = ({route}) => {
       backAction,
     );
 
-    return () => backHandler.remove(); // Cleanup the event listener
+    return () => backHandler.remove(); 
   }, [navigation]);
   const onSuccessCancel = () => {
     navigation.navigate('Home');
   };
-  const takePhoto1 = async () => {
-    try {
-      // Request camera permissions
-      const cameraPermission = await PermissionsIOS.requestPermission('camera');
-
-      if (cameraPermission !== 'authorized') {
-        // console.log('Camera permission denied');
-        Alert.alert('Please provide camera permission to continue!');
-        return;
-      }
-
-      // Define camera options
-      let options = {
-        mediaType: 'photo',
-        saveToPhotos: true,
-        quality: 0.8,
-        includeBase64: false,
-      };
-
-      // Launch the camera
-      launchCamera(options, response => {
-        // console.log('This is the response: ');
-        // console.log(response);
-
-        if (response.didCancel) {
-          // console.log('User cancelled image picker');
-        } else if (response.error) {
-          // console.log('ImagePicker Error: ', response.error);
-        } else if (response.customButton) {
-          // console.log('User tapped custom button: ', response.customButton);
-        } else {
-          // Handle the photo response (e.g., set state, upload photo, etc.)
-          // console.log(
-          //   '💕 ~ file: ReachedDropScreen.js:114 ~ takePhoto ~ response:',
-          //   response,
-          // );
-
-          const source = {
-            uri: response.assets[0].uri,
-            fileName: response.assets[0].fileName,
-          };
-
-          setPhoto(source);
-          setShowPhotoModal(false);
-          uploadPhoto(source);
-        }
-      });
-    } catch (e) {
-      Alert.alert('Something went wrong!');
-    }
-  };
+  
   const takePhoto = () => {
     try {
       let options = {
@@ -239,7 +150,7 @@ const ReachedDropScreen = ({route}) => {
 
     try {
       const response = await fetch(
-        `https://api.gobooze.com.au/order/api/orders/upload-delivery-images/${orderData.order_id}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/upload-delivery-images/${orderData.order_id}`,
         {
           method: 'POST',
           body: formData,
@@ -248,18 +159,11 @@ const ReachedDropScreen = ({route}) => {
           },
         },
       );
-
-      // console.log(
-      //   '💕 ~ file: ReachedDropScreen.js:166 ~ uploadPhoto ~ response:',
-      //   response,
-      // );
-
       if (response.ok) {
         const responseData = await response.json();
         console.log('Upload Success', responseData);
       } else {
         const errorData = await response.json();
-        // console.log('Upload Error', errorData);
       }
     } catch (error) {
       console.log('Upload Error', error);
@@ -306,8 +210,6 @@ const ReachedDropScreen = ({route}) => {
         />
         <View style={[styles.seperator, darkSep]} />
       </View>
-
-      {/* ---------------- BOTTOM CONTAINER ---------------- */}
       <ScrollView>
         {isPaidOnline && (
           <LeaveOrderAtDoorView
@@ -316,7 +218,6 @@ const ReachedDropScreen = ({route}) => {
                 buttonText="Add Photo"
                 showView={false}
                 handleClick={() => {
-                  // console.log('h99------');
                   setShowPhotoModal(true);
 
                   if (photo) {
@@ -334,7 +235,6 @@ const ReachedDropScreen = ({route}) => {
             }
           />
         )}
-        {/* {!isPaidOnline && <UPIView orderDetails={OrderDetails} />} */}
         {photo && <Image source={photo} style={styles.deliveryImage} />}
         <CollectCashView
           isPaidOnline={isPaidOnline}
@@ -360,10 +260,6 @@ const ReachedDropScreen = ({route}) => {
                     customerDetail={{
                       name: `${orderData?.order?.address?.first_name}`,
                       mobileNum: `${orderData?.order?.address?.addressPhoneNumber}`,
-                      // orderId: `#${OrderDetails.order_id.slice(
-                      //   0,
-                      //   5,
-                      // )}-${OrderDetails.order_id.slice(-5)}`,
                       orderId: `${orderData?.order?.sequence_number}`,
                       address: `${orderData?.order?.address?.address}`,
                       instructions: `${orderData?.order?.comments}`,
@@ -396,14 +292,11 @@ const ReachedDropScreen = ({route}) => {
           />
         </View>
       </ScrollView>
-
-      {/* ------------- Bottom slide button ----------- */}
       <View
         style={[
           styles.slideBtnContainer,
           isDarkTheme && {backgroundColor: COLORS.dark_con},
         ]}>
-        {/* {photo ? ( */}
         <View style={styles.flexBtn}>
           <TouchableOpacity
             style={styles.btnNo}
@@ -425,9 +318,7 @@ const ReachedDropScreen = ({route}) => {
   onRequestClose={() => setShowOtpModal(false)}>
   <View style={styles.mainOuterComponent}>
     <View style={styles.mainContainer}>
-      {/* Optional: Cancel/Close button */}
       <ModalCancelButton onPress={() => setShowOtpModal(false)} />
-
       <View
         style={[
           styles.bottomContainer,
@@ -486,8 +377,6 @@ const ReachedDropScreen = ({route}) => {
   </View>
 </Modal>
 
-
-        {/* ) : null} */}
       </View>
     </SafeAreaView>
   );
@@ -562,7 +451,7 @@ const styles = StyleSheet.create({
  modalOverlay: {
   flex: 1,
   backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  justifyContent: 'flex-end', // modal comes up from bottom
+  justifyContent: 'flex-end', 
 },
 
 modalOverlay: {
@@ -573,7 +462,6 @@ modalOverlay: {
 
  otp: {
     flexDirection: 'row',
-    // marginTop: rHeight(50),
     alignSelf: 'center',
     marginBottom: rHeight(80),
   },

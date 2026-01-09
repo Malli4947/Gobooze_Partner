@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useColorScheme} from '../components/ColorSchemeContext';
-import NavBarWithBackButton from '../components/NavBarWithBackButton';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import COLORS from '../constants/Colors';
 import {rWidth, rHeight} from '../constants/PixelSize';
@@ -44,32 +43,13 @@ const OrderHistory = ({orderRequests}) => {
     filterOrders();
   }, [orderId, orderData]);
 
-  // const FetchOrderDetails = async () => {
-  //   const combinedData = await AsyncStorage.getItem('USER_DATA');
-  //   const [accessToken, userId] = combinedData?.split(':') ?? [];
-  //   try {
-  //     const fetchOrderDetails = await fetch(
-  //       `https://api.gobooze.com.au/order/api/orders/get-delivery-user-completed-orders/${userId}`,
-  //       {
-  //         headers: {
-  //           Authorization: `${accessToken}`,
-  //         },
-  //       },
-  //     );
-  //     const data = await fetchOrderDetails.json();
-  //     setOrderData(data?.data.reverse());
-  //   } catch (error) {
-  //     console.log(error, 'error');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  
   const FetchOrderDetails = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchOrderDetails = await fetch(
-        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-completed-orders/${userId}`,
+        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-completed-orders/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
@@ -112,7 +92,7 @@ const OrderHistory = ({orderRequests}) => {
       backAction,
     );
 
-    return () => backHandler.remove(); // Cleanup the event listener
+    return () => backHandler.remove(); 
   }, [navigation]);
 
   const IMAGE_URL = `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/`;
@@ -121,7 +101,6 @@ const OrderHistory = ({orderRequests}) => {
     <SafeAreaView
       style={[styles.container, isDarkTheme && styles.dark_container]}>
       <View style={{marginTop: insets.top, marginTop: 0}}>
-        {/* <NavBarWithBackButton title={'Order History'} /> */}
         <View style={styles.header}>
           <TouchableOpacity
             style={[
@@ -149,29 +128,6 @@ const OrderHistory = ({orderRequests}) => {
             ]}>
             Order History
           </Text>
-          {/* <View style={styles.dateContainer}>
-            <Text   style={[
-              styles.headerText1,
-              isDarkTheme && {
-                backgroundColor: '#23272F',
-                color: COLORS.light_con,
-              },
-            ]}>Filter By:</Text>
-    <TextInput 
-      style={[
-        styles.dateInput,
-        isDarkTheme && {
-          backgroundColor: '#23272F',
-          color: COLORS.light_con,
-        },
-      ]}
-      placeholder="OrderId"
-      placeholderTextColor={isDarkTheme ? COLORS.light_con : '#999'}
-      onChangeText={(text) => setOrderId(text)}
-      value={orderId}
-    />
-   
-  </View> */}
         </View>
       </View>
       <View style={styles.dateContainer}>
@@ -609,7 +565,7 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.BOLD,
     color: '#000',
     paddingLeft: rWidth(16),
-    fontSize: rWidth(14),
+    fontSize: rWidth(16),
   },
   headerText1: {
     fontFamily: GRAPHIK_FONT.MEDIUM,

@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     fontFamily: GRAPHIK_FONT.MEDIUM,
     color: '#000',
     paddingLeft: rWidth(16),
-    fontSize: rWidth(14),
+    fontSize: rWidth(16),
   },
   menuImg: {
     width: rHeight(30),
