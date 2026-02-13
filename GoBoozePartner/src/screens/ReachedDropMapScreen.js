@@ -68,10 +68,10 @@ const ReachedDropMapScreen = ({route}) => {
     return angle * (Math.PI / 180);
   };
   const calculateTravelTime = distanceInKm => {
-    const averageSpeed = 40; 
+    const averageSpeed = 40;
     const travelTimeHours = distanceInKm / averageSpeed;
     const travelTimeMinutes = travelTimeHours * 60;
-    return Math.round(travelTimeMinutes); 
+    return Math.round(travelTimeMinutes);
   };
 
   const handleUpdateOrder = async () => {
@@ -80,7 +80,7 @@ const ReachedDropMapScreen = ({route}) => {
     } catch (e) {
       Alert.alert('Error', 'Failed to update order status');
     }
-    navigation.navigate('CollectMoney', {orderData})
+    navigation.navigate('CollectMoney', {orderData});
   };
   useEffect(() => {
     const backAction = () => {
@@ -93,7 +93,7 @@ const ReachedDropMapScreen = ({route}) => {
       backAction,
     );
 
-    return () => backHandler.remove(); 
+    return () => backHandler.remove();
   }, [navigation]);
 
   const handleOpenNow = () => {
@@ -107,49 +107,54 @@ const ReachedDropMapScreen = ({route}) => {
     longitude: orderData?.order?.address?.coordinates?.lng,
   };
 
-const confirmCancelOrder = (orderId) => {
-  Alert.alert('Alert!', 'Are you sure you want to drop order?', [
-    {
-      text: 'No',
-      style: 'cancel',
-    },
-    {
-      text: 'Yes',
-      onPress: () => CancelOrder(orderId),
-    },
-  ]);
-};
-
-const CancelOrder = async (orderId) => {
-  try {
-    const combinedData = await AsyncStorage.getItem('USER_DATA');
-    if (!combinedData) {
-      Alert.alert('Error', 'User not logged in');
-      return;
-    }
-    const [accessToken, userId] = combinedData.split(':') ?? [];
-    const response = await axios.post(
-      `https://gobooze-test.codefactstech.com/order/api/orders/drop-order/${orderId}/${userId}`,
-      {},
+  const confirmCancelOrder = orderId => {
+    Alert.alert('Alert!', 'Are you sure you want to drop order?', [
       {
-        headers: {
-          Authorization: `${accessToken}`,
-        },
+        text: 'No',
+        style: 'cancel',
+      },
+      {
+        text: 'Yes',
+        onPress: () => CancelOrder(orderId),
+      },
+    ]);
+  };
+
+  const CancelOrder = async orderId => {
+    try {
+      const combinedData = await AsyncStorage.getItem('USER_DATA');
+      if (!combinedData) {
+        Alert.alert('Error', 'User not logged in');
+        return;
       }
-    );
-    const resData = response.data;
-    if (resData?.success) {
-      Alert.alert('Success', resData.message || 'Order cancelled successfully');
-      navigation.goBack();
-    } else {
-      Alert.alert('Failed', resData?.message || 'Could not drop order');
+      const [accessToken, userId] = combinedData.split(':') ?? [];
+      const response = await axios.post(
+        `https://api.gobooze.com.au/order/api/orders/drop-order/${orderId}/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `${accessToken}`,
+          },
+        },
+      );
+      const resData = response.data;
+      if (resData?.success) {
+        Alert.alert(
+          'Success',
+          resData.message || 'Order cancelled successfully',
+        );
+        navigation.goBack();
+      } else {
+        Alert.alert('Failed', resData?.message || 'Could not drop order');
+      }
+    } catch (error) {
+      console.error('Cancel error:', error.response?.data || error.message);
+      const backendMessage =
+        error.response?.data?.message ||
+        'Something went wrong while cancelling the order';
+      Alert.alert('Error', backendMessage);
     }
-  } catch (error) {
-    console.error('Cancel error:', error.response?.data || error.message);
-    const backendMessage = error.response?.data?.message || 'Something went wrong while cancelling the order';
-    Alert.alert('Error', backendMessage);
-  }
-};
+  };
 
   return (
     <SafeAreaView
@@ -166,7 +171,7 @@ const CancelOrder = async (orderId) => {
 
       {currentLattitude && currentLongitude && (
         <MapView
-          provider={PROVIDER_DEFAULT} 
+          provider={PROVIDER_DEFAULT}
           style={styles.map}
           showsTraffic={false}
           region={{
@@ -204,7 +209,8 @@ const CancelOrder = async (orderId) => {
           )}
         </MapView>
       )}
-      <View style={[styles.bottomContainer, darkBg,{marginBottom:rHeight(48)}]}>
+      <View
+        style={[styles.bottomContainer, darkBg, {marginBottom: rHeight(48)}]}>
         <View
           style={[
             styles.topSeperator,
@@ -219,7 +225,7 @@ const CancelOrder = async (orderId) => {
               userLocation.latitude,
               userLocation.longitude,
             ),
-          )} min`} {' '}
+          )} min`}{' '}
           <Text style={[{color: COLORS.light_primary_text}, darkTextStyle]}>
             ({''}
             {`${calculateDistance(
@@ -272,9 +278,7 @@ const CancelOrder = async (orderId) => {
               ]}>
               <TouchableOpacity
                 onPress={() => {
-                  Linking.openURL(
-                    `tel:${orderData?.order?.user?.phoneNumber}`,
-                  );
+                  Linking.openURL(`tel:${orderData?.order?.user?.phoneNumber}`);
                 }}
                 style={styles.callContainer}>
                 <Image
@@ -307,15 +311,14 @@ const CancelOrder = async (orderId) => {
             image={IMAGES.CUSTOMER}
             title={'Customer Details:'}
             value={`${orderData?.order?.address?.first_name} ${orderData?.order?.address?.last_name}, ${orderData?.order?.address?.address}`}
-          
           />
           <DetailsView
-            style={{width: '70%',color:'#D3178A'}}
+            style={{width: '70%', color: '#D3178A'}}
             id="2"
             image={IMAGES.BOX}
             title={'Instructions :'}
             value={`${orderData?.order?.comments || '----'}`}
-            valueStyle={{ color: '#D3178A' }}
+            valueStyle={{color: '#D3178A'}}
           />
         </View>
         <View style={styles.flexBtn}>
@@ -330,22 +333,25 @@ const CancelOrder = async (orderId) => {
             <RightA />
           </TouchableOpacity>
         </View>
-       
       </View>
-<View style={{position:'absolute',bottom:12,width:'100%',paddingHorizontal:rWidth(16),}}>
- <CustomButton
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 12,
+          width: '100%',
+          paddingHorizontal: rWidth(16),
+        }}>
+        <CustomButton
           buttonText="Drop Order"
-          
           handleClick={() => confirmCancelOrder(orderData?.order?._id)}
           buttonStyle={[
             {
-              backgroundColor:  '#D3178A',
-              color:'#FFF'
+              backgroundColor: '#D3178A',
+              color: '#FFF',
             },
           ]}
         />
-</View>
-     
+      </View>
     </SafeAreaView>
   );
 };
@@ -447,7 +453,7 @@ const styles = StyleSheet.create({
   lightBlackText: {
     fontSize: rHeight(16),
     lineHeight: 21,
-    fontWeight:'bold',
+    fontWeight: 'bold',
     color: COLORS.light_primary_text,
   },
   viewText: {
@@ -488,7 +494,7 @@ const styles = StyleSheet.create({
     paddingVertical: rHeight(10),
     paddingHorizontal: rWidth(20),
   },
-    no: {
+  no: {
     fontFamily: GRAPHIK_FONT.MEDIUM,
     fontSize: rWidth(12),
     color: '#000',
@@ -532,5 +538,3 @@ const styles = StyleSheet.create({
 });
 
 export default ReachedDropMapScreen;
-
-

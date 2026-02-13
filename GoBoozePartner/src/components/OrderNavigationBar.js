@@ -1,14 +1,21 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Dimensions, Image, StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
+import React, {useState, useCallback, useEffect} from 'react';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Alert,
+} from 'react-native';
 import COLORS from '../constants/Colors';
-import { useColorScheme } from './ColorSchemeContext';
-import { IMAGES } from '../constants/Constant';
-import { rHeight, rWidth } from '../constants/PixelSize';
+import {useColorScheme} from './ColorSchemeContext';
+import {IMAGES} from '../constants/Constant';
+import {rHeight, rWidth} from '../constants/PixelSize';
 import CustomSegmentedControl from './CustomSegmentControl';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GRAPHIK_FONT } from '../constants/Constant';
+import {GRAPHIK_FONT} from '../constants/Constant';
 import logger from '../utils/logger';
 
 const screenWidth = Dimensions.get('screen').width * 0.6;
@@ -27,17 +34,17 @@ const OrderNavigationBar = () => {
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
       const activeOrdersResponse = await axios.post(
-        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-ongoing-orders/${userId}`,
         {},
         {
           headers: {
             Authorization: `${accessToken}`,
           },
-        }
+        },
       );
 
-      const ordersData = Array.isArray(activeOrdersResponse.data?.data) 
-        ? [...activeOrdersResponse.data.data].reverse() 
+      const ordersData = Array.isArray(activeOrdersResponse.data?.data)
+        ? [...activeOrdersResponse.data.data].reverse()
         : [];
       setAcceptedOrders(ordersData);
     } catch (e) {
@@ -52,7 +59,7 @@ const OrderNavigationBar = () => {
         fetchOrders();
       }, 6000);
       return () => clearInterval(interval);
-    }, [fetchOrders])
+    }, [fetchOrders]),
   );
 
   useEffect(() => {
@@ -60,30 +67,30 @@ const OrderNavigationBar = () => {
     fetchOrders(); // Force to Online if there are active orders
   }, []);
 
-  const handleActivation = async (isActive) => {
+  const handleActivation = async isActive => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
-      const obj = { is_active: isActive };
+      const obj = {is_active: isActive};
       await axios.patch(
-        `https://gobooze-test.codefactstech.com/admin/api/partner/update-partner-profile/${userId}`,
+        `https://api.gobooze.com.au/admin/api/partner/update-partner-profile/${userId}`,
         obj,
         {
           headers: {
             Authorization: `${accessToken}`,
           },
-        }
+        },
       );
     } catch (error) {
       logger.error('Error updating:', error.response || error.message || error);
     }
   };
 
-  const handleValueChange = (index) => {
+  const handleValueChange = index => {
     if (index === 1 && acceptedOrders.length > 0) {
       Alert.alert(
         'Active Orders',
-        'You have active orders. Please complete them before going offline.'
+        'You have active orders. Please complete them before going offline.',
       );
       return;
     }
@@ -97,12 +104,12 @@ const OrderNavigationBar = () => {
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchDetails = await fetch(
-        `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
           },
-        }
+        },
       );
       const data = await fetchDetails.json();
       setProfileData(data.data);
@@ -130,8 +137,7 @@ const OrderNavigationBar = () => {
         ]}
         onPress={() => {
           navigation.navigate('ProfileScreen');
-        }}
-      >
+        }}>
         <Image
           tintColor={isDarkTheme ? '#FFF' : undefined}
           resizeMode="contain"
@@ -139,15 +145,19 @@ const OrderNavigationBar = () => {
           style={styles.menuImg}
         />
       </TouchableOpacity>
-      <View style={{ width: rWidth(35) }} />
+      <View style={{width: rWidth(35)}} />
       <CustomSegmentedControl
         tabs={['Online', 'Offline']}
         onChange={handleValueChange}
         currentIndex={onlineOfflineIndex}
         segmentWidth={screenWidth ? screenWidth : 250}
         segmentBorderRadius={30}
-        segmentedControlBackgroundColor={isDarkTheme ? '#00000070' : '#00000015'}
-        activeSegmentBackgroundColor={onlineOfflineIndex === 0 ? '#099A6A' : COLORS.red_error}
+        segmentedControlBackgroundColor={
+          isDarkTheme ? '#00000070' : '#00000015'
+        }
+        activeSegmentBackgroundColor={
+          onlineOfflineIndex === 0 ? '#099A6A' : COLORS.red_error
+        }
         activeTextColor={isDarkTheme ? '#FFFFFF' : '#FFF'}
         textColor={isDarkTheme ? '#FFFFFFBF' : '#1D2433CC'}
       />
@@ -194,4 +204,3 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
 });
-

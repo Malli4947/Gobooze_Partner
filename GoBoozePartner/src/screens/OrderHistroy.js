@@ -43,13 +43,12 @@ const OrderHistory = ({orderRequests}) => {
     filterOrders();
   }, [orderId, orderData]);
 
-  
   const FetchOrderDetails = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchOrderDetails = await fetch(
-        `https://gobooze-test.codefactstech.com/order/api/orders/get-delivery-user-completed-orders/${userId}`,
+        `https://api.gobooze.com.au/order/api/orders/get-delivery-user-completed-orders/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
@@ -57,7 +56,9 @@ const OrderHistory = ({orderRequests}) => {
         },
       );
       const data = await fetchOrderDetails.json();
-      const reversedData = Array.isArray(data?.data) ? [...data.data].reverse() : [];
+      const reversedData = Array.isArray(data?.data)
+        ? [...data.data].reverse()
+        : [];
       setOrderData(reversedData);
       setFilteredOrderData(reversedData);
     } catch (error) {
@@ -92,7 +93,7 @@ const OrderHistory = ({orderRequests}) => {
       backAction,
     );
 
-    return () => backHandler.remove(); 
+    return () => backHandler.remove();
   }, [navigation]);
 
   const IMAGE_URL = `https://gobooze-tst-new.s3.ap-southeast-2.amazonaws.com/goboozestore/`;
@@ -546,7 +547,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.light_disabled_background,
     borderBottomWidth: 1,
     paddingBottom: rHeight(16),
-     marginTop:rHeight(16)
+    marginTop: rHeight(16),
   },
   menuContainer: {
     width: rHeight(44),

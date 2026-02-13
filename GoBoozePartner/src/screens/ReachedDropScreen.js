@@ -36,7 +36,6 @@ import BackA from '../assets/BackA.svg';
 import RightA from '../assets/RightA.svg';
 import ModalCancelButton from '../components/ModalCancelButton';
 
-
 const ReachedDropScreen = ({route}) => {
   const orderData = route?.params?.orderData;
   const navigation = useNavigation();
@@ -60,26 +59,25 @@ const ReachedDropScreen = ({route}) => {
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showCancelOrder, setShowCancelOrder] = useState(false);
   const [photo, setPhoto] = useState();
-  
-  const handleUpdateOrder = async () => {
-  const orderId = orderData?.order?._id;
-  if (!orderId) {
-    Alert.alert('Error', 'Order ID is missing!');
-    return;
-  }
-  try {
-    const result = await updateOrder(orderId, 'delivered'); 
-    if (result.success) { 
-      Alert.alert('Success', result.message);
-      navigation.navigate('Home');
-    } else {
-      Alert.alert('Error', result.message);
-    }
-  } catch (e) {
-    Alert.alert('Error', 'Something went wrong while updating the order');
-  }
-};
 
+  const handleUpdateOrder = async () => {
+    const orderId = orderData?.order?._id;
+    if (!orderId) {
+      Alert.alert('Error', 'Order ID is missing!');
+      return;
+    }
+    try {
+      const result = await updateOrder(orderId, 'delivered');
+      if (result.success) {
+        Alert.alert('Success', result.message);
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Error', result.message);
+      }
+    } catch (e) {
+      Alert.alert('Error', 'Something went wrong while updating the order');
+    }
+  };
 
   useEffect(() => {
     const backAction = () => {
@@ -92,12 +90,12 @@ const ReachedDropScreen = ({route}) => {
       backAction,
     );
 
-    return () => backHandler.remove(); 
+    return () => backHandler.remove();
   }, [navigation]);
   const onSuccessCancel = () => {
     navigation.navigate('Home');
   };
-  
+
   const takePhoto = () => {
     try {
       let options = {
@@ -150,7 +148,7 @@ const ReachedDropScreen = ({route}) => {
 
     try {
       const response = await fetch(
-        `https://gobooze-test.codefactstech.com/order/api/orders/upload-delivery-images/${orderData.order_id}`,
+        `https://api.gobooze.com.au/order/api/orders/upload-delivery-images/${orderData.order_id}`,
         {
           method: 'POST',
           body: formData,
@@ -306,77 +304,77 @@ const ReachedDropScreen = ({route}) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnNo1}
-            onPress={() =>   handleUpdateOrder()}>
+            onPress={() => handleUpdateOrder()}>
             <Text style={styles.yes}>Deliver Order</Text>
             <RightA />
           </TouchableOpacity>
         </View>
-       <Modal
-  visible={showOtpModal}
-  transparent
-  animationType="slide"
-  onRequestClose={() => setShowOtpModal(false)}>
-  <View style={styles.mainOuterComponent}>
-    <View style={styles.mainContainer}>
-      <ModalCancelButton onPress={() => setShowOtpModal(false)} />
-      <View
-        style={[
-          styles.bottomContainer,
-          isDarkTheme && {backgroundColor: COLORS.dark_theme_background},
-        ]}>
-        <Text style={[styles.item, isDarkTheme && {color: '#fff'}]}>
-          Enter OTP
-        </Text>
+        <Modal
+          visible={showOtpModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowOtpModal(false)}>
+          <View style={styles.mainOuterComponent}>
+            <View style={styles.mainContainer}>
+              <ModalCancelButton onPress={() => setShowOtpModal(false)} />
+              <View
+                style={[
+                  styles.bottomContainer,
+                  isDarkTheme && {
+                    backgroundColor: COLORS.dark_theme_background,
+                  },
+                ]}>
+                <Text style={[styles.item, isDarkTheme && {color: '#fff'}]}>
+                  Enter OTP
+                </Text>
 
-        <View style={styles.otp}>
-          <OTPTextView
-            handleTextChange={value => {
-              setInputOtp(value);
-              if (value.length === 4 && value === '1234') {
-                setIsOtpValid(true);
-              } else {
-                setIsOtpValid(false);
-              }
-            }}
-            containerStyle={{marginTop: 20}}
-            inputCount={4}
-            textInputStyle={{
-              backgroundColor: isDarkTheme ? '#00000095' : '#f5f5f5',
-              color: isDarkTheme ? '#fff' : '#000',
-              borderRadius: 8,
-              borderWidth: 1,
-              borderColor: isDarkTheme ? '#555' : '#ccc',
-              paddingVertical: rHeight(10),
-              fontSize: rWidth(16),
-            }}
-            tintColor={COLORS.primary_pink}
-            offTintColor={COLORS.ligth_grey}
-          />
-        </View>
-<View style={{paddingHorizontal:rWidth(16)}}>
-<TouchableOpacity
-          style={[
-            styles.btn,
-            {
-              backgroundColor: isOtpValid
-                ? COLORS.primary_pink
-                : COLORS.ligth_grey,
-            },
-          ]}
-          disabled={!isOtpValid}
-          onPress={() => {
-            setShowOtpModal(false);
-            handleUpdateOrder();
-          }}>
-          <Text style={styles.btnTxt}>Continue</Text>
-        </TouchableOpacity>
-</View>
-        
-      </View>
-    </View>
-  </View>
-</Modal>
-
+                <View style={styles.otp}>
+                  <OTPTextView
+                    handleTextChange={value => {
+                      setInputOtp(value);
+                      if (value.length === 4 && value === '1234') {
+                        setIsOtpValid(true);
+                      } else {
+                        setIsOtpValid(false);
+                      }
+                    }}
+                    containerStyle={{marginTop: 20}}
+                    inputCount={4}
+                    textInputStyle={{
+                      backgroundColor: isDarkTheme ? '#00000095' : '#f5f5f5',
+                      color: isDarkTheme ? '#fff' : '#000',
+                      borderRadius: 8,
+                      borderWidth: 1,
+                      borderColor: isDarkTheme ? '#555' : '#ccc',
+                      paddingVertical: rHeight(10),
+                      fontSize: rWidth(16),
+                    }}
+                    tintColor={COLORS.primary_pink}
+                    offTintColor={COLORS.ligth_grey}
+                  />
+                </View>
+                <View style={{paddingHorizontal: rWidth(16)}}>
+                  <TouchableOpacity
+                    style={[
+                      styles.btn,
+                      {
+                        backgroundColor: isOtpValid
+                          ? COLORS.primary_pink
+                          : COLORS.ligth_grey,
+                      },
+                    ]}
+                    disabled={!isOtpValid}
+                    onPress={() => {
+                      setShowOtpModal(false);
+                      handleUpdateOrder();
+                    }}>
+                    <Text style={styles.btnTxt}>Continue</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </SafeAreaView>
   );
@@ -448,25 +446,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
- modalOverlay: {
-  flex: 1,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  justifyContent: 'flex-end', 
-},
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
 
-modalOverlay: {
-  flex: 1,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  justifyContent: 'flex-end',
-},
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
 
- otp: {
+  otp: {
     flexDirection: 'row',
     alignSelf: 'center',
     marginBottom: rHeight(80),
   },
 
- mainOuterComponent: {
+  mainOuterComponent: {
     flex: 1,
     backgroundColor: '#00000095',
   },
@@ -498,7 +496,7 @@ modalOverlay: {
     fontSize: rHeight(22),
     color: COLORS.light_primary_text,
     paddingVertical: rHeight(8),
-    textAlign:'center'
+    textAlign: 'center',
   },
   desc: {
     fontFamily: GRAPHIK_FONT.REGULAR,
@@ -529,7 +527,7 @@ modalOverlay: {
     alignSelf: 'center',
     color: COLORS.red_error,
   },
-   btnTxt: {
+  btnTxt: {
     fontFamily: GRAPHIK_FONT.REGULAR,
     color: '#FFF',
     fontSize: rWidth(16),
@@ -543,16 +541,14 @@ modalOverlay: {
     alignSelf: 'center',
     paddingVertical: rHeight(12),
     borderRadius: 99,
-    paddingHorizontal:rWidth(16)
+    paddingHorizontal: rWidth(16),
   },
-   item: {
+  item: {
     color: '#070707',
     fontSize: rWidth(22),
     fontFamily: GRAPHIK_FONT.REGULAR,
     textAlign: 'center',
   },
-
-
 });
 
 export default ReachedDropScreen;

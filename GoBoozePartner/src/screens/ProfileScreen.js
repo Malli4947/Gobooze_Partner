@@ -57,11 +57,11 @@ const ProfileScreen = () => {
   }, [navigation]);
   const FetchDetails = async () => {
     const combinedData = await AsyncStorage.getItem('USER_DATA');
-    console.log('combineData',combinedData)
+    console.log('combineData', combinedData);
     const [accessToken, userId] = combinedData?.split(':') ?? [];
     try {
       const fetchDetails = await fetch(
-        `https://gobooze-test.codefactstech.com/admin/api/partner/get-partner/${userId}`,
+        `https://api.gobooze.com.au/admin/api/partner/get-partner/${userId}`,
         {
           headers: {
             Authorization: `${accessToken}`,
@@ -112,10 +112,10 @@ const ProfileScreen = () => {
     try {
       const userData = await AsyncStorage.getItem('USER_DATA');
       await AsyncStorage.removeItem('USER_DATA');
-      await AsyncStorage.removeItem("CACHED_DELIVERED_ORDERS");
-      await AsyncStorage.removeItem("CACHED_ACTIVE_ORDERS");
-      await AsyncStorage.removeItem("CACHED_PENDING_ORDERS");
-      await AsyncStorage.removeItem("LAST_COORDINATES");
+      await AsyncStorage.removeItem('CACHED_DELIVERED_ORDERS');
+      await AsyncStorage.removeItem('CACHED_ACTIVE_ORDERS');
+      await AsyncStorage.removeItem('CACHED_PENDING_ORDERS');
+      await AsyncStorage.removeItem('LAST_COORDINATES');
       navigation.navigate('Onboarding');
     } catch (error) {
       console.log('Error during logout:', error);
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.light_disabled_background,
     borderBottomWidth: 1,
     paddingBottom: rHeight(16),
-     marginTop:rHeight(16)
+    marginTop: rHeight(16),
   },
   menuContainer: {
     width: rHeight(44),
@@ -471,6 +471,5 @@ const styles = StyleSheet.create({
     color: '#000',
     paddingLeft: rWidth(16),
     fontSize: rWidth(14),
-   
   },
 });

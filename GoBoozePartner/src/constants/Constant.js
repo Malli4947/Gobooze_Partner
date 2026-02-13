@@ -1,9 +1,8 @@
 import {Platform} from 'react-native';
 
-export const API_BASE_URL =
-  'https://gobooze-test.codefactstech.com/admin/api/partner/';
+export const API_BASE_URL = 'https://api.gobooze.com.au/admin/api/partner/';
 
-export const MAIN_BASE_URL = 'https://gobooze-test.codefactstech.com/';
+export const MAIN_BASE_URL = 'https://api.gobooze.com.au/';
 
 export const apiConfig = {
   sendOtp: 'send-otp',
