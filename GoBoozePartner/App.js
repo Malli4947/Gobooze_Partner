@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {LogBox,Platform} from 'react-native';
+import {LogBox, Platform} from 'react-native';
 // import SplashScreen from 'react-native-splash-screen';
 import {ColorSchemeProvider} from './src/components/ColorSchemeContext';
 import AppNavigator from './src/navigation/GoBoozeNavigation';
@@ -13,7 +13,7 @@ import {err} from 'react-native-svg';
 import axios from 'axios';
 import messaging from '@react-native-firebase/messaging';
 import DeviceInfo from 'react-native-device-info';
-import { enableScreens } from 'react-native-screens';
+import {enableScreens} from 'react-native-screens';
 import logger from './src/utils/logger';
 
 // import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -32,20 +32,20 @@ const store = configureStore();
 function App() {
   const timerRef = useRef(null);
 
-const requestUserPermission = async () => {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-  return enabled;
-};
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    return enabled;
+  };
 
-useEffect(() => {
-  const subscribe = messaging().onTokenRefresh(token => {
-    AsyncStorage.setItem('token', token);
-  });
-  return subscribe;
-}, []);
+  useEffect(() => {
+    const subscribe = messaging().onTokenRefresh(token => {
+      AsyncStorage.setItem('token', token);
+    });
+    return subscribe;
+  }, []);
 
   useEffect(() => {
     const initialize = async () => {
@@ -77,40 +77,39 @@ useEffect(() => {
     initialize();
   }, []);
 
+  const getFirebaseToken = async () => {
+    const hasPermission = await requestUserPermission();
+    if (!hasPermission) return null;
 
-const getFirebaseToken = async () => {
-  const hasPermission = await requestUserPermission();
-  if (!hasPermission) return null;
+    await messaging().registerDeviceForRemoteMessages();
 
-  await messaging().registerDeviceForRemoteMessages();
-
-  try {
-    const token = await messaging().getToken();
-    if (token) {
-      await AsyncStorage.setItem('token', token);
-      return token;
-    } else {
-      logger.warn(" No token yet, will wait for onTokenRefresh");
+    try {
+      const token = await messaging().getToken();
+      if (token) {
+        await AsyncStorage.setItem('token', token);
+        return token;
+      } else {
+        logger.warn(' No token yet, will wait for onTokenRefresh');
+        return null;
+      }
+    } catch (e) {
+      logger.error(' Error getting FCM Token:', e);
       return null;
     }
-  } catch (e) {
-    logger.error(" Error getting FCM Token:", e);
-    return null;
-  }
-};
+  };
 
-
-
-const permissionRequest = async () => {
+  const permissionRequest = async () => {
     const systemVersion = DeviceInfo.getSystemVersion();
     if (parseInt(systemVersion, 10) >= 13) {
       check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
         .then(result => {
           switch (result) {
             case RESULTS.GRANTED:
-              getFirebaseToken(); break;
+              getFirebaseToken();
+              break;
             default:
-              notificationPermission(); break;
+              notificationPermission();
+              break;
           }
         })
         .catch(error => {
@@ -122,34 +121,32 @@ const permissionRequest = async () => {
     }
   };
 
-const notificationPermission = async () => {
+  const notificationPermission = async () => {
     const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
     if (result === RESULTS.GRANTED) {
       getFirebaseToken();
     } else {
-      logger.warn("Permission denied or blocked, please enable from settings");
+      logger.warn('Permission denied or blocked, please enable from settings');
       openSettings().catch(() => {
-        logger.warn("Cannot open settings");
+        logger.warn('Cannot open settings');
       });
     }
   };
 
-
-
   const locationWatchIdRef = useRef(null);
-  
+
   const getLatAndLong = async () => {
     // Clear existing watch if any
     if (locationWatchIdRef.current !== null) {
       Geolocation.clearWatch(locationWatchIdRef.current);
     }
-    
+
     const combinedData = await AsyncStorage.getItem('USER_DATA');
     if (!combinedData) {
       logger.warn('getLatAndLong: USER_DATA not available');
       return;
     }
-    
+
     locationWatchIdRef.current = Geolocation.watchPosition(
       position => {
         const lat = position.coords.longitude;
@@ -203,7 +200,7 @@ const notificationPermission = async () => {
       logger.error('Error posting driver location:', error);
     }
   };
-  
+
   // Cleanup location watch on unmount
   useEffect(() => {
     return () => {

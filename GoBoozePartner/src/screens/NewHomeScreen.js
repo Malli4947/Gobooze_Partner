@@ -377,7 +377,7 @@ const NewHomeScreen = props => {
       const combinedData = await AsyncStorage.getItem('USER_DATA');
       const [accessToken, userId] = combinedData?.split(':') ?? [];
 
-      const checkingPendingOrders = await axios.post(
+      const checkingPendingOrders = await axios.get(
         `https://api.gobooze.com.au/order/api/orders/get-delivery-user-unassigned-orders/${userId}`,
         {
           order_status: 'pending',
